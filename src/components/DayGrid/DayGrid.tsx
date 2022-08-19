@@ -1,15 +1,17 @@
 import { For } from "solid-js";
-import { getHours } from "../../lib/helpers";
+import { getHours, getWeekDays } from "../../lib/helpers";
 import DayColumn from "../DayColumn/DayColumn";
 import { DayGridContainer } from "./DayGridStyles";
 
 const DayGrid = (props) => {
-  // console.log("DayGridProps", { ...props });
   const HOURS = getHours(props.minHour, props.maxHour, props.locale);
+
+  console.log("DayGridProps", { ...props });
+  // const store = props.cols
 
   return (
     <DayGridContainer
-      cols={props.cols}
+      cols={props.localizedCols}
       colHeight={props.colHeight}
       colWidth={props.colWidth}
       theme={props.theme}
@@ -43,9 +45,3 @@ const DayGrid = (props) => {
 };
 
 export default DayGrid;
-// top: ${(props) => props.colHeight / props.itemCount + "px"};
-
-// cols: string[];
-// colHeight: number;
-// theme: DefaultTheme;
-// palette: "light" | "dark";

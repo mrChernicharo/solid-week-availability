@@ -19,7 +19,7 @@ const SideBar = (props) => {
       <For each={HOURS}>
         {(hour: string) => (
           <div class="hour" data-cy={`side_bar_${hour}`}>
-            {hour}
+            <span>{hour}</span>
           </div>
         )}
       </For>

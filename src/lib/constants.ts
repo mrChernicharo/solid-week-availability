@@ -20,7 +20,6 @@ export const THEME: DefaultTheme = {
     text: "#222",
     text2: "#555",
     lightText: "#ddd",
-
     bg: "#fff",
     bg2: "#ccc",
   },

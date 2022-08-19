@@ -53,12 +53,14 @@ const WeeklyAvailability = (props) => {
             palette={props.palette}
           />
           <DayGrid
-            cols={cols()}
+            cols={props.dayCols}
+            localizedCols={cols()}
             minHour={props.minHour}
             maxHour={props.maxHour}
             locale={props.locale}
             colWidth={props.colMinWidth}
             colHeight={props.colHeight}
+            firstDay={props.firstDay}
             theme={theme}
             palette={props.palette}
           />

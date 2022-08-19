@@ -28,6 +28,9 @@ const SideBarContainer = styled.div<IProps>`
     height: ${(props) => props.height / props.itemCount + "px"};
     display: flex;
     justify-content: center;
+
+    span {
+    }
   }
 `;
 

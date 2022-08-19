@@ -77,3 +77,17 @@ export const getHours = (minHour: number, maxHour: number, locale = "en") => {
 
   return hours;
 };
+
+export function getElementRect(ref: HTMLElement) {
+  return ref.getBoundingClientRect();
+}
+
+export function setCSSVariable(key: string, val: string) {
+  document.documentElement.style.setProperty(key, val);
+}
+
+export function getCSSVariable(key: string) {
+  return getComputedStyle(document.documentElement)
+    .getPropertyValue(key)
+    .trim();
+}
