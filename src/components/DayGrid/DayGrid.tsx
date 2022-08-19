@@ -1,3 +1,5 @@
+import { For } from "solid-js";
+import DayColumn from "../DayColumn/DayColumn";
 import { DayGridContainer } from "./DayGridStyles";
 
 const DayGrid = (props) => {
@@ -11,7 +13,17 @@ const DayGrid = (props) => {
       theme={props.theme}
       palette={props.palette}
     >
-      DayGrid
+      <For each={props.cols}>
+        {(col) => (
+          <DayColumn
+            day={col}
+            height={props.colHeight}
+            width={props.colWidth}
+            theme={props.theme}
+            palette={props.palette}
+          />
+        )}
+      </For>
     </DayGridContainer>
   );
 };

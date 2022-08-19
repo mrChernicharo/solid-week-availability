@@ -11,8 +11,8 @@ interface IProps {
 const color = (props: IProps, color: string) =>
   props.theme[props.palette][color];
 
+// border: 1px solid ${(props) => color(props, "primary")};
 const DayGridContainer = styled.div<IProps>`
-  border: 1px solid ${(props) => color(props, "primary")};
   width: ${(props) => props.colWidth * props.cols.length + "px"};
   height: ${(props) => props.colHeight + "px"};
   display: inline-block;

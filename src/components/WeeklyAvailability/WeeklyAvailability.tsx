@@ -19,6 +19,7 @@ const WeeklyAvailability = (props) => {
         cols={cols()}
         colWidth={props.colMinWidth}
         height={props.headerHeight + props.colHeight}
+        widgetHeight={props.widgetHeight}
       >
         <TopBar
           cols={cols()}

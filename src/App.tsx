@@ -34,8 +34,9 @@ const App: Component = () => {
         open={isOpen()}
         minHour={7}
         maxHour={21}
-        colHeight={800}
+        widgetHeight={420}
         headerHeight={40}
+        colHeight={800}
         colMinWidth={120}
         minSnap={30}
         onChange={(val) => console.log(val)}

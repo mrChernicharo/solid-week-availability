@@ -5,6 +5,7 @@ interface IProps {
   cols: string[];
   colWidth: number;
   height: number;
+  widgetHeight: number;
   theme: DefaultTheme;
   palette: "light" | "dark";
 }
@@ -22,7 +23,7 @@ const Container = styled.div<IProps>`
       props.colWidth * (props.cols.length + 0.5) + SCROLL_BAR + "px"},
     96vw
   );
-  height: ${(props) => props.height / 2 + "px"};
+  height: ${(props) => props.widgetHeight + SCROLL_BAR + "px"};
   overflow: auto;
   margin: 0 auto;
   white-space: nowrap;
