@@ -13,3 +13,4 @@ export type ITimeSlot = {
   day?: string;
   color?: string;
 };
+export type IDayName = "Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat";

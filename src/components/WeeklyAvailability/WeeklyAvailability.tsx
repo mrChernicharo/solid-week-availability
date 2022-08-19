@@ -1,6 +1,6 @@
 import { createEffect, onMount, Show } from "solid-js";
 import { useTheme } from "solid-styled-components";
-import { getLocaleWeekDays, getOrderedWeekDays } from "../../lib/helpers";
+import { getWeekDays } from "../../lib/helpers";
 import DayGrid from "../DayGrid/DayGrid";
 import SideBar from "../SideBar/SideBar";
 import TopBar from "../TopBar/TopBar";
@@ -9,7 +9,12 @@ import { Container } from "./ContainerStyles";
 const WeeklyAvailability = (props) => {
   const theme = useTheme();
 
-  const cols = () => getOrderedWeekDays(props.firstDay, props.dayCols);
+  const cols = () =>
+    getWeekDays(props.dayCols, {
+      firstDay: props.firstDay,
+      locale: props.locale,
+      format: "long",
+    });
 
   return (
     <Show when={props.open}>
@@ -20,6 +25,7 @@ const WeeklyAvailability = (props) => {
         colWidth={props.colMinWidth}
         height={props.headerHeight + props.colHeight}
         widgetHeight={props.widgetHeight}
+        data-cy="widget_root"
       >
         <TopBar
           cols={cols()}
@@ -31,6 +37,7 @@ const WeeklyAvailability = (props) => {
         />
         {/* <div> */}
         <div
+          data-cy="columns_wrapper"
           style={{
             display: "inline-flex",
             width: props.colMinWidth * (cols().length + 0.5) + "px",

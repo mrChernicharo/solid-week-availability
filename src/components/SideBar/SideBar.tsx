@@ -33,9 +33,14 @@ const SideBar = (props) => {
       height={props.colHeight}
       colWidth={props.colWidth / 2}
       itemsCount={HOURS(props.minHour, props.maxHour).length}
+      data-cy="side_bar"
     >
       <For each={HOURS(props.minHour, props.maxHour)}>
-        {(hour: string) => <div class="hour">{hour}</div>}
+        {(hour: string) => (
+          <div class="hour" data-cy={`side_bar_${hour}`}>
+            {hour}
+          </div>
+        )}
       </For>
     </SideBarContainer>
   );

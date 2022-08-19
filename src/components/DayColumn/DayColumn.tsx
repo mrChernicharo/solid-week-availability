@@ -7,6 +7,7 @@ const DayColumn = (props) => {
       width={props.width}
       theme={props.theme}
       palette={props.palette}
+      data-cy={`day_column_${props.day}`}
     >
       {props.day}
     </DayColumnContainer>

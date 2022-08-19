@@ -12,6 +12,7 @@ const DayGrid = (props) => {
       colWidth={props.colWidth}
       theme={props.theme}
       palette={props.palette}
+      data-cy="day_grid"
     >
       <For each={props.cols}>
         {(col) => (

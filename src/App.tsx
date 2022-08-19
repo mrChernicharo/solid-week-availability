@@ -27,9 +27,9 @@ const App: Component = () => {
       </div>
 
       <WeeklyAvailability
-        locale="en"
+        locale="fr"
         // locale="pt-BR"
-        dayCols={["mon", "tue", "wed", "thu", "fri", "sat", "sun"]} // omit days if you want
+        dayCols={["mon", "tue", "wed", "thu", "fri", "sat", "sun"]} // omit days if you want, order doesn't matter, repeated items don't matter
         firstDay="mon" // first dayColumn
         palette={palette()} // light | dark
         open={isOpen()}
