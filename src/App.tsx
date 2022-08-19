@@ -15,12 +15,14 @@ const App: Component = () => {
       <WeeklyAvailability
         locale="pt-BR"
         dayCols={["mon", "tue", "wed", "thu", "fri", "sat", "sun"]} // omit days if you want
-        firstDay="mon" // first dayColumn
+        firstDay="sat" // first dayColumn
         palette={palette()} // light | dark
         open={isOpen()}
         minHour={7}
         maxHour={21}
         colHeight={800}
+        headerHeight={40}
+        colMinWidth={120}
         minSnap={30}
         onChange={(val) => console.log(val)}
       />

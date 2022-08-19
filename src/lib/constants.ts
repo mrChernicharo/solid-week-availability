@@ -3,13 +3,15 @@ import { DefaultTheme } from "solid-styled-components";
 export const THEME: DefaultTheme = {
   dark: {
     primary: "dodgerblue",
+    accent: "hotpink",
     text: "#fff",
     text2: "#ccc",
     bg: "#222",
     bg2: "#555",
   },
   light: {
-    primary: "hotpink",
+    primary: "dodgerblue",
+    accent: "hotpink",
     text: "#222",
     text2: "#555",
     bg: "#fff",
