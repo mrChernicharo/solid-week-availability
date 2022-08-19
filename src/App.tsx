@@ -1,6 +1,5 @@
 import { Component, createSignal } from "solid-js";
 
-import styles from "./App.module.css";
 import WeeklyAvailability from "./components/WeeklyAvailability/WeeklyAvailability";
 
 const App: Component = () => {
@@ -8,8 +7,22 @@ const App: Component = () => {
   const [isOpen, setIsOpen] = createSignal(true);
 
   return (
-    <div class={styles.App}>
+    <div>
       <h1>Weekly Availability</h1>
+
+      <div>
+        <div>palette: {palette()}</div>
+        <div>open: {isOpen() ? "true" : "false"}</div>
+      </div>
+
+      <button
+        onClick={(e) => setPalette(palette() === "light" ? "dark" : "light")}
+      >
+        change palette
+      </button>
+      <button onClick={(e) => setIsOpen(!isOpen())}>
+        {isOpen() ? "Close" : "Open"}
+      </button>
 
       <WeeklyAvailability
         locale="pt-BR"
@@ -25,18 +38,6 @@ const App: Component = () => {
         minSnap={30}
         onChange={(val) => console.log(val)}
       />
-
-      <div>
-        <div>palette: {palette()}</div>
-        <div>open: {isOpen() ? "true" : "false"}</div>
-      </div>
-
-      <button
-        onClick={(e) => setPalette(palette() === "light" ? "dark" : "light")}
-      >
-        change palette
-      </button>
-      <button onClick={(e) => setIsOpen(!isOpen())}>Open</button>
     </div>
   );
 };

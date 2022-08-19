@@ -10,6 +10,7 @@ const TopBar = (props) => {
       palette={props.palette}
       height={props.height}
       colWidth={props.colWidth}
+      cols={props.cols}
     >
       <div class="shim"></div>
       <For each={props.cols}>

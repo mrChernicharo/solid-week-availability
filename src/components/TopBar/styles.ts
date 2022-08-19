@@ -5,6 +5,7 @@ interface IProps {
   palette: "light" | "dark";
   height: number;
   colWidth: number;
+  cols: string[];
 }
 
 const color = (props: IProps, color: string) =>
@@ -13,6 +14,7 @@ const color = (props: IProps, color: string) =>
 const TopBarContainer = styled.div<IProps>`
   border: 1px solid ${(props) => color(props, "primary")};
   height: ${(props) => props.height + "px"};
+  width: ${(props) => props.colWidth * (props.cols.length + 0.5) + "px"};
   display: inline-flex;
 
   .shim {
