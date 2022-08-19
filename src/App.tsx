@@ -27,14 +27,18 @@ const App: Component = () => {
       </div>
 
       <WeeklyAvailability
-        locale="pt-BR"
+        locale="en"
+        // locale="pt-BR"
         dayCols={["mon", "tue", "wed", "thu", "fri", "sat", "sun"]} // omit days if you want
-        firstDay="sun" // first dayColumn
+        firstDay="mon" // first dayColumn
         palette={palette()} // light | dark
         open={isOpen()}
         minHour={7}
         maxHour={21}
+        // minHour={0}
+        // maxHour={23}
         widgetHeight={420}
+        // widgetHeight={840}
         headerHeight={40}
         colHeight={800}
         colMinWidth={120}

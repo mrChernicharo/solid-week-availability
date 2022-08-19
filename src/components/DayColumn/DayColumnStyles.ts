@@ -11,7 +11,7 @@ const color = (props: IProps, color: string) =>
   props.theme[props.palette][color];
 
 const DayColumnContainer = styled.div<IProps>`
-  border: 1px solid ${(props) => color(props, "primary")};
+  border-left: 1px solid ${(props) => color(props, "primary")};
   width: ${(props) => props.width + "px"};
   height: ${(props) => props.height + "px"};
   display: inline-block;

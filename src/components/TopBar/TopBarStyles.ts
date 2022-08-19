@@ -20,6 +20,7 @@ const TopBarContainer = styled.div<IProps>`
   top: 0;
   z-index: 10;
   background: ${(props) => color(props, "primary2")};
+  opacity: 0.8;
 
   .shim {
     width: ${(props) => props.colWidth / 2 + "px"};
@@ -28,7 +29,7 @@ const TopBarContainer = styled.div<IProps>`
   }
 
   .weekday {
-    border-left: 1px solid ${(props) => color(props, "accent")};
+    border-left: 1px solid ${(props) => color(props, "primary")};
     width: ${(props) => props.colWidth + "px"};
     height: ${(props) => props.height + "px"};
     display: inline-flex;
