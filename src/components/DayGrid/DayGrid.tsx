@@ -1,7 +1,24 @@
+import { DayGridContainer } from "./styles";
+
 const DayGrid = (props) => {
   //   console.log("DayGridProps", { ...props });
 
-  return <div>DayGrid</div>;
+  return (
+    <DayGridContainer
+      cols={props.cols}
+      colHeight={props.colHeight}
+      colWidth={props.colWidth}
+      theme={props.theme}
+      palette={props.palette}
+    >
+      DayGrid
+    </DayGridContainer>
+  );
 };
 
 export default DayGrid;
+
+// cols: string[];
+// colHeight: number;
+// theme: DefaultTheme;
+// palette: "light" | "dark";

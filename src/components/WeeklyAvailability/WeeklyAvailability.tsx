@@ -13,9 +13,13 @@ const WeeklyAvailability = (props) => {
 
   return (
     <Show when={props.open}>
-      <Container theme={theme} palette={props.palette}>
-        <div>WeeklyAvailability</div>
-
+      <Container
+        theme={theme}
+        palette={props.palette}
+        cols={cols()}
+        colWidth={props.colMinWidth}
+        height={props.headerHeight + props.colHeight}
+      >
         <TopBar
           cols={cols()}
           height={props.headerHeight}
@@ -24,25 +28,33 @@ const WeeklyAvailability = (props) => {
           theme={theme}
           palette={props.palette}
         />
-        <SideBar
-          cols={cols()}
-          colHeight={props.colHeight}
-          locale={props.locale}
-          minHour={props.minHour}
-          maxHour={props.maxHour}
-          theme={theme}
-          palette={props.palette}
-        />
-        <DayGrid
-          cols={cols()}
-          minHour={props.minHour}
-          maxHour={props.maxHour}
-          locale={props.locale}
-          colWidth={props.colMinWidth}
-          colHeight={props.colHeight}
-          theme={theme}
-          palette={props.palette}
-        />
+        {/* <div> */}
+        <div
+          style={{
+            display: "inline-flex",
+            width: props.colMinWidth * (cols().length + 0.5) + "px",
+          }}
+        >
+          <SideBar
+            locale={props.locale}
+            colHeight={props.colHeight}
+            colWidth={props.colMinWidth}
+            minHour={props.minHour}
+            maxHour={props.maxHour}
+            theme={theme}
+            palette={props.palette}
+          />
+          <DayGrid
+            cols={cols()}
+            minHour={props.minHour}
+            maxHour={props.maxHour}
+            locale={props.locale}
+            colWidth={props.colMinWidth}
+            colHeight={props.colHeight}
+            theme={theme}
+            palette={props.palette}
+          />
+        </div>
       </Container>
     </Show>
   );

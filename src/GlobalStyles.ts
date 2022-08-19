@@ -5,7 +5,6 @@ const GlobalStyles = () => {
     html,
     body {
       margin: 0;
-      text-align: center;
       height: 200vh;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
         'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',

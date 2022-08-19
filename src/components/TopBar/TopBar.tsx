@@ -2,7 +2,7 @@ import { For } from "solid-js";
 import { TopBarContainer } from "./styles";
 
 const TopBar = (props) => {
-  console.log("TopBarProps", { ...props });
+  // console.log("TopBarProps", { ...props });
 
   return (
     <TopBarContainer
