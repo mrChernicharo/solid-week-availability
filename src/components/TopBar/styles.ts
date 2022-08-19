@@ -16,19 +16,22 @@ const TopBarContainer = styled.div<IProps>`
   height: ${(props) => props.height + "px"};
   width: ${(props) => props.colWidth * (props.cols.length + 0.5) + "px"};
   display: inline-flex;
+  position: sticky;
+  top: 0;
 
   .shim {
-    border: 1px solid ${(props) => color(props, "accent")};
     width: ${(props) => props.colWidth / 2 + "px"};
     height: 100%;
-    display: inline-block;
+    display: inline-flex;
   }
 
   .weekday {
-    border: 1px solid ${(props) => color(props, "accent")};
+    border-left: 1px solid ${(props) => color(props, "accent")};
     width: ${(props) => props.colWidth + "px"};
     height: 100%;
-    display: inline-block;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
   }
 `;
 
