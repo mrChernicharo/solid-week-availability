@@ -1,5 +1,5 @@
 import { For } from "solid-js";
-import { TopBarContainer } from "./styles";
+import { TopBarContainer } from "./TopBarStyles";
 
 const TopBar = (props) => {
   // console.log("TopBarProps", { ...props });

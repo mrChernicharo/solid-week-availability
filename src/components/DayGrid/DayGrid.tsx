@@ -1,4 +1,4 @@
-import { DayGridContainer } from "./styles";
+import { DayGridContainer } from "./DayGridStyles";
 
 const DayGrid = (props) => {
   //   console.log("DayGridProps", { ...props });

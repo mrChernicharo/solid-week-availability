@@ -1,4 +1,4 @@
-import { SideBarContainer } from "./styles";
+import { SideBarContainer } from "./SideBarStyles";
 
 const SideBar = (props) => {
   console.log("SideBarProps", { ...props });

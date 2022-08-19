@@ -4,7 +4,7 @@ import { getLocaleWeekDays, getOrderedWeekDays } from "../../lib/helpers";
 import DayGrid from "../DayGrid/DayGrid";
 import SideBar from "../SideBar/SideBar";
 import TopBar from "../TopBar/TopBar";
-import { Container } from "./styles";
+import { Container } from "./ContainerStyles";
 
 const WeeklyAvailability = (props) => {
   const theme = useTheme();
