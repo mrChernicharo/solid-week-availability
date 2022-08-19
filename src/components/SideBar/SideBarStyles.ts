@@ -4,7 +4,7 @@ interface IProps {
   colWidth: number;
   theme: DefaultTheme;
   palette: "light" | "dark";
-  itemsCount: number;
+  itemCount: number;
 }
 
 const color = (props: IProps, color: string) =>
@@ -24,8 +24,8 @@ const SideBarContainer = styled.div<IProps>`
 
   .hour {
     font-size: small;
-    border: 1px solid ${(props) => color(props, "accent")};
-    height: ${(props) => props.height / props.itemsCount + "px"};
+    border-top: 1px solid ${(props) => color(props, "accent")};
+    height: ${(props) => props.height / props.itemCount + "px"};
     display: flex;
     justify-content: center;
   }

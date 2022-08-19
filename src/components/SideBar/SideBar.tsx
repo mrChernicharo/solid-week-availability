@@ -1,30 +1,11 @@
 import { For } from "solid-js";
+import { getHours } from "../../lib/helpers";
 import { SideBarContainer } from "./SideBarStyles";
 
 const SideBar = (props) => {
-  console.log("SideBarProps", { ...props });
+  // console.log("SideBarProps", { ...props });
 
-  const HOURS = (minHour: number, maxHour: number) => {
-    const hours: string[] = [];
-    let curr = minHour;
-
-    while (curr <= maxHour) {
-      let hour = "";
-      if (props.locale === "en") {
-        if (curr === 0) hour = "12 AM";
-        if (curr === 12) hour = "12 PM";
-        if (curr !== 0 && curr !== 12)
-          hour = curr < 12 ? curr + " AM" : curr - 12 + " PM";
-      } else {
-        hour = curr + ":00";
-      }
-
-      hours.push(hour);
-      curr++;
-    }
-
-    return hours;
-  };
+  const HOURS = getHours(props.minHour, props.maxHour, props.locale);
 
   return (
     <SideBarContainer
@@ -32,10 +13,10 @@ const SideBar = (props) => {
       palette={props.palette}
       height={props.colHeight}
       colWidth={props.colWidth / 2}
-      itemsCount={HOURS(props.minHour, props.maxHour).length}
+      itemCount={HOURS.length}
       data-cy="side_bar"
     >
-      <For each={HOURS(props.minHour, props.maxHour)}>
+      <For each={HOURS}>
         {(hour: string) => (
           <div class="hour" data-cy={`side_bar_${hour}`}>
             {hour}

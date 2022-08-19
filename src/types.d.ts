@@ -11,6 +11,7 @@ declare module "solid-styled-components" {
       accent2: string;
       text: string;
       text2: string;
+      lightText: string;
       bg: string;
       bg2: string;
     };
@@ -21,6 +22,7 @@ declare module "solid-styled-components" {
       accent2: string;
       text: string;
       text2: string;
+      lightText: string;
       bg: string;
       bg2: string;
     };

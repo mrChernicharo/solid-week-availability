@@ -39,9 +39,10 @@ const App: Component = () => {
         // maxHour={23}
         widgetHeight={420}
         // widgetHeight={840}
-        headerHeight={40}
+        headerHeight={50}
+        // headerHeight={40}
         colHeight={800}
-        colMinWidth={120}
+        colMinWidth={160}
         minSnap={30}
         onChange={(val) => console.log(val)}
       />

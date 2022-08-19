@@ -8,6 +8,7 @@ export const THEME: DefaultTheme = {
     accent2: "pink",
     text: "#fff",
     text2: "#ccc",
+    lightText: "#444",
     bg: "#222",
     bg2: "#555",
   },
@@ -18,6 +19,8 @@ export const THEME: DefaultTheme = {
     accent2: "pink",
     text: "#222",
     text2: "#555",
+    lightText: "#ddd",
+
     bg: "#fff",
     bg2: "#ccc",
   },
