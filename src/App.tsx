@@ -1,6 +1,5 @@
 import { Component, createSignal } from "solid-js";
 
-import logo from "./logo.svg";
 import styles from "./App.module.css";
 import WeeklyAvailability from "./components/WeeklyAvailability/WeeklyAvailability";
 
