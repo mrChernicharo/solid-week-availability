@@ -1,11 +1,40 @@
-import { createEffect, createSignal, Show } from "solid-js";
+import { createEffect, createSignal, For, Show } from "solid-js";
 import { MARKER_TIME } from "../../lib/constants";
-import { getElementRect, yPosToTime } from "../../lib/helpers";
-import { IPointerEvent, IPos } from "../../lib/types";
+import {
+  findOverlappingSlots,
+  getElementRect,
+  timeToYPos,
+  yPosToTime,
+} from "../../lib/helpers";
+import { IPointerEvent, IPos, ITimeSlot } from "../../lib/types";
 import { DayColumnContainer } from "./DayColumnStyles";
 import { FaSolidPlus } from "solid-icons/fa";
 
+interface IProps {
+  timeSlot: ITimeSlot;
+  top: number;
+  bottom: number;
+  // minHour: number;
+  // maxHour: number;
+  // columnHeight: number;
+}
+
 const ICON_SIZE = 16;
+
+const TimeSlot = (props: IProps) => {
+  // timeToYPos(props.timeSlot.start);
+  return (
+    <div
+      style={{
+        position: "absolute",
+        width: "100%",
+        height: props.bottom - props.top + "px",
+        background: "lightgreen",
+        top: props.top + "px",
+      }}
+    ></div>
+  );
+};
 
 const DayColumn = (props) => {
   let columnRef: HTMLDivElement;
@@ -15,8 +44,6 @@ const DayColumn = (props) => {
   const [clickedPos, setClickedPos] = createSignal<IPos | null>(null);
 
   createEffect(() => {
-    props.canCreateNew;
-
     setClickedPos(null);
   });
 
@@ -33,9 +60,11 @@ const DayColumn = (props) => {
       rect().height
     );
 
+    findOverlappingSlots;
+
+    // columnClick marker
     clearTimeout(timeout);
     timeout = setTimeout(() => setClickedPos(null), MARKER_TIME);
-
     props.onColumnClick({
       minutes: clickTime,
       pos: clickedPos(),
@@ -75,6 +104,25 @@ const DayColumn = (props) => {
           </div>
         </div>
       </Show>
+
+      <For each={props.timeSlots}>
+        {(slot: ITimeSlot) => {
+          const topPos = timeToYPos(
+            slot.start,
+            props.minHour,
+            props.maxHour,
+            props.height
+          );
+          const bottomPos = timeToYPos(
+            slot.end,
+            props.minHour,
+            props.maxHour,
+            props.height
+          );
+
+          return <TimeSlot top={topPos} bottom={bottomPos} timeSlot={slot} />;
+        }}
+      </For>
     </DayColumnContainer>
   );
 };

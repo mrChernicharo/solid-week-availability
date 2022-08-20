@@ -27,8 +27,8 @@ const App: Component = () => {
       </div>
 
       <WeeklyAvailability
-        // locale="fr"
-        locale="en"
+        locale="ru"
+        // locale="en"
         // locale="pt-BR"
         // dayCols={["mon", "tue", "wed", "thu", "fri", "sat", "sun"]}
         dayCols={["Mon", "Tue", "Wed", "Thu", "Fri"]} // omit days if you want, order doesn't matter, repeated items don't matter
@@ -36,17 +36,17 @@ const App: Component = () => {
         palette={palette()} // light | dark
         open={isOpen()}
         // minHour={7}
-        // maxHour={8}
+        // maxHour={21}
         minHour={0}
         maxHour={24}
-        widgetHeight={520}
-        // widgetHeight={840}
+        // widgetHeight={520}
+        widgetHeight={840}
         headerHeight={50}
         // headerHeight={40}
         colHeight={800}
         colMinWidth={160}
         minSnap={30}
-        onChange={(val) => console.log(val)}
+        // onChange={(val) => console.log(val)}
       />
     </div>
   );

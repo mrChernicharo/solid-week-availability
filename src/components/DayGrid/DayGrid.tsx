@@ -1,30 +1,70 @@
-import { update } from "cypress/types/lodash";
 import { FaSolidCheck, FaSolidX } from "solid-icons/fa";
-import { createSignal, For, Show } from "solid-js";
+import { createEffect, createSignal, For, Show } from "solid-js";
+import { createStore, unwrap } from "solid-js/store";
 import { getHours, getWeekDays } from "../../lib/helpers";
-import { IColumnClick } from "../../lib/types";
+import { IColumnClick, IDayName, ITimeSlot } from "../../lib/types";
 import DayColumn from "../DayColumn/DayColumn";
 import { DayGridContainer, MarkerOverlay } from "./DayGridStyles";
+import idMaker from "@melodev/id-maker";
+import { DefaultTheme } from "solid-styled-components";
+import { HALF_SLOT } from "../../lib/constants";
 
-const DayGrid = (props) => {
-  let columnClick;
+type IStore = {
+  [k in IDayName]: ITimeSlot[];
+};
+
+interface IProps {
+  cols: IDayName[];
+  localizedCols: string[];
+  minHour: number;
+  maxHour: number;
+  locale: string;
+  colWidth: number;
+  colHeight: number;
+  widgetHeight: number;
+  firstDay: string;
+  theme: DefaultTheme;
+  palette: "light" | "dark";
+}
+
+const initialStore = {};
+
+const DayGrid = (props: IProps) => {
+  let columnClick: IColumnClick;
   const HOURS = getHours(props.minHour, props.maxHour, props.locale);
+
+  props.cols.forEach((col: IDayName) => {
+    initialStore[col] = [];
+  });
+
+  const [store, setStore] = createStore(initialStore as IStore);
 
   const [overlayOpen, setOverlayOpen] = createSignal(false);
 
-  console.log("DayGridProps", { ...props });
-  // const store = props.cols
+  // console.log("DayGridProps", { ...props, s: { ...unwrap(store) } });
 
-  function handleColumnClick(o: IColumnClick) {
-    console.log(o);
-    columnClick = structuredClone(o);
+  function handleColumnClick(obj: IColumnClick) {
+    columnClick = structuredClone(obj);
+
+    // has overlap
 
     setOverlayOpen(true);
   }
 
   function addNewTimeSlot(e) {
-    console.log("addNewTimeSlot", columnClick);
+    console.log("addNewTimeSlot", columnClick, store[columnClick?.day]);
+    setOverlayOpen(false);
+    const newTimeSlot: ITimeSlot = {
+      id: idMaker(),
+      start: columnClick.minutes - HALF_SLOT,
+      end: columnClick.minutes + HALF_SLOT,
+      day: columnClick.day,
+    };
+
+    setStore(columnClick.day, (s) => [...s, newTimeSlot]);
   }
+
+  createEffect(() => console.log({ ...store.Mon }));
 
   return (
     <DayGridContainer
@@ -37,7 +77,7 @@ const DayGrid = (props) => {
       data-cy="day_grid"
     >
       <For each={props.cols}>
-        {(col, i) => (
+        {(col: IDayName, i) => (
           <DayColumn
             day={col}
             height={props.colHeight}
@@ -47,6 +87,8 @@ const DayGrid = (props) => {
             theme={props.theme}
             palette={props.palette}
             onColumnClick={handleColumnClick}
+            // setTimeSlots={setStore}
+            timeSlots={store[col]}
             idx={i()}
           />
         )}
@@ -58,7 +100,7 @@ const DayGrid = (props) => {
             class="grid-line"
             style={{ top: (props.colHeight / HOURS.length) * i() + "px" }}
             data-cy={`grid_line_${hour}`}
-          ></div>
+          />
         )}
       </For>
 
@@ -67,9 +109,11 @@ const DayGrid = (props) => {
         <div
           style={{
             position: "absolute",
-            background: "green",
+            background: "lightblue",
             "z-index": 50,
+            /* @ts-ignore */
             top: columnClick.pos.y + "px",
+            /* @ts-ignore */
             left: columnClick.pos.x + props.colWidth * columnClick.idx + "px",
           }}
         >

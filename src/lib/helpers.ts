@@ -1,5 +1,5 @@
-import { DAY_NAMES } from "./constants";
-import { IDayName } from "./types";
+import { DAY_NAMES, HALF_SLOT } from "./constants";
+import { IDayName, ITimeSlot } from "./types";
 
 // returns ordered dayCols based on dayCols and firstDay
 export const getWeekDays = (
@@ -92,14 +92,20 @@ export function getCSSVariable(key: string) {
     .trim();
 }
 
-// export function timeToYPos(startTime: number, columnHeight: number) {
-//   // console.log({ startTime, columnHeight });
-//   const pxPerMinute = columnHeight / 1440;
-//   const yPos = startTime * pxPerMinute;
+export function timeToYPos(
+  time: number,
+  minHour: number,
+  maxHour: number,
+  columnHeight: number
+) {
+  const [start, end] = [minHour * 60, maxHour * 60];
 
-//   // console.log('timeToYPos', { startTime, columnHeight, yPos });
-//   return yPos;
-// }
+  const percent = time / (start + end);
+
+  console.log({ time, percent, start, end, columnHeight });
+
+  return columnHeight * percent - HALF_SLOT / 2;
+}
 
 export function yPosToTime(
   yPos: number,
@@ -114,4 +120,20 @@ export function yPosToTime(
   const timeClicked = (end - start) * percent + start;
 
   return Math.round(timeClicked);
+}
+
+export function findOverlappingSlots(
+  start: number,
+  end: number,
+  timeSlots: ITimeSlot[]
+) {
+  const overlappingItems = timeSlots.filter(
+    (s, i) =>
+      (start <= s.start && start <= s.end && end >= s.start && end <= s.end) || // top overlap
+      (start >= s.start && start <= s.end && end >= s.start && end <= s.end) || // fit inside
+      (start >= s.start && start <= s.end && end >= s.start && end >= s.end) || // bottom overlap
+      (start <= s.start && start <= s.end && end >= s.start && end >= s.end) // encompass
+  );
+
+  return overlappingItems;
 }
