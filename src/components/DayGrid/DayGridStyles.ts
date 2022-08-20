@@ -24,6 +24,7 @@ const DayGridContainer = styled.div<IProps>`
     width: ${(props) => props.colWidth * props.cols.length + "px"};
     height: 1px;
     background: ${(props) => color(props, "lightText")};
+    z-index: 0;
   }
 `;
 export { DayGridContainer };

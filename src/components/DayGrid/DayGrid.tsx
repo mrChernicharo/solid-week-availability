@@ -20,7 +20,7 @@ const DayGrid = (props) => {
       data-cy="day_grid"
     >
       <For each={props.cols}>
-        {(col) => (
+        {(col, i) => (
           <DayColumn
             day={col}
             height={props.colHeight}
@@ -29,6 +29,7 @@ const DayGrid = (props) => {
             maxHour={props.maxHour}
             theme={props.theme}
             palette={props.palette}
+            idx={i()}
           />
         )}
       </For>

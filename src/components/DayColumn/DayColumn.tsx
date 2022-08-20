@@ -45,6 +45,7 @@ const DayColumn = (props) => {
       palette={props.palette}
       onPointerDown={handleColumnClick}
       data-cy={`day_column_${props.day}`}
+      idx={props.idx}
     ></DayColumnContainer>
   );
 };

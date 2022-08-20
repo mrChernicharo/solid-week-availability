@@ -5,6 +5,7 @@ interface IProps {
   height: number;
   theme: DefaultTheme;
   palette: "light" | "dark";
+  idx: number;
 }
 
 const color = (props: IProps, color: string) =>
@@ -15,6 +16,10 @@ const DayColumnContainer = styled.div<IProps>`
   width: ${(props) => props.width + "px"};
   height: ${(props) => props.height + "px"};
   display: inline-block;
+
+  position: absolute;
+  left: ${(props) => props.width * props.idx + "px"};
+  z-index: 2;
 `;
 
 export { DayColumnContainer };
