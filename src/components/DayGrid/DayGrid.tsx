@@ -6,15 +6,21 @@ import {
   getHours,
   getMergedTimeslots,
   getWeekDays,
+  readableTime,
 } from "../../lib/helpers";
 import {
   IColumnClick,
   IDayName,
   IPointerEvent,
+  IPos,
   ITimeSlot,
 } from "../../lib/types";
 import DayColumn from "../DayColumn/DayColumn";
-import { DayGridContainer, MarkerOverlay } from "./DayGridStyles";
+import {
+  DayGridContainer,
+  MarkerOverlay,
+  ModalContainer,
+} from "./DayGridStyles";
 import idMaker from "@melodev/id-maker";
 import { DefaultTheme } from "solid-styled-components";
 import { HALF_SLOT, MODAL_HEIGHT, MODAL_WIDTH } from "../../lib/constants";
@@ -42,9 +48,7 @@ const initialStore = {};
 
 const DayGrid = (props: IProps) => {
   let gridRef: HTMLDivElement;
-  let modalRef: HTMLDivElement;
-  let posX = 0;
-  let posY = 0;
+  let modalPos: IPos = { x: 0, y: 0 };
 
   let columnClick: IColumnClick;
   const HOURS = getHours(props.minHour, props.maxHour, props.locale);
@@ -57,6 +61,7 @@ const DayGrid = (props: IProps) => {
 
   const [createModalOpen, setCreateModalOpen] = createSignal(false);
   const [mergeModalOpen, setMergeModalOpen] = createSignal(false);
+  const [detailsModalOpen, setDetailsModalOpen] = createSignal(false);
 
   // console.log("DayGridProps", { ...props, s: { ...unwrap(store) } });
 
@@ -71,12 +76,17 @@ const DayGrid = (props: IProps) => {
     const scrollOffsetY = widget?.scrollTop || 0;
     const scrollOffsetX = widget?.scrollLeft || 0;
 
-    posX = columnClick.pos.x + props.colWidth * columnClick.idx;
-    posX = posX - scrollOffsetX < wRect().width / 2 ? posX : posX - MODAL_WIDTH;
+    modalPos.x = columnClick.pos.x + props.colWidth * columnClick.idx;
+    modalPos.x =
+      modalPos.x - scrollOffsetX < wRect().width / 2
+        ? modalPos.x
+        : modalPos.x - MODAL_WIDTH;
 
-    posY = columnClick.pos.y;
-    posY =
-      posY < wRect().height / 2 + scrollOffsetY ? posY : posY - MODAL_HEIGHT;
+    modalPos.y = columnClick.pos.y;
+    modalPos.y =
+      modalPos.y < wRect().height / 2 + scrollOffsetY
+        ? modalPos.y
+        : modalPos.y - MODAL_HEIGHT;
 
     console.log({ columnClick });
     if (columnClick.clickedOnExistingSlot) {
@@ -86,10 +96,9 @@ const DayGrid = (props: IProps) => {
     if (!mergeModalOpen()) setCreateModalOpen(true);
   }
 
-  function handleOverlap() {
-    setCreateModalOpen(false);
-    setMergeModalOpen(true);
-  }
+  // function handleOverlap() {
+
+  // }
 
   function createNewTimeSlot() {
     const newTimeSlot: ITimeSlot = {
@@ -102,7 +111,7 @@ const DayGrid = (props: IProps) => {
     return newTimeSlot;
   }
 
-  function mergeSlots(e) {
+  function mergeSlots() {
     const newSlot = createNewTimeSlot();
     const day = columnClick.day;
     const merged = getMergedTimeslots(newSlot, store[day]);
@@ -135,8 +144,13 @@ const DayGrid = (props: IProps) => {
             theme={props.theme}
             palette={props.palette}
             onColumnClick={handleColumnClick}
-            showOverlapConfirm={handleOverlap}
-            // setTimeSlots={setStore}
+            showOverlapConfirm={(e) => {
+              setCreateModalOpen(false);
+              setMergeModalOpen(true);
+            }}
+            showTimeSlotModal={(e) =>
+              setTimeout(() => setDetailsModalOpen(true), 0)
+            }
             timeSlots={store[col]}
             idx={i()}
           />
@@ -153,24 +167,21 @@ const DayGrid = (props: IProps) => {
         )}
       </For>
 
-      <Show when={createModalOpen() || mergeModalOpen()}>
+      {/* MODALS */}
+      <Show when={createModalOpen() || mergeModalOpen() || detailsModalOpen()}>
         <MarkerOverlay
           onClick={(e) => {
             setCreateModalOpen(false);
             setMergeModalOpen(false);
+            setDetailsModalOpen(false);
           }}
         />
-        <div
+        <ModalContainer
           id="modal"
-          style={{
-            position: "absolute",
-            background: "lightblue",
-            width: MODAL_WIDTH + "px",
-            height: MODAL_HEIGHT + "px",
-            "z-index": 50,
-            top: posY + "px",
-            left: posX + "px",
-          }}
+          width={MODAL_WIDTH}
+          height={MODAL_HEIGHT}
+          top={modalPos.y}
+          left={modalPos.x}
         >
           <Show when={createModalOpen()}>
             <button onclick={(e) => setCreateModalOpen(false)}>
@@ -195,7 +206,7 @@ const DayGrid = (props: IProps) => {
             <h3>Merge</h3>
             <button
               onclick={(e) => {
-                mergeSlots(e);
+                mergeSlots();
                 setMergeModalOpen(false);
               }}
             >
@@ -213,7 +224,36 @@ const DayGrid = (props: IProps) => {
               <FaSolidCheck />
             </button>
           </Show>
-        </div>
+
+          <Show when={detailsModalOpen()}>
+            {() => {
+              const slot = columnClick.clickedSlots[0];
+              console.log({ columnClick, clicked: columnClick.clickedSlots });
+
+              return (
+                <>
+                  <button onclick={(e) => setDetailsModalOpen(false)}>
+                    <FaSolidX />
+                  </button>
+                  <h3>Details</h3>
+                  <p>{slot.day}</p>
+                  <p>{slot.id}</p>
+                  <p>
+                    {readableTime(slot.start)} - {readableTime(slot.end)}
+                  </p>
+
+                  <button
+                    onclick={(e) => {
+                      setDetailsModalOpen(false);
+                    }}
+                  >
+                    <FaSolidCheck />
+                  </button>
+                </>
+              );
+            }}
+          </Show>
+        </ModalContainer>
       </Show>
     </DayGridContainer>
   );

@@ -30,5 +30,6 @@ export interface IColumnClick {
   day: IDayName;
   idx: number;
   clickedOnExistingSlot: boolean;
+  clickedSlots: ITimeSlot[];
   nearbySlots: ITimeSlot[];
 }

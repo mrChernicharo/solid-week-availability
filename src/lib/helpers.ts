@@ -206,7 +206,7 @@ export function mergeTimeslots(timeSlots, overlappingIds) {
 
   // console.log('before merge', overlapping);
 
-  const mergedSlot = overlapping.reduce(
+  const mergedSlot: ITimeSlot = overlapping.reduce(
     (acc, next) => {
       (acc.start = Math.min(acc.start, next.start)),
         (acc.end = Math.max(acc.end, next.end));
@@ -217,14 +217,16 @@ export function mergeTimeslots(timeSlots, overlappingIds) {
       id: overlapping[0].id,
       start: overlapping[0].start,
       end: overlapping[0].end,
+      day: overlapping[0].day,
     }
   );
 
-  const snappedSlot = {
-    id: mergedSlot.id,
-    start: mergedSlot.start,
-    end: mergedSlot.end,
-  };
+  // const snappedSlot: ITimeSlot = {
+  //   id: mergedSlot.id,
+  //   start: mergedSlot.start,
+  //   end: mergedSlot.end,
+  //   day: mergedSlot.day,
+  // };
 
-  return snappedSlot;
+  return mergedSlot;
 }

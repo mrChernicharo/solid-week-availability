@@ -14,7 +14,7 @@ import {
   timeToYPos,
   yPosToTime,
 } from "../../lib/helpers";
-import { IPointerEvent, IPos, ITimeSlot } from "../../lib/types";
+import { IColumnClick, IPointerEvent, IPos, ITimeSlot } from "../../lib/types";
 import { DayColumnContainer } from "./DayColumnStyles";
 import { FaSolidPlus } from "solid-icons/fa";
 import { unwrap } from "solid-js/store";
@@ -87,6 +87,14 @@ const DayColumn = (props) => {
       clickTime,
       props.timeSlots
     );
+
+    if (overlappingSlots.length > 1)
+      console.log(
+        "we have more than one overlapping timeslot",
+        overlappingSlots
+      );
+    // throw new Error("should there be more than 1?");
+
     const slotsNearby = findOverlappingSlots(
       clickTime - HALF_SLOT,
       clickTime + HALF_SLOT,
@@ -96,24 +104,28 @@ const DayColumn = (props) => {
     let clickedOnExistingSlot = false;
     if (overlappingSlots.length) {
       clickedOnExistingSlot = true;
+      props.showTimeSlotModal();
     } else if (slotsNearby.length) {
-      props.showOverlapConfirm();
+      props.showOverlapConfirm(e);
     }
-    console.log({ clickTime, slotsNearby, overlappingSlots });
+    // console.log({ clickTime, slotsNearby, overlappingSlots });
 
     if (clickedPos() !== null) prevClickPos = clickedPos()!;
 
     // columnClick marker
-    clearTimeout(timeout);
-    timeout = setTimeout(() => setClickedPos(null), MARKER_TIME);
-    props.onColumnClick(e, {
+    const colClick: IColumnClick = {
       minutes: clickTime,
-      pos: clickedPos(),
+      pos: clickedPos()!,
       day: props.day,
       idx: props.idx,
+      clickedSlots: unwrap(overlappingSlots),
       clickedOnExistingSlot,
       nearbySlots: [...unwrap(slotsNearby)],
-    });
+    };
+    props.onColumnClick(e, colClick);
+
+    clearTimeout(timeout);
+    timeout = setTimeout(() => setClickedPos(null), MARKER_TIME);
   }
 
   return (
