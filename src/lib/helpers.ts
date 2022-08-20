@@ -105,36 +105,13 @@ export function yPosToTime(
   yPos: number,
   minHour: number,
   maxHour: number,
-  columnTop: number,
   columnHeight: number
 ) {
   const [start, end] = [minHour * 60, maxHour * 60];
 
   const percent = yPos / columnHeight;
 
-  const time = (end - start) * percent + start;
+  const timeClicked = (end - start) * percent + start;
 
-  console.log({
-    time,
-    percent,
-    start,
-    end,
-    yPos,
-    columnHeight,
-  });
-
-  // const el = document.createElement("div");
-  // document.querySelector("[data-cy='day_column_mon'").append(el);
-  // // document.querySelector("body").append(el);
-  // el.style.position = "absolute";
-  // el.style.top = click + scrollPos + "px";
-  // el.style.width = "20px";
-  // el.style.height = "20px";
-  // el.style.zIndex = "200";
-  // el.style.background = "red";
-
-  // const ClickVerticalPercentage = (columnYClick / columnHeight) * 100;
-  // const timeClicked = (ClickVerticalPercentage * 1440) / 100;
-  // return Math.round(timeClicked);
-  // return Math.abs(Math.round(timeClicked));
+  return Math.round(timeClicked);
 }

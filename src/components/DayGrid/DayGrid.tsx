@@ -1,5 +1,6 @@
 import { For } from "solid-js";
 import { getHours, getWeekDays } from "../../lib/helpers";
+import { IColumnClick } from "../../lib/types";
 import DayColumn from "../DayColumn/DayColumn";
 import { DayGridContainer } from "./DayGridStyles";
 
@@ -8,6 +9,10 @@ const DayGrid = (props) => {
 
   console.log("DayGridProps", { ...props });
   // const store = props.cols
+
+  function handleColumnClick(o: IColumnClick) {
+    console.log(o);
+  }
 
   return (
     <DayGridContainer
@@ -29,6 +34,7 @@ const DayGrid = (props) => {
             maxHour={props.maxHour}
             theme={props.theme}
             palette={props.palette}
+            onColumnClick={handleColumnClick}
             idx={i()}
           />
         )}

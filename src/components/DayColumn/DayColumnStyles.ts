@@ -22,4 +22,16 @@ const DayColumnContainer = styled.div<IProps>`
   z-index: 2;
 `;
 
-export { DayColumnContainer };
+const MarkerOverlay = styled.div`
+  position: fixed;
+  width: 10000px;
+  height: 10000px;
+  opacity: 0.1;
+  background: red;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 40;
+`;
+
+export { DayColumnContainer, MarkerOverlay };

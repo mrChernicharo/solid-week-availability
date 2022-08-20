@@ -19,3 +19,13 @@ export type ITimeSlot = {
   color?: string;
 };
 export type IDayName = "Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat";
+
+export interface IPos {
+  x: number;
+  y: number;
+}
+export interface IColumnClick {
+  minutes: number;
+  pos: IPos;
+  day: IDayName;
+}

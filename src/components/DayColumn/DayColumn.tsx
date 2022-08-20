@@ -1,41 +1,41 @@
+import { createSignal, Show } from "solid-js";
+import { MARKER_TIME } from "../../lib/constants";
 import { getElementRect, yPosToTime } from "../../lib/helpers";
-import { IPointerEvent } from "../../lib/types";
-import { DayColumnContainer } from "./DayColumnStyles";
+import { IPointerEvent, IPos } from "../../lib/types";
+import { DayColumnContainer, MarkerOverlay } from "./DayColumnStyles";
+import { FaSolidPlus } from "solid-icons/fa";
+
+const ICON_SIZE = 16;
 
 const DayColumn = (props) => {
   let columnRef: HTMLDivElement;
+  let timeout;
   const rect = () => getElementRect(columnRef);
-  function handleColumnClick(e: IPointerEvent) {
-    // console.log({
-    //   offset: e.offsetY,
-    //   page: e.pageY,
-    //   h: rect().height,
-    //   t: rect().top,
-    // });
 
-    yPosToTime(
+  const [clickedPos, setClickedPos] = createSignal<IPos | null>(null);
+
+  function handleColumnClick(e: IPointerEvent) {
+    const clickTime = yPosToTime(
       e.offsetY, // offsetY gets click pos relative to clicked node
       props.minHour,
       props.maxHour,
-      rect().top,
       rect().height
     );
-    // console.log({
-    //   click: e.clientY,
-    //   currentTarget: e.currentTarget,
-    //   columnRef,
-    //   rect: rect(),
-    //   e,
-    //   props: { ...props },
-    //   time: yPosToTime(
-    //     e.clientY,
-    //     props.minHour,
-    //     props.maxHour,
-    //     rect().top,
-    //     rect().height
-    //   ),
-    // });
+
+    setClickedPos({
+      x: Math.round(e.offsetX - ICON_SIZE / 2 - 1),
+      y: Math.round(e.offsetY - ICON_SIZE / 2 - 2),
+    });
+    clearTimeout(timeout);
+    timeout = setTimeout(() => setClickedPos(null), MARKER_TIME);
+
+    props.onColumnClick({
+      minutes: clickTime,
+      pos: clickedPos(),
+      day: props.day,
+    });
   }
+
   return (
     <DayColumnContainer
       ref={columnRef!}
@@ -46,7 +46,19 @@ const DayColumn = (props) => {
       onPointerDown={handleColumnClick}
       data-cy={`day_column_${props.day}`}
       idx={props.idx}
-    ></DayColumnContainer>
+    >
+      <Show when={clickedPos() !== null}>
+        <FaSolidPlus
+          size={ICON_SIZE}
+          style={{
+            position: "absolute",
+            top: clickedPos()?.y + "px",
+            left: clickedPos()?.x + "px",
+          }}
+        />
+        <MarkerOverlay></MarkerOverlay>
+      </Show>
+    </DayColumnContainer>
   );
 };
 

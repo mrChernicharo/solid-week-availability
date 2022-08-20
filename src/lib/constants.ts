@@ -27,3 +27,5 @@ export const THEME: DefaultTheme = {
 
 export const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 export const SCROLL_BAR = 17;
+
+export const MARKER_TIME = 1800;
