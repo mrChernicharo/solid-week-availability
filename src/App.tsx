@@ -45,7 +45,7 @@ const App: Component = () => {
         // widgetHeight={840}
         headerHeight={50}
         // headerHeight={40}
-        colHeight={400}
+        colHeight={800}
         colMinWidth={160}
         minSnap={30}
         // onChange={(val) => console.log(val)}

@@ -61,7 +61,7 @@ const DayGrid = (props: IProps) => {
   // console.log("DayGridProps", { ...props, s: { ...unwrap(store) } });
 
   function handleColumnClick(e: IPointerEvent, obj: IColumnClick) {
-    console.log(obj);
+    // console.log(obj);
     // @ts-ignore
     columnClick = structuredClone(obj) || { ...obj };
     const wRect = () =>
@@ -78,6 +78,11 @@ const DayGrid = (props: IProps) => {
     posY =
       posY < wRect().height / 2 + scrollOffsetY ? posY : posY - MODAL_HEIGHT;
 
+    console.log({ columnClick });
+    if (columnClick.clickedOnExistingSlot) {
+      console.log("WE HAVE OVERLAPPING TIMESLOTS!");
+      return;
+    }
     if (!mergeModalOpen()) setCreateModalOpen(true);
   }
 
@@ -121,6 +126,7 @@ const DayGrid = (props: IProps) => {
         {(col: IDayName, i) => (
           <DayColumn
             day={col}
+            locale={props.locale}
             height={props.colHeight}
             headerHeight={props.headerHeight}
             width={props.colWidth}

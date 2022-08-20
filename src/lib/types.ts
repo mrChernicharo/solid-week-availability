@@ -29,5 +29,6 @@ export interface IColumnClick {
   pos: IPos;
   day: IDayName;
   idx: number;
-  overlapSlots: ITimeSlot[];
+  clickedOnExistingSlot: boolean;
+  nearbySlots: ITimeSlot[];
 }
