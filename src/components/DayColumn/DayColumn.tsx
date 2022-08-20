@@ -32,7 +32,7 @@ const ICON_SIZE = 16;
 
 const TimeSlot = (props: IProps) => {
   // timeToYPos(props.timeSlot.start);
-  console.log("timeslot", { ...props });
+  // console.log("timeslot", { ...props });
 
   return (
     <div
@@ -43,6 +43,7 @@ const TimeSlot = (props: IProps) => {
         background: "lightgreen",
         top: props.top + "px",
         "pointer-events": "none",
+        opacity: 0.4,
       }}
     >
       {props.timeSlot.start}:{props.timeSlot.end}

@@ -1,7 +1,12 @@
 import { FaSolidCheck, FaSolidX } from "solid-icons/fa";
 import { createEffect, createSignal, For, Show } from "solid-js";
 import { createStore, unwrap } from "solid-js/store";
-import { getElementRect, getHours, getWeekDays } from "../../lib/helpers";
+import {
+  getElementRect,
+  getHours,
+  getMergedTimeslots,
+  getWeekDays,
+} from "../../lib/helpers";
 import {
   IColumnClick,
   IDayName,
@@ -76,12 +81,11 @@ const DayGrid = (props: IProps) => {
   }
 
   function handleOverlap() {
-    console.log("overlap");
     setCreateModalOpen(false);
     setMergeModalOpen(true);
   }
 
-  function addNewTimeSlot(e) {
+  function createNewTimeSlot() {
     const newTimeSlot: ITimeSlot = {
       id: idMaker(),
       start: columnClick.minutes - HALF_SLOT,
@@ -89,7 +93,14 @@ const DayGrid = (props: IProps) => {
       day: columnClick.day,
     };
 
-    setStore(columnClick.day, (slots) => [...slots, newTimeSlot]);
+    return newTimeSlot;
+  }
+
+  function mergeSlots(e) {
+    const newSlot = createNewTimeSlot();
+    const day = columnClick.day;
+    const merged = getMergedTimeslots(newSlot, store[day]);
+    setStore(day, merged);
   }
 
   // createEffect(() => console.log({ ...store.Mon }));
@@ -158,10 +169,11 @@ const DayGrid = (props: IProps) => {
             <button onclick={(e) => setCreateModalOpen(false)}>
               <FaSolidX />
             </button>
-            <h1>Create modal</h1>
+            <h3>Create new</h3>
             <button
               onclick={(e) => {
-                addNewTimeSlot(e);
+                const newSlot = createNewTimeSlot();
+                setStore(columnClick.day, (slots) => [...slots, newSlot]);
                 setCreateModalOpen(false);
               }}
             >
@@ -173,10 +185,21 @@ const DayGrid = (props: IProps) => {
             <button onclick={(e) => setMergeModalOpen(false)}>
               <FaSolidX />
             </button>
-            <h1>Merge modal</h1>
+            <h3>Merge</h3>
             <button
               onclick={(e) => {
-                addNewTimeSlot(e);
+                mergeSlots(e);
+                setMergeModalOpen(false);
+              }}
+            >
+              <FaSolidCheck />
+            </button>
+
+            <h3>Overlap</h3>
+            <button
+              onclick={(e) => {
+                const newSlot = createNewTimeSlot();
+                setStore(columnClick.day, (slots) => [...slots, newSlot]);
                 setMergeModalOpen(false);
               }}
             >

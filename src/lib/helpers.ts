@@ -136,3 +136,62 @@ export function findOverlappingSlots(
 
   return overlappingItems;
 }
+
+export function getMergedTimeslots(newTimeSlot, timeslots) {
+  if (!newTimeSlot) return timeslots;
+
+  const { start, end } = newTimeSlot;
+
+  const overlappingItems = findOverlappingSlots(start, end, timeslots);
+
+  if (overlappingItems?.length > 0) {
+    const overlappingIds = overlappingItems
+      .map((item) => item.id)
+      .concat(newTimeSlot.id);
+
+    const mergedSlot = mergeTimeslots(
+      [...timeslots, newTimeSlot],
+      overlappingIds
+    );
+
+    const filteredSlots = timeslots.filter(
+      (item) => !overlappingIds.includes(item.id)
+    );
+
+    const mergedSlots = [...filteredSlots, mergedSlot];
+
+    return mergedSlots;
+  } else {
+    return [...timeslots, newTimeSlot];
+  }
+}
+
+export function mergeTimeslots(timeSlots, overlappingIds) {
+  const overlapping = timeSlots.filter((item) =>
+    overlappingIds.includes(item.id)
+  );
+
+  // console.log('before merge', overlapping);
+
+  const mergedSlot = overlapping.reduce(
+    (acc, next) => {
+      (acc.start = Math.min(acc.start, next.start)),
+        (acc.end = Math.max(acc.end, next.end));
+
+      return acc;
+    },
+    {
+      id: overlapping[0].id,
+      start: overlapping[0].start,
+      end: overlapping[0].end,
+    }
+  );
+
+  const snappedSlot = {
+    id: mergedSlot.id,
+    start: mergedSlot.start,
+    end: mergedSlot.end,
+  };
+
+  return snappedSlot;
+}
