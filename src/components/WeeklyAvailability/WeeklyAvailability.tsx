@@ -60,6 +60,7 @@ const WeeklyAvailability = (props) => {
             locale={props.locale}
             colWidth={props.colMinWidth}
             colHeight={props.colHeight}
+            headerHeight={props.headerHeight}
             widgetHeight={props.widgetHeight}
             firstDay={props.firstDay}
             theme={theme}

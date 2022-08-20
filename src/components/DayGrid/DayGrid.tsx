@@ -1,13 +1,18 @@
 import { FaSolidCheck, FaSolidX } from "solid-icons/fa";
 import { createEffect, createSignal, For, Show } from "solid-js";
 import { createStore, unwrap } from "solid-js/store";
-import { getHours, getWeekDays } from "../../lib/helpers";
-import { IColumnClick, IDayName, ITimeSlot } from "../../lib/types";
+import { getElementRect, getHours, getWeekDays } from "../../lib/helpers";
+import {
+  IColumnClick,
+  IDayName,
+  IPointerEvent,
+  ITimeSlot,
+} from "../../lib/types";
 import DayColumn from "../DayColumn/DayColumn";
 import { DayGridContainer, MarkerOverlay } from "./DayGridStyles";
 import idMaker from "@melodev/id-maker";
 import { DefaultTheme } from "solid-styled-components";
-import { HALF_SLOT } from "../../lib/constants";
+import { HALF_SLOT, MODAL_HEIGHT, MODAL_WIDTH } from "../../lib/constants";
 
 type IStore = {
   [k in IDayName]: ITimeSlot[];
@@ -21,6 +26,7 @@ interface IProps {
   locale: string;
   colWidth: number;
   colHeight: number;
+  headerHeight: number;
   widgetHeight: number;
   firstDay: string;
   theme: DefaultTheme;
@@ -30,6 +36,11 @@ interface IProps {
 const initialStore = {};
 
 const DayGrid = (props: IProps) => {
+  let gridRef: HTMLDivElement;
+  let modalRef: HTMLDivElement;
+  let posX = 0;
+  let posY = 0;
+
   let columnClick: IColumnClick;
   const HOURS = getHours(props.minHour, props.maxHour, props.locale);
 
@@ -39,21 +50,38 @@ const DayGrid = (props: IProps) => {
 
   const [store, setStore] = createStore(initialStore as IStore);
 
-  const [overlayOpen, setOverlayOpen] = createSignal(false);
+  const [createModalOpen, setCreateModalOpen] = createSignal(false);
+  const [mergeModalOpen, setMergeModalOpen] = createSignal(false);
 
   // console.log("DayGridProps", { ...props, s: { ...unwrap(store) } });
 
-  function handleColumnClick(obj: IColumnClick) {
+  function handleColumnClick(e: IPointerEvent, obj: IColumnClick) {
+    console.log(obj);
     columnClick = structuredClone(obj);
+    const wRect = () =>
+      getElementRect(gridRef.parentElement?.parentElement as HTMLDivElement);
 
-    // has overlap
+    const widget = document.querySelector("#widget_root_element");
+    const scrollOffsetY = widget?.scrollTop || 0;
+    const scrollOffsetX = widget?.scrollLeft || 0;
 
-    setOverlayOpen(true);
+    posX = columnClick.pos.x + props.colWidth * columnClick.idx;
+    posX = posX - scrollOffsetX < wRect().width / 2 ? posX : posX - MODAL_WIDTH;
+
+    posY = columnClick.pos.y;
+    posY =
+      posY < wRect().height / 2 + scrollOffsetY ? posY : posY - MODAL_HEIGHT;
+
+    if (!mergeModalOpen()) setCreateModalOpen(true);
+  }
+
+  function handleOverlap() {
+    console.log("overlap");
+    setCreateModalOpen(false);
+    setMergeModalOpen(true);
   }
 
   function addNewTimeSlot(e) {
-    console.log("addNewTimeSlot", columnClick, store[columnClick?.day]);
-    setOverlayOpen(false);
     const newTimeSlot: ITimeSlot = {
       id: idMaker(),
       start: columnClick.minutes - HALF_SLOT,
@@ -61,13 +89,14 @@ const DayGrid = (props: IProps) => {
       day: columnClick.day,
     };
 
-    setStore(columnClick.day, (s) => [...s, newTimeSlot]);
+    setStore(columnClick.day, (slots) => [...slots, newTimeSlot]);
   }
 
-  createEffect(() => console.log({ ...store.Mon }));
+  // createEffect(() => console.log({ ...store.Mon }));
 
   return (
     <DayGridContainer
+      ref={gridRef!}
       cols={props.localizedCols}
       colHeight={props.colHeight}
       colWidth={props.colWidth}
@@ -81,12 +110,14 @@ const DayGrid = (props: IProps) => {
           <DayColumn
             day={col}
             height={props.colHeight}
+            headerHeight={props.headerHeight}
             width={props.colWidth}
             minHour={props.minHour}
             maxHour={props.maxHour}
             theme={props.theme}
             palette={props.palette}
             onColumnClick={handleColumnClick}
+            showOverlapConfirm={handleOverlap}
             // setTimeSlots={setStore}
             timeSlots={store[col]}
             idx={i()}
@@ -104,26 +135,54 @@ const DayGrid = (props: IProps) => {
         )}
       </For>
 
-      <Show when={overlayOpen()}>
-        <MarkerOverlay onClick={(e) => setOverlayOpen(false)} />
+      <Show when={createModalOpen() || mergeModalOpen()}>
+        <MarkerOverlay
+          onClick={(e) => {
+            setCreateModalOpen(false);
+            setMergeModalOpen(false);
+          }}
+        />
         <div
+          id="modal"
           style={{
             position: "absolute",
             background: "lightblue",
+            width: MODAL_WIDTH + "px",
+            height: MODAL_HEIGHT + "px",
             "z-index": 50,
-            /* @ts-ignore */
-            top: columnClick.pos.y + "px",
-            /* @ts-ignore */
-            left: columnClick.pos.x + props.colWidth * columnClick.idx + "px",
+            top: posY + "px",
+            left: posX + "px",
           }}
         >
-          <button onclick={(e) => setOverlayOpen(false)}>
-            <FaSolidX />
-          </button>
-          <h1>Modal</h1>
-          <button onclick={(e) => addNewTimeSlot(e)}>
-            <FaSolidCheck />
-          </button>
+          <Show when={createModalOpen()}>
+            <button onclick={(e) => setCreateModalOpen(false)}>
+              <FaSolidX />
+            </button>
+            <h1>Create modal</h1>
+            <button
+              onclick={(e) => {
+                addNewTimeSlot(e);
+                setCreateModalOpen(false);
+              }}
+            >
+              <FaSolidCheck />
+            </button>
+          </Show>
+
+          <Show when={mergeModalOpen()}>
+            <button onclick={(e) => setMergeModalOpen(false)}>
+              <FaSolidX />
+            </button>
+            <h1>Merge modal</h1>
+            <button
+              onclick={(e) => {
+                addNewTimeSlot(e);
+                setMergeModalOpen(false);
+              }}
+            >
+              <FaSolidCheck />
+            </button>
+          </Show>
         </div>
       </Show>
     </DayGridContainer>

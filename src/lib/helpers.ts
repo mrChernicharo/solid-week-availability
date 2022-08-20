@@ -93,18 +93,17 @@ export function getCSSVariable(key: string) {
 }
 
 export function timeToYPos(
-  time: number,
+  minutes: number,
   minHour: number,
   maxHour: number,
   columnHeight: number
 ) {
   const [start, end] = [minHour * 60, maxHour * 60];
 
-  const percent = time / (start + end);
+  const percent = (minutes - start) / (end - start);
+  const res = columnHeight * percent;
 
-  console.log({ time, percent, start, end, columnHeight });
-
-  return columnHeight * percent - HALF_SLOT / 2;
+  return res;
 }
 
 export function yPosToTime(

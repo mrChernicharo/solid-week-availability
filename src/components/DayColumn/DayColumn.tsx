@@ -1,5 +1,12 @@
-import { createEffect, createSignal, For, Show } from "solid-js";
-import { MARKER_TIME } from "../../lib/constants";
+import {
+  createEffect,
+  createSignal,
+  For,
+  ParentProps,
+  PropsWithChildren,
+  Show,
+} from "solid-js";
+import { HALF_SLOT, MARKER_TIME } from "../../lib/constants";
 import {
   findOverlappingSlots,
   getElementRect,
@@ -9,8 +16,10 @@ import {
 import { IPointerEvent, IPos, ITimeSlot } from "../../lib/types";
 import { DayColumnContainer } from "./DayColumnStyles";
 import { FaSolidPlus } from "solid-icons/fa";
+import { unwrap } from "solid-js/store";
 
-interface IProps {
+interface IProps extends ParentProps {
+  id: string;
   timeSlot: ITimeSlot;
   top: number;
   bottom: number;
@@ -23,6 +32,8 @@ const ICON_SIZE = 16;
 
 const TimeSlot = (props: IProps) => {
   // timeToYPos(props.timeSlot.start);
+  console.log("timeslot", { ...props });
+
   return (
     <div
       style={{
@@ -31,8 +42,11 @@ const TimeSlot = (props: IProps) => {
         height: props.bottom - props.top + "px",
         background: "lightgreen",
         top: props.top + "px",
+        "pointer-events": "none",
       }}
-    ></div>
+    >
+      {props.timeSlot.start}:{props.timeSlot.end}
+    </div>
   );
 };
 
@@ -60,16 +74,28 @@ const DayColumn = (props) => {
       rect().height
     );
 
-    findOverlappingSlots;
+    const overlapping = findOverlappingSlots(
+      clickTime - HALF_SLOT,
+      clickTime + HALF_SLOT,
+      props.timeSlots
+    );
+    console.log({ clickTime, overlapping });
+
+    if (overlapping.length) {
+      console.log("WE HAVE OVERLAPPING TIMESLOTS!");
+      props.showOverlapConfirm();
+    }
 
     // columnClick marker
     clearTimeout(timeout);
     timeout = setTimeout(() => setClickedPos(null), MARKER_TIME);
-    props.onColumnClick({
+
+    props.onColumnClick(e, {
       minutes: clickTime,
       pos: clickedPos(),
       day: props.day,
       idx: props.idx,
+      overlapSlots: [...unwrap(overlapping)],
     });
   }
 
@@ -120,7 +146,14 @@ const DayColumn = (props) => {
             props.height
           );
 
-          return <TimeSlot top={topPos} bottom={bottomPos} timeSlot={slot} />;
+          return (
+            <TimeSlot
+              id={`timeSlot_${slot.id}`}
+              top={topPos}
+              bottom={bottomPos}
+              timeSlot={slot}
+            ></TimeSlot>
+          );
         }}
       </For>
     </DayColumnContainer>
