@@ -12,12 +12,12 @@ interface IProps {
 const color = (props: IProps, color: string) =>
   props.theme[props.palette][color];
 
-// border: 1px solid ${(props) => color(props, "primary")};
 const DayGridContainer = styled.div<IProps>`
   position: relative;
   width: ${(props) => props.colWidth * props.cols.length + "px"};
   height: ${(props) => props.colHeight + "px"};
   display: inline-block;
+  border-bottom: 1px solid ${(props) => color(props, "primary")};
 
   .grid-line {
     position: absolute;

@@ -60,7 +60,7 @@ export const getHours = (minHour: number, maxHour: number, locale = "en") => {
   const hours: string[] = [];
   let curr = minHour;
 
-  while (curr <= maxHour) {
+  while (curr < maxHour) {
     let hour = "";
     if (locale === "en") {
       if (curr === 0) hour = "12 AM";
@@ -90,4 +90,51 @@ export function getCSSVariable(key: string) {
   return getComputedStyle(document.documentElement)
     .getPropertyValue(key)
     .trim();
+}
+
+// export function timeToYPos(startTime: number, columnHeight: number) {
+//   // console.log({ startTime, columnHeight });
+//   const pxPerMinute = columnHeight / 1440;
+//   const yPos = startTime * pxPerMinute;
+
+//   // console.log('timeToYPos', { startTime, columnHeight, yPos });
+//   return yPos;
+// }
+
+export function yPosToTime(
+  yPos: number,
+  minHour: number,
+  maxHour: number,
+  columnTop: number,
+  columnHeight: number
+) {
+  const [start, end] = [minHour * 60, maxHour * 60];
+
+  const percent = yPos / columnHeight;
+
+  const time = (end - start) * percent + start;
+
+  console.log({
+    time,
+    percent,
+    start,
+    end,
+    yPos,
+    columnHeight,
+  });
+
+  // const el = document.createElement("div");
+  // document.querySelector("[data-cy='day_column_mon'").append(el);
+  // // document.querySelector("body").append(el);
+  // el.style.position = "absolute";
+  // el.style.top = click + scrollPos + "px";
+  // el.style.width = "20px";
+  // el.style.height = "20px";
+  // el.style.zIndex = "200";
+  // el.style.background = "red";
+
+  // const ClickVerticalPercentage = (columnYClick / columnHeight) * 100;
+  // const timeClicked = (ClickVerticalPercentage * 1440) / 100;
+  // return Math.round(timeClicked);
+  // return Math.abs(Math.round(timeClicked));
 }

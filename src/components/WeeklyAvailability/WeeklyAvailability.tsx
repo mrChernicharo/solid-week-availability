@@ -19,13 +19,13 @@ const WeeklyAvailability = (props) => {
   return (
     <Show when={props.open}>
       <Container
+        id="widget_root_element"
         theme={theme}
         palette={props.palette}
         cols={cols()}
         colWidth={props.colMinWidth}
         height={props.headerHeight + props.colHeight}
         widgetHeight={props.widgetHeight}
-        data-cy="widget_root"
       >
         <TopBar
           cols={cols()}
@@ -60,6 +60,7 @@ const WeeklyAvailability = (props) => {
             locale={props.locale}
             colWidth={props.colMinWidth}
             colHeight={props.colHeight}
+            widgetHeight={props.widgetHeight}
             firstDay={props.firstDay}
             theme={theme}
             palette={props.palette}

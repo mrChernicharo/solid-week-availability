@@ -1,3 +1,8 @@
+export type IPointerEvent = PointerEvent & {
+  currentTarget: HTMLDivElement;
+  target: Element;
+};
+
 export type IPalette = "light" | "dark";
 
 export type IDayColumn = {

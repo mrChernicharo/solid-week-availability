@@ -25,6 +25,8 @@ const DayGrid = (props) => {
             day={col}
             height={props.colHeight}
             width={props.colWidth}
+            minHour={props.minHour}
+            maxHour={props.maxHour}
             theme={props.theme}
             palette={props.palette}
           />
