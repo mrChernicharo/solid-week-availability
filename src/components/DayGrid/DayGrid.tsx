@@ -62,7 +62,8 @@ const DayGrid = (props: IProps) => {
 
   function handleColumnClick(e: IPointerEvent, obj: IColumnClick) {
     console.log(obj);
-    columnClick = structuredClone(obj);
+    // @ts-ignore
+    columnClick = structuredClone(obj) || { ...obj };
     const wRect = () =>
       getElementRect(gridRef.parentElement?.parentElement as HTMLDivElement);
 

@@ -35,10 +35,11 @@ const App: Component = () => {
         palette={palette()} // light | dark
         open={isOpen()}
         minHour={7}
-        maxHour={12}
+        // maxHour={12}
         // minHour={12}
         // maxHour={9}
         // maxHour={2}
+        maxHour={24}
         // maxHour={24}
         widgetHeight={520}
         // widgetHeight={840}

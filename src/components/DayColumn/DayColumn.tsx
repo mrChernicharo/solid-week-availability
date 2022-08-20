@@ -80,15 +80,25 @@ const DayColumn = (props) => {
       rect().height
     );
 
-    const overlapping = findOverlappingSlots(
+    const overlappingWithClick = findOverlappingSlots(
+      clickTime,
+      clickTime,
+      props.timeSlots
+    );
+
+    if (overlappingWithClick.length) {
+      console.log("WE CLICKED AN EXISTING TIMESLOT!");
+    }
+
+    const overlappingWithNew = findOverlappingSlots(
       clickTime - HALF_SLOT,
       clickTime + HALF_SLOT,
       props.timeSlots
     );
-    console.log({ clickTime, overlapping });
+    console.log({ clickTime, overlappingWithNew });
 
-    if (overlapping.length) {
-      console.log("WE HAVE OVERLAPPING TIMESLOTS!");
+    if (overlappingWithNew.length) {
+      // console.log("WE HAVE OVERLAPPING TIMESLOTS!");
       props.showOverlapConfirm();
     }
 
@@ -101,7 +111,7 @@ const DayColumn = (props) => {
       pos: clickedPos(),
       day: props.day,
       idx: props.idx,
-      overlapSlots: [...unwrap(overlapping)],
+      overlapSlots: [...unwrap(overlappingWithNew)],
     });
   }
 
@@ -121,10 +131,8 @@ const DayColumn = (props) => {
           style={{
             position: "absolute",
             "z-index": 50,
-            top:
-              Math.round((clickedPos()?.y || 0) - (ICON_SIZE / 2 - 2)) + "px",
-            left:
-              Math.round((clickedPos()?.x || 0) - (ICON_SIZE / 2 - 1)) + "px",
+            top: Math.round((clickedPos()?.y || 0) - ICON_SIZE / 2) + "px",
+            left: Math.round((clickedPos()?.x || 0) - ICON_SIZE / 2) + "px",
           }}
         >
           <div
