@@ -27,25 +27,24 @@ const App: Component = () => {
       </div>
 
       <WeeklyAvailability
-        locale="ru"
-        // locale="en"
+        locale="pt-BR"
         // locale="pt-BR"
         dayCols={["mon", "tue", "wed", "thu", "fri", "sat", "sun"]}
         // dayCols={["Mon", "Tue", "Wed", "Thu", "Fri"]} // omit days if you want, order doesn't matter, repeated items don't matter
         firstDay="Mon" // first dayColumn
         palette={palette()} // light | dark
         open={isOpen()}
-        minHour={0}
-        // maxHour={21}
+        minHour={7}
+        maxHour={12}
         // minHour={12}
         // maxHour={9}
-        maxHour={2}
+        // maxHour={2}
         // maxHour={24}
         widgetHeight={520}
         // widgetHeight={840}
         headerHeight={50}
         // headerHeight={40}
-        colHeight={800}
+        colHeight={400}
         colMinWidth={160}
         minSnap={30}
         // onChange={(val) => console.log(val)}

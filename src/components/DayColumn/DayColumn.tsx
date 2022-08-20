@@ -10,6 +10,7 @@ import { HALF_SLOT, MARKER_TIME } from "../../lib/constants";
 import {
   findOverlappingSlots,
   getElementRect,
+  readableTime,
   timeToYPos,
   yPosToTime,
 } from "../../lib/helpers";
@@ -33,6 +34,7 @@ const ICON_SIZE = 16;
 const TimeSlot = (props: IProps) => {
   // timeToYPos(props.timeSlot.start);
   // console.log("timeslot", { ...props });
+  readableTime(props.timeSlot.start);
 
   return (
     <div
@@ -46,7 +48,10 @@ const TimeSlot = (props: IProps) => {
         opacity: 0.4,
       }}
     >
-      {props.timeSlot.start}:{props.timeSlot.end}
+      <span style={{ "font-size": "small" }}>
+        {readableTime(props.timeSlot.start)} -{" "}
+        {readableTime(props.timeSlot.end)}
+      </span>
     </div>
   );
 };

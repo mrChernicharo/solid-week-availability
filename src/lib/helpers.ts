@@ -92,6 +92,8 @@ export function getCSSVariable(key: string) {
     .trim();
 }
 
+//////////*************************************************//////////
+
 export function timeToYPos(
   minutes: number,
   minHour: number,
@@ -120,6 +122,37 @@ export function yPosToTime(
 
   return Math.round(timeClicked);
 }
+
+export function readableTime(minutes: number, locale = "en") {
+  const [hours, mins] = [Math.floor(minutes / 60), minutes % 60];
+
+  let h = hours < 10 ? `0${hours}` : hours;
+  let m = mins < 10 ? `0${mins}` : mins;
+
+  let res = "";
+  if (locale === "en") {
+    if (hours === 0) {
+      res = `12:${m} AM`;
+    }
+    if (hours === 12) {
+      res = `12:${m} PM`;
+    }
+    if (hours !== 0 && hours !== 12) {
+      if (hours > 11) {
+        res = `${+h - 12}:${m} PM`;
+      } else {
+        res = `${+h}:${m} AM`;
+      }
+    }
+  } else {
+    res = `${h}:${m}`;
+  }
+
+  console.log({ hours, mins, minutes, res });
+  return res;
+}
+
+//////////*************************************************//////////
 
 export function findOverlappingSlots(
   start: number,
