@@ -1,3 +1,5 @@
+import { update } from "cypress/types/lodash";
+import { FaSolidCheck, FaSolidX } from "solid-icons/fa";
 import { createSignal, For, Show } from "solid-js";
 import { getHours, getWeekDays } from "../../lib/helpers";
 import { IColumnClick } from "../../lib/types";
@@ -5,6 +7,7 @@ import DayColumn from "../DayColumn/DayColumn";
 import { DayGridContainer, MarkerOverlay } from "./DayGridStyles";
 
 const DayGrid = (props) => {
+  let columnClick;
   const HOURS = getHours(props.minHour, props.maxHour, props.locale);
 
   const [overlayOpen, setOverlayOpen] = createSignal(false);
@@ -14,8 +17,13 @@ const DayGrid = (props) => {
 
   function handleColumnClick(o: IColumnClick) {
     console.log(o);
+    columnClick = structuredClone(o);
 
     setOverlayOpen(true);
+  }
+
+  function addNewTimeSlot(e) {
+    console.log("addNewTimeSlot", columnClick);
   }
 
   return (
@@ -56,6 +64,23 @@ const DayGrid = (props) => {
 
       <Show when={overlayOpen()}>
         <MarkerOverlay onClick={(e) => setOverlayOpen(false)} />
+        <div
+          style={{
+            position: "absolute",
+            background: "green",
+            "z-index": 50,
+            top: columnClick.pos.y + "px",
+            left: columnClick.pos.x + props.colWidth * columnClick.idx + "px",
+          }}
+        >
+          <button onclick={(e) => setOverlayOpen(false)}>
+            <FaSolidX />
+          </button>
+          <h1>Modal</h1>
+          <button onclick={(e) => addNewTimeSlot(e)}>
+            <FaSolidCheck />
+          </button>
+        </div>
       </Show>
     </DayGridContainer>
   );

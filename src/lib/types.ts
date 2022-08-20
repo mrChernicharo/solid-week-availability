@@ -28,4 +28,5 @@ export interface IColumnClick {
   minutes: number;
   pos: IPos;
   day: IDayName;
+  idx: number;
 }

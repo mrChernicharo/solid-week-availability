@@ -29,13 +29,13 @@ const DayGridContainer = styled.div<IProps>`
 `;
 
 const MarkerOverlay = styled.div`
-  position: absolute;
-  width: 100000px;
-  height: 100000px;
+  position: fixed;
+  width: 10000px;
+  height: 10000px;
   opacity: 0.1;
   background: red;
-  top: -10000px;
-  left: -10000px;
+  top: 0;
+  left: 0;
   z-index: 30;
 `;
 
