@@ -27,4 +27,16 @@ const DayGridContainer = styled.div<IProps>`
     z-index: 0;
   }
 `;
-export { DayGridContainer };
+
+const MarkerOverlay = styled.div`
+  position: absolute;
+  width: 100000px;
+  height: 100000px;
+  opacity: 0.1;
+  background: red;
+  top: -10000px;
+  left: -10000px;
+  z-index: 30;
+`;
+
+export { DayGridContainer, MarkerOverlay };

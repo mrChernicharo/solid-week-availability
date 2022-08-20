@@ -31,8 +31,8 @@ const App: Component = () => {
         locale="en"
         // locale="pt-BR"
         // dayCols={["mon", "tue", "wed", "thu", "fri", "sat", "sun"]}
-        dayCols={["mon", "tue", "wed", "thu", "fri"]} // omit days if you want, order doesn't matter, repeated items don't matter
-        firstDay="mon" // first dayColumn
+        dayCols={["Mon", "Tue", "Wed", "Thu", "Fri"]} // omit days if you want, order doesn't matter, repeated items don't matter
+        firstDay="Mon" // first dayColumn
         palette={palette()} // light | dark
         open={isOpen()}
         // minHour={7}

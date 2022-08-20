@@ -1,17 +1,21 @@
-import { For } from "solid-js";
+import { createSignal, For, Show } from "solid-js";
 import { getHours, getWeekDays } from "../../lib/helpers";
 import { IColumnClick } from "../../lib/types";
 import DayColumn from "../DayColumn/DayColumn";
-import { DayGridContainer } from "./DayGridStyles";
+import { DayGridContainer, MarkerOverlay } from "./DayGridStyles";
 
 const DayGrid = (props) => {
   const HOURS = getHours(props.minHour, props.maxHour, props.locale);
+
+  const [overlayOpen, setOverlayOpen] = createSignal(false);
 
   console.log("DayGridProps", { ...props });
   // const store = props.cols
 
   function handleColumnClick(o: IColumnClick) {
     console.log(o);
+
+    setOverlayOpen(true);
   }
 
   return (
@@ -49,6 +53,10 @@ const DayGrid = (props) => {
           ></div>
         )}
       </For>
+
+      <Show when={overlayOpen()}>
+        <MarkerOverlay onClick={(e) => setOverlayOpen(false)} />
+      </Show>
     </DayGridContainer>
   );
 };
