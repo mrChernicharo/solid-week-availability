@@ -60,6 +60,7 @@ const TimeSlot = (props: IProps) => {
 const DayColumn = (props) => {
   let columnRef: HTMLDivElement;
   let timeout;
+  let prevClickPos: IPos;
   const rect = () => getElementRect(columnRef);
 
   const [clickedPos, setClickedPos] = createSignal<IPos | null>(null);
@@ -100,10 +101,11 @@ const DayColumn = (props) => {
     }
     console.log({ clickTime, slotsNearby, overlappingSlots });
 
+    if (clickedPos() !== null) prevClickPos = clickedPos()!;
+
     // columnClick marker
     clearTimeout(timeout);
     timeout = setTimeout(() => setClickedPos(null), MARKER_TIME);
-
     props.onColumnClick(e, {
       minutes: clickTime,
       pos: clickedPos(),
@@ -134,15 +136,10 @@ const DayColumn = (props) => {
               Math.round((clickedPos()?.y || 0) - (ICON_SIZE / 2 - 2)) + "px",
             left:
               Math.round((clickedPos()?.x || 0) - (ICON_SIZE / 2 - 1)) + "px",
+            "pointer-events": "none",
           }}
         >
-          <div
-            style={{
-              "pointer-events": "none",
-            }}
-          >
-            <FaSolidPlus size={ICON_SIZE} />
-          </div>
+          <FaSolidPlus size={ICON_SIZE} />
         </div>
       </Show>
 
