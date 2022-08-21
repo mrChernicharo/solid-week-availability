@@ -15,7 +15,7 @@ import {
   yPosToTime,
 } from "../../lib/helpers";
 import { IColumnClick, IPointerEvent, IPos, ITimeSlot } from "../../lib/types";
-import { DayColumnContainer } from "./DayColumnStyles";
+import { DayColumnContainer, Marker } from "./DayColumnStyles";
 import { FaSolidPlus } from "solid-icons/fa";
 import { unwrap } from "solid-js/store";
 
@@ -140,7 +140,19 @@ const DayColumn = (props) => {
       idx={props.idx}
     >
       <Show when={clickedPos() !== null}>
-        <div
+        {() => {
+          const [x, y] = [
+            Math.round((clickedPos()?.x || 0) - (ICON_SIZE / 2 - 2)),
+            Math.round((clickedPos()?.y || 0) - (ICON_SIZE / 2 - 1)),
+          ];
+
+          return (
+            <Marker x={x} y={y} iconSize={ICON_SIZE}>
+              <FaSolidPlus size={ICON_SIZE} />
+            </Marker>
+          );
+        }}
+        {/* <div
           style={{
             position: "absolute",
             "z-index": 50,
@@ -152,7 +164,7 @@ const DayColumn = (props) => {
           }}
         >
           <FaSolidPlus size={ICON_SIZE} />
-        </div>
+        </div> */}
       </Show>
 
       <For each={props.timeSlots}>

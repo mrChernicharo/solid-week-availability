@@ -30,5 +30,5 @@ export const SCROLL_BAR = 17;
 
 export const MARKER_TIME = 1800;
 export const HALF_SLOT = 15;
-export const MODAL_WIDTH = 100;
-export const MODAL_HEIGHT = 150;
+export const MODAL_WIDTH = 120;
+export const MODAL_HEIGHT = 100;

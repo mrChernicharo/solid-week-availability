@@ -38,12 +38,25 @@ const DayGridContainer = styled.div<IProps>`
 
 const ModalContainer = styled.div<IModalProps>`
   position: absolute;
-  background: lightblue;
   width: ${(props) => props.width + "px"};
   height: ${(props) => props.height + "px"};
   z-index: 50;
   top: ${(props) => props.top + "px"};
   left: ${(props) => props.left + "px"};
+
+  > div {
+    background: #ccc;
+    height: ${(props) => props.height + "px"};
+
+    h3 {
+      margin: 0;
+      font-size: small;
+    }
+    p {
+      margin: 0;
+      font-size: 12px;
+    }
+  }
 `;
 
 const MarkerOverlay = styled.div`
@@ -51,7 +64,7 @@ const MarkerOverlay = styled.div`
   width: 10000px;
   height: 10000px;
   opacity: 0.1;
-  background: red;
+  background: lightblue;
   top: 0;
   left: 0;
   z-index: 30;

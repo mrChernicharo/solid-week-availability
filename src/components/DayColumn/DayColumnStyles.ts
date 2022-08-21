@@ -8,6 +8,12 @@ interface IProps {
   idx: number;
 }
 
+interface IMarkerProps {
+  x: number;
+  y: number;
+  iconSize: number;
+}
+
 const color = (props: IProps, color: string) =>
   props.theme[props.palette][color];
 
@@ -22,4 +28,12 @@ const DayColumnContainer = styled.div<IProps>`
   z-index: 2;
 `;
 
-export { DayColumnContainer };
+const Marker = styled.div<IMarkerProps>`
+  position: absolute;
+  z-index: 50;
+  top: ${(props) => props.y + "px"};
+  left: ${(props) => props.x + "px"};
+  pointer-events: none;
+`;
+
+export { DayColumnContainer, Marker };

@@ -6,6 +6,7 @@ import {
   getHours,
   getMergedTimeslots,
   getWeekDays,
+  localizeWeekday,
   readableTime,
 } from "../../lib/helpers";
 import {
@@ -183,76 +184,82 @@ const DayGrid = (props: IProps) => {
           top={modalPos.y}
           left={modalPos.x}
         >
-          <Show when={createModalOpen()}>
-            <button onclick={(e) => setCreateModalOpen(false)}>
-              <FaSolidX />
-            </button>
-            <h3>Create new</h3>
-            <button
-              onclick={(e) => {
-                const newSlot = createNewTimeSlot();
-                setStore(columnClick.day, (slots) => [...slots, newSlot]);
-                setCreateModalOpen(false);
+          <div>
+            <Show when={createModalOpen()}>
+              <button onclick={(e) => setCreateModalOpen(false)}>
+                <FaSolidX />
+              </button>
+              <h3>Create new</h3>
+              <button
+                onclick={(e) => {
+                  const newSlot = createNewTimeSlot();
+                  setStore(columnClick.day, (slots) => [...slots, newSlot]);
+                  setCreateModalOpen(false);
+                }}
+              >
+                <FaSolidCheck />
+              </button>
+            </Show>
+            <Show when={mergeModalOpen()}>
+              <button onclick={(e) => setMergeModalOpen(false)}>
+                <FaSolidX />
+              </button>
+              <h3>Merge</h3>
+              <button
+                onclick={(e) => {
+                  mergeSlots();
+                  setMergeModalOpen(false);
+                }}
+              >
+                <FaSolidCheck />
+              </button>
+
+              <h3>Overlap</h3>
+              <button
+                onclick={(e) => {
+                  const newSlot = createNewTimeSlot();
+                  setStore(columnClick.day, (slots) => [...slots, newSlot]);
+                  setMergeModalOpen(false);
+                }}
+              >
+                <FaSolidCheck />
+              </button>
+            </Show>
+            <Show when={detailsModalOpen()}>
+              {() => {
+                const slot = columnClick.clickedSlots[0];
+                console.log({ columnClick, clicked: columnClick.clickedSlots });
+
+                return (
+                  <>
+                    <button onclick={(e) => setDetailsModalOpen(false)}>
+                      <FaSolidX />
+                    </button>
+                    <h3>Details</h3>
+                    <p>
+                      {localizeWeekday(
+                        slot.day as IDayName,
+                        props.locale,
+                        "long"
+                      )}
+                    </p>
+                    <p>
+                      {readableTime(slot.start, props.locale)} -{" "}
+                      {readableTime(slot.end, props.locale)}
+                    </p>
+
+                    <button
+                      onclick={(e) => {
+                        setDetailsModalOpen(false);
+                      }}
+                    >
+                      <FaSolidCheck />
+                    </button>
+                  </>
+                );
               }}
-            >
-              <FaSolidCheck />
-            </button>
-          </Show>
-
-          <Show when={mergeModalOpen()}>
-            <button onclick={(e) => setMergeModalOpen(false)}>
-              <FaSolidX />
-            </button>
-            <h3>Merge</h3>
-            <button
-              onclick={(e) => {
-                mergeSlots();
-                setMergeModalOpen(false);
-              }}
-            >
-              <FaSolidCheck />
-            </button>
-
-            <h3>Overlap</h3>
-            <button
-              onclick={(e) => {
-                const newSlot = createNewTimeSlot();
-                setStore(columnClick.day, (slots) => [...slots, newSlot]);
-                setMergeModalOpen(false);
-              }}
-            >
-              <FaSolidCheck />
-            </button>
-          </Show>
-
-          <Show when={detailsModalOpen()}>
-            {() => {
-              const slot = columnClick.clickedSlots[0];
-              console.log({ columnClick, clicked: columnClick.clickedSlots });
-
-              return (
-                <>
-                  <button onclick={(e) => setDetailsModalOpen(false)}>
-                    <FaSolidX />
-                  </button>
-                  <h3>Details</h3>
-                  <p>{slot.day}</p>
-                  <p>{slot.id}</p>
-                  <p>
-                    {readableTime(slot.start)} - {readableTime(slot.end)}
-                  </p>
-
-                  <button
-                    onclick={(e) => {
-                      setDetailsModalOpen(false);
-                    }}
-                  >
-                    <FaSolidCheck />
-                  </button>
-                </>
-              );
-            }}
-          </Show>
+            </Show>
+          </div>
         </ModalContainer>
       </Show>
     </DayGridContainer>
