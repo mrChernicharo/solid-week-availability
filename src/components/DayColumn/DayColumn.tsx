@@ -139,51 +139,37 @@ const DayColumn = (props) => {
       <Show when={clickedPos() !== null}>
         {() => {
           const [x, y] = [
-            Math.round((clickedPos()?.x || 0) - (ICON_SIZE / 2 - 2)),
-            Math.round((clickedPos()?.y || 0) - (ICON_SIZE / 2 - 1)),
+            () => Math.round((clickedPos()?.x || 0) - (ICON_SIZE / 2 - 2)),
+            () => Math.round((clickedPos()?.y || 0) - (ICON_SIZE / 2 - 1)),
           ];
 
           return (
-            <Marker x={x} y={y} iconSize={ICON_SIZE}>
+            <Marker x={x()} y={y()} iconSize={ICON_SIZE}>
               <FaSolidPlus size={ICON_SIZE} />
             </Marker>
           );
         }}
-        {/* <div
-          style={{
-            position: "absolute",
-            "z-index": 50,
-            top:
-              Math.round((clickedPos()?.y || 0) - (ICON_SIZE / 2 - 2)) + "px",
-            left:
-              Math.round((clickedPos()?.x || 0) - (ICON_SIZE / 2 - 1)) + "px",
-            "pointer-events": "none",
-          }}
-        >
-          <FaSolidPlus size={ICON_SIZE} />
-        </div> */}
       </Show>
 
       <For each={props.timeSlots}>
         {(slot: ITimeSlot) => {
-          const topPos = timeToYPos(
-            slot.start,
-            props.minHour,
-            props.maxHour,
-            props.height
-          );
-          const bottomPos = timeToYPos(
-            slot.end,
-            props.minHour,
-            props.maxHour,
-            props.height
-          );
+          // const topPos = () =>
 
           return (
             <TimeSlot
               id={`timeSlot_${slot.id}`}
-              top={topPos}
-              bottom={bottomPos}
+              top={timeToYPos(
+                slot.start,
+                props.minHour,
+                props.maxHour,
+                props.height
+              )}
+              bottom={timeToYPos(
+                slot.end,
+                props.minHour,
+                props.maxHour,
+                props.height
+              )}
               timeSlot={slot}
               locale={props.locale}
             ></TimeSlot>

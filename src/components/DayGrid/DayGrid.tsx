@@ -52,7 +52,7 @@ const DayGrid = (props: IProps) => {
   let modalPos: IPos = { x: 0, y: 0 };
 
   let columnClick: IColumnClick;
-  const HOURS = getHours(props.minHour, props.maxHour, props.locale);
+  const HOURS = () => getHours(props.minHour, props.maxHour, props.locale);
 
   props.cols.forEach((col: IDayName) => {
     initialStore[col] = [];
@@ -129,7 +129,7 @@ const DayGrid = (props: IProps) => {
       colWidth={props.colWidth}
       theme={props.theme}
       palette={props.palette}
-      itemCount={HOURS.length}
+      itemCount={HOURS().length}
       data-cy="day_grid"
     >
       <For each={props.cols}>
@@ -158,11 +158,11 @@ const DayGrid = (props: IProps) => {
         )}
       </For>
 
-      <For each={HOURS}>
+      <For each={HOURS()}>
         {(hour: string, i) => (
           <div
             class="grid-line"
-            style={{ top: (props.colHeight / HOURS.length) * i() + "px" }}
+            style={{ top: (props.colHeight / HOURS().length) * i() + "px" }}
             data-cy={`grid_line_${hour}`}
           />
         )}
