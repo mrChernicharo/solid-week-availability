@@ -50,7 +50,7 @@ const TimeSlot = (props: IProps) => {
       }}
     >
       <span style={{ "font-size": "small" }}>
-        {readableTime(props.timeSlot.start, props.locale)} -{" "}
+        {readableTime(props.timeSlot.start, props.locale)} -
         {readableTime(props.timeSlot.end, props.locale)}
       </span>
     </div>
@@ -108,9 +108,6 @@ const DayColumn = (props) => {
     } else if (slotsNearby.length) {
       props.showOverlapConfirm(e);
     }
-    // console.log({ clickTime, slotsNearby, overlappingSlots });
-
-    if (clickedPos() !== null) prevClickPos = clickedPos()!;
 
     // columnClick marker
     const colClick: IColumnClick = {

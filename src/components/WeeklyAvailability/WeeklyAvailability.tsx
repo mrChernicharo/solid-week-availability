@@ -9,6 +9,9 @@ import { Container } from "./ContainerStyles";
 const WeeklyAvailability = (props) => {
   const theme = useTheme();
 
+  createEffect(() => {
+    console.log({ s: props.minHour, e: props.maxHour });
+  });
   const cols = () =>
     getWeekDays(props.dayCols, {
       firstDay: props.firstDay,

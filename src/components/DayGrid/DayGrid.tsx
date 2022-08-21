@@ -227,7 +227,7 @@ const DayGrid = (props: IProps) => {
             </Show>
             <Show when={detailsModalOpen()}>
               {() => {
-                const slot = columnClick.clickedSlots[0];
+                const slot = columnClick.clickedSlots.at(-1)!;
                 console.log({ columnClick, clicked: columnClick.clickedSlots });
 
                 return (
