@@ -21,6 +21,21 @@ describe('example to-do app', () => {
     //   cy.get('.todo-list li').first().should('have.text', 'Pay electric bill')
     //   cy.get('.todo-list li').last().should('have.text', 'Walk the dog')
     })
+
+    it('opens and closes', () => {
+      cy.get('[data-cy="open_btn"]').click()
+
+      cy.get('#widget_root_element').should('not.exist')
+      
+      cy.get('[data-cy="open_btn"]').click()
+
+      cy.get('#widget_root_element').should('exist')
+
+      cy.fixture('example.json').as('data')
+      
+      // cy.get('@data')
+
+    })
   
     // it('can add new todo items', () => {
     //   // We'll store our item text in a variable so we can reuse it

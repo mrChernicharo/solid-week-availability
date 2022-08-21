@@ -32,10 +32,11 @@ const App: Component = () => {
 
         <button
           onClick={(e) => setPalette(palette() === "light" ? "dark" : "light")}
+          data-cy="palette_btn"
         >
           change palette
         </button>
-        <button onClick={(e) => setIsOpen(!isOpen())}>
+        <button onClick={(e) => setIsOpen(!isOpen())} data-cy="open_btn">
           {isOpen() ? "Close" : "Open"}
         </button>
 
