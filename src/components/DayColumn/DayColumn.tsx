@@ -35,7 +35,6 @@ const ICON_SIZE = 16;
 const TimeSlot = (props: IProps) => {
   // timeToYPos(props.timeSlot.start);
   // console.log("timeslot", { ...props });
-  readableTime(props.timeSlot.start, props.locale);
 
   return (
     <div
@@ -65,11 +64,13 @@ const DayColumn = (props) => {
 
   const [clickedPos, setClickedPos] = createSignal<IPos | null>(null);
 
-  createEffect(() => {
-    setClickedPos(null);
-  });
+  // createEffect(() => {
+  //   setClickedPos(null);
+  // });
 
   function handleClick(e: IPointerEvent) {
+    clearTimeout(timeout);
+
     setClickedPos({
       x: e.offsetX,
       y: e.offsetY,
@@ -121,7 +122,6 @@ const DayColumn = (props) => {
     };
     props.onColumnClick(e, colClick);
 
-    clearTimeout(timeout);
     timeout = setTimeout(() => setClickedPos(null), MARKER_TIME);
   }
 

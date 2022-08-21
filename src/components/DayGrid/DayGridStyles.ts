@@ -4,8 +4,8 @@ interface IProps {
   cols: string[];
   colWidth: number;
   colHeight: number;
-  theme: DefaultTheme;
   itemCount: number;
+  theme: DefaultTheme;
   palette: "light" | "dark";
 }
 
@@ -15,9 +15,11 @@ interface IModalProps {
   height: number;
   top: number;
   left: number;
+  theme: DefaultTheme;
+  palette: "light" | "dark";
 }
 
-const color = (props: IProps, color: string) =>
+const color = (props: IProps | IModalProps, color: string) =>
   props.theme[props.palette][color];
 
 const DayGridContainer = styled.div<IProps>`
@@ -45,16 +47,51 @@ const ModalContainer = styled.div<IModalProps>`
   left: ${(props) => props.left + "px"};
 
   > div {
-    background: #ccc;
+    background: ${(props) => color(props, "bg2")};
     height: ${(props) => props.height + "px"};
 
-    h3 {
-      margin: 0;
-      font-size: small;
+    button {
+      background: none;
+      border: none;
+      color: ${(props) => color(props, "text")};
+      transition: 0.25s;
+      cursor: pointer;
+
+      &[data-cy="close_modal_btn"] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 6px 6px 0 0;
+      }
+
+      &:hover {
+        opacity: 0.7;
+      }
     }
-    p {
-      margin: 0;
-      font-size: 12px;
+
+    main {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+
+      .details_form {
+        border: 1px solid;
+
+        input {
+          width: 40px;
+        }
+      }
+
+      h3 {
+        margin: 0;
+        font-size: small;
+      }
+      p {
+        margin: 0;
+        font-size: 12px;
+      }
     }
   }
 `;
