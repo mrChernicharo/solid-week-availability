@@ -58,8 +58,8 @@ const initialStore = {};
 const DayGrid = (props: IProps) => {
   let gridRef: HTMLDivElement;
   let modalPos: IPos = { x: 0, y: 0 };
-
   let columnClick: IColumnClick;
+
   const HOURS = () => getHours(props.minHour, props.maxHour, props.locale);
 
   props.cols.forEach((col: IDayName) => {
@@ -75,6 +75,8 @@ const DayGrid = (props: IProps) => {
   // console.log("DayGridProps", { ...props, s: { ...unwrap(store) } });
 
   function handleColumnClick(e: IPointerEvent, obj: IColumnClick) {
+    // @ts-ignore
+    columnClick = structuredClone(obj) || { ...obj };
     handleModals(obj);
   }
 
@@ -97,8 +99,6 @@ const DayGrid = (props: IProps) => {
   }
 
   function handleModals(obj: IColumnClick) {
-    // @ts-ignore
-    columnClick = structuredClone(obj) || { ...obj };
     const widget = () => document.querySelector("#widget_root_element");
     const wRect = () => getElementRect(widget() as HTMLDivElement);
 

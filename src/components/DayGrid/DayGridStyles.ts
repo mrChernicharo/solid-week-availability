@@ -77,8 +77,6 @@ const ModalContainer = styled.div<IModalProps>`
       height: 100%;
 
       .details_form {
-        border: 1px solid;
-
         input {
           width: 40px;
         }

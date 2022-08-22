@@ -64,13 +64,12 @@ const DayColumn = (props) => {
 
   const [clickedPos, setClickedPos] = createSignal<IPos | null>(null);
 
-  // createEffect(() => {
-  //   setClickedPos(null);
-  // });
+  createEffect(() => {
+    console.log(clickedPos());
+    // setClickedPos(null);
+  });
 
   function handleClick(e: IPointerEvent) {
-    clearTimeout(timeout);
-
     setClickedPos({
       x: e.offsetX,
       y: e.offsetY,
@@ -122,6 +121,8 @@ const DayColumn = (props) => {
     };
     props.onColumnClick(e, colClick);
 
+    // make X icon disappear
+    clearTimeout(timeout);
     timeout = setTimeout(() => setClickedPos(null), MARKER_TIME);
   }
 
@@ -136,6 +137,7 @@ const DayColumn = (props) => {
       data-cy={`day_column_${props.day}`}
       idx={props.idx}
     >
+      {/* X Marker */}
       <Show when={clickedPos() !== null}>
         {() => {
           const [x, y] = [
@@ -152,29 +154,25 @@ const DayColumn = (props) => {
       </Show>
 
       <For each={props.timeSlots}>
-        {(slot: ITimeSlot) => {
-          // const topPos = () =>
-
-          return (
-            <TimeSlot
-              id={`timeSlot_${slot.id}`}
-              top={timeToYPos(
-                slot.start,
-                props.minHour,
-                props.maxHour,
-                props.height
-              )}
-              bottom={timeToYPos(
-                slot.end,
-                props.minHour,
-                props.maxHour,
-                props.height
-              )}
-              timeSlot={slot}
-              locale={props.locale}
-            ></TimeSlot>
-          );
-        }}
+        {(slot: ITimeSlot) => (
+          <TimeSlot
+            id={`timeSlot_${slot.id}`}
+            top={timeToYPos(
+              slot.start,
+              props.minHour,
+              props.maxHour,
+              props.height
+            )}
+            bottom={timeToYPos(
+              slot.end,
+              props.minHour,
+              props.maxHour,
+              props.height
+            )}
+            timeSlot={slot}
+            locale={props.locale}
+          ></TimeSlot>
+        )}
       </For>
     </DayColumnContainer>
   );
