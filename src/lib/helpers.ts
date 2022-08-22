@@ -12,8 +12,6 @@ export const localizeWeekday = (
   let d = new Date();
   let js = weekdayToJs(weekday);
   while (d.getDay() !== js) {
-    console.log({ d, js, w: d.getDay() });
-
     const timestamp = d.getTime();
     d = new Date(timestamp + 24 * 3600 * 1000);
   }
@@ -170,7 +168,6 @@ export function readableTime(minutes: number, locale = "en") {
     res = `${h}:${m}`;
   }
 
-  console.log({ hours, mins, minutes, res });
   return res;
 }
 

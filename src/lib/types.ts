@@ -28,8 +28,8 @@ export interface IColumnClick {
   minutes: number;
   pos: IPos;
   day: IDayName;
-  idx: number;
   clickedOnExistingSlot: boolean;
   clickedSlots: ITimeSlot[];
   nearbySlots: ITimeSlot[];
+  colIdx: number;
 }

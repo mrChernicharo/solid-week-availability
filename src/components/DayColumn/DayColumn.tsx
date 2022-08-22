@@ -14,25 +14,46 @@ import {
   timeToYPos,
   yPosToTime,
 } from "../../lib/helpers";
-import { IColumnClick, IPointerEvent, IPos, ITimeSlot } from "../../lib/types";
+import {
+  IColumnClick,
+  IDayName,
+  IPointerEvent,
+  IPos,
+  ITimeSlot,
+} from "../../lib/types";
 import { DayColumnContainer, Marker } from "./DayColumnStyles";
 import { FaSolidPlus } from "solid-icons/fa";
 import { unwrap } from "solid-js/store";
-
-interface IProps extends ParentProps {
+import { DefaultTheme } from "solid-styled-components";
+interface ITimeSlotProps extends ParentProps {
   id: string;
-  timeSlot: ITimeSlot;
   top: number;
   bottom: number;
+  timeSlot: ITimeSlot;
   locale: string;
-  // minHour: number;
-  // maxHour: number;
+}
+interface IProps {
+  day: IDayName;
+  locale: string;
+  colIdx: number;
+  minHour: number;
+  maxHour: number;
+  timeSlots: ITimeSlot[];
+  palette: "light" | "dark";
+  width: number;
+  height: number;
+  headerHeight: number;
+  theme: DefaultTheme;
+
+  showTimeSlotModal: () => void;
+  showOverlapConfirm: () => void;
+  onColumnClick: (e: IPointerEvent, obj: IColumnClick) => void;
   // columnHeight: number;
 }
 
 const ICON_SIZE = 16;
 
-const TimeSlot = (props: IProps) => {
+const TimeSlot = (props: ITimeSlotProps) => {
   // timeToYPos(props.timeSlot.start);
   // console.log("timeslot", { ...props });
 
@@ -56,20 +77,24 @@ const TimeSlot = (props: IProps) => {
   );
 };
 
-const DayColumn = (props) => {
+const DayColumn = (props: IProps) => {
   let columnRef: HTMLDivElement;
   let timeout;
-  let prevClickPos: IPos;
+
   const rect = () => getElementRect(columnRef);
 
   const [clickedPos, setClickedPos] = createSignal<IPos | null>(null);
 
   createEffect(() => {
-    console.log(clickedPos());
+    // console.log(clickedPos());
     // setClickedPos(null);
   });
 
   function handleClick(e: IPointerEvent) {
+    if (e.buttons !== 1) return; // left-click only!
+
+    // console.log("dayColumn::handleClick", e);
+
     setClickedPos({
       x: e.offsetX,
       y: e.offsetY,
@@ -106,7 +131,7 @@ const DayColumn = (props) => {
       clickedOnExistingSlot = true;
       props.showTimeSlotModal();
     } else if (slotsNearby.length) {
-      props.showOverlapConfirm(e);
+      props.showOverlapConfirm();
     }
 
     // columnClick marker
@@ -114,7 +139,7 @@ const DayColumn = (props) => {
       minutes: clickTime,
       pos: clickedPos()!,
       day: props.day,
-      idx: props.idx,
+      colIdx: props.colIdx,
       clickedSlots: unwrap(overlappingSlots),
       clickedOnExistingSlot,
       nearbySlots: [...unwrap(slotsNearby)],
@@ -135,7 +160,7 @@ const DayColumn = (props) => {
       palette={props.palette}
       onPointerDown={handleClick}
       data-cy={`day_column_${props.day}`}
-      idx={props.idx}
+      idx={props.colIdx}
     >
       {/* X Marker */}
       <Show when={clickedPos() !== null}>

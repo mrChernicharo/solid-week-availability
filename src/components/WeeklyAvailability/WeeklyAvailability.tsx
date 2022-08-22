@@ -10,7 +10,7 @@ const WeeklyAvailability = (props) => {
   const theme = useTheme();
 
   createEffect(() => {
-    console.log({ s: props.minHour, e: props.maxHour });
+    // console.log({ s: props.minHour, e: props.maxHour });
   });
   const cols = () =>
     getWeekDays(props.dayCols, {
@@ -68,6 +68,9 @@ const WeeklyAvailability = (props) => {
             firstDay={props.firstDay}
             theme={theme}
             palette={props.palette}
+            onChange={(state) => {
+              console.log("hey!", { ...state });
+            }}
           />
         </div>
       </Container>

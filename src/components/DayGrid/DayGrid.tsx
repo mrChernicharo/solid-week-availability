@@ -7,7 +7,7 @@ import {
   FaSolidPaperclip,
   FaSolidX,
 } from "solid-icons/fa";
-import { createEffect, createSignal, For, Show } from "solid-js";
+import { createEffect, createSignal, For, on, Show } from "solid-js";
 import { createStore, unwrap } from "solid-js/store";
 import {
   getElementRect,
@@ -32,11 +32,16 @@ import {
 } from "./DayGridStyles";
 import idMaker from "@melodev/id-maker";
 import { DefaultTheme } from "solid-styled-components";
-import { HALF_SLOT, MODAL_HEIGHT, MODAL_WIDTH } from "../../lib/constants";
+import {
+  DAY_NAMES,
+  HALF_SLOT,
+  MODAL_HEIGHT,
+  MODAL_WIDTH,
+} from "../../lib/constants";
 
 type IStore = {
   [k in IDayName]: ITimeSlot[];
-};
+} & { slot: ITimeSlot | null; day: IDayName; gesture: "idle" | "drag:ready" };
 
 interface IProps {
   cols: IDayName[];
@@ -51,20 +56,21 @@ interface IProps {
   firstDay: string;
   theme: DefaultTheme;
   palette: "light" | "dark";
+  onChange: (store: IStore) => void;
 }
 
-const initialStore = {};
+const initialStore = { slot: null, day: "Mon", gesture: "idle" };
 
 const DayGrid = (props: IProps) => {
   let gridRef: HTMLDivElement;
   let modalPos: IPos = { x: 0, y: 0 };
   let columnClick: IColumnClick;
 
-  const HOURS = () => getHours(props.minHour, props.maxHour, props.locale);
-
   props.cols.forEach((col: IDayName) => {
     initialStore[col] = [];
   });
+
+  const HOURS = () => getHours(props.minHour, props.maxHour, props.locale);
 
   const [store, setStore] = createStore(initialStore as IStore);
 
@@ -74,10 +80,30 @@ const DayGrid = (props: IProps) => {
 
   // console.log("DayGridProps", { ...props, s: { ...unwrap(store) } });
 
+  // createEffect(() => {
+  //   // DAY_NAMES.forEach((day) => {
+  //   //   store[day];
+  //   // });
+
+  //   props.onChange(store);
+  // });
+
   function handleColumnClick(e: IPointerEvent, obj: IColumnClick) {
     // @ts-ignore
     columnClick = structuredClone(obj) || { ...obj };
-    handleModals(obj);
+    // console.log("columnClick", { ...columnClick });
+
+    if (columnClick.clickedSlots.length) {
+      setStore("slot", columnClick.clickedSlots.at(-1)!);
+    } else {
+      setStore("slot", null);
+    }
+
+    setStore("gesture", "drag:ready");
+    setStore("day", columnClick.day);
+    // props.onChange(store);
+    // props.onChange(unwrap(store));
+    handleModals();
   }
 
   function createNewTimeSlot() {
@@ -96,16 +122,17 @@ const DayGrid = (props: IProps) => {
     const day = columnClick.day;
     const merged = getMergedTimeslots(newSlot, store[day]);
     setStore(day, merged);
+    props.onChange(store);
   }
 
-  function handleModals(obj: IColumnClick) {
+  function handleModals() {
     const widget = () => document.querySelector("#widget_root_element");
     const wRect = () => getElementRect(widget() as HTMLDivElement);
 
     const scrollOffsetY = widget()?.scrollTop || 0;
     const scrollOffsetX = widget()?.scrollLeft || 0;
 
-    modalPos.x = columnClick.pos.x + props.colWidth * columnClick.idx;
+    modalPos.x = columnClick.pos.x + props.colWidth * columnClick.colIdx;
     modalPos.x =
       modalPos.x - scrollOffsetX < wRect().width / 2
         ? modalPos.x
@@ -124,7 +151,14 @@ const DayGrid = (props: IProps) => {
     if (!mergeModalOpen()) setCreateModalOpen(true);
   }
 
-  // createEffect(() => console.log({ ...store.Mon }));
+  createEffect(() => {
+    console.log({
+      //   day: unwrap(store.day),
+      slot: unwrap(store.slot),
+      id: unwrap(store.slot?.id),
+      //   store: unwrap(store),
+    });
+  });
 
   return (
     <DayGridContainer
@@ -142,6 +176,7 @@ const DayGrid = (props: IProps) => {
         {(col: IDayName, i) => (
           <DayColumn
             day={col}
+            colIdx={i()}
             locale={props.locale}
             height={props.colHeight}
             headerHeight={props.headerHeight}
@@ -151,15 +186,14 @@ const DayGrid = (props: IProps) => {
             theme={props.theme}
             palette={props.palette}
             onColumnClick={handleColumnClick}
-            showOverlapConfirm={(e) => {
+            showOverlapConfirm={() => {
               setCreateModalOpen(false);
               setMergeModalOpen(true);
             }}
-            showTimeSlotModal={(e) =>
-              setTimeout(() => setDetailsModalOpen(true), 0)
-            }
+            showTimeSlotModal={() => {
+              setTimeout(() => setDetailsModalOpen(true), 0);
+            }}
             timeSlots={store[col]}
-            idx={i()}
           />
         )}
       </For>
@@ -199,6 +233,7 @@ const DayGrid = (props: IProps) => {
                   onclick={(e) => {
                     const newSlot = createNewTimeSlot();
                     setStore(columnClick.day, (slots) => [...slots, newSlot]);
+                    props.onChange(store);
                     setCreateModalOpen(false);
                   }}
                 >
@@ -227,6 +262,7 @@ const DayGrid = (props: IProps) => {
                   onclick={(e) => {
                     const newSlot = createNewTimeSlot();
                     setStore(columnClick.day, (slots) => [...slots, newSlot]);
+                    props.onChange(store);
                     setMergeModalOpen(false);
                   }}
                 >
@@ -234,19 +270,20 @@ const DayGrid = (props: IProps) => {
                 </button>
               </main>
             </Show>
-            <Show when={detailsModalOpen()}>
+            <Show when={detailsModalOpen() && store.slot !== null}>
               <main>
                 {() => {
-                  const clickedSlot = columnClick.clickedSlots.at(-1)!;
+                  const slot = () => store.slot!;
                   const slotIdx = () =>
-                    store[clickedSlot.day!].findIndex(
-                      (s) => s.id === clickedSlot.id
-                    );
-                  const slot = store[clickedSlot.day!][slotIdx()];
-
+                    store[store.day].findIndex((s) => s.id === slot().id) || 0;
                   //prettier-ignore
-                  const [sh, sm] = [Math.floor(slot.start / 60), slot.start % 60];
-                  const [eh, em] = [Math.floor(slot.end / 60), slot.end % 60];
+                  const [sh, sm] = [() => Math.floor(slot().start / 60), () => slot().start % 60];
+                  const [eh, em] = [
+                    () => Math.floor(slot().end / 60),
+                    () => slot().end % 60,
+                  ];
+
+                  console.log(slot().id);
 
                   return (
                     <>
@@ -256,10 +293,16 @@ const DayGrid = (props: IProps) => {
                       >
                         <FaSolidX />
                       </button>
-                      <p>{localizeWeekday(slot.day, props.locale, "long")}</p>
                       <p>
-                        {readableTime(slot.start, props.locale)} -
-                        {readableTime(slot.end, props.locale)}
+                        {localizeWeekday(
+                          slot().day as IDayName,
+                          props.locale,
+                          "long"
+                        )}
+                      </p>
+                      <p>
+                        {readableTime(slot().start, props.locale)} -
+                        {readableTime(slot().end, props.locale)}
                       </p>
                       <div class="details_form">
                         <p>from</p>
@@ -267,22 +310,34 @@ const DayGrid = (props: IProps) => {
                         <input
                           id="details_start_hour"
                           type="number"
-                          value={sh}
+                          value={sh()}
                           onInput={(e) => {
                             const hour = +e.currentTarget.value;
-                            const newTime = hour * 60 + sm;
-                            setStore(slot.day, slotIdx(), "start", newTime);
+                            const newTime = hour * 60 + sm();
+                            setStore(
+                              slot().day as IDayName,
+                              slotIdx(),
+                              "start",
+                              newTime
+                            );
+                            props.onChange(store);
                           }}
                         />
                         <label for="details_start_minute">m</label>
                         <input
                           id="details_start_minute"
                           type="number"
-                          value={sm}
+                          value={sm()}
                           onInput={(e) => {
                             const mins = +e.currentTarget.value;
-                            const newTime = sh * 60 + mins;
-                            setStore(slot.day, slotIdx(), "start", newTime);
+                            const newTime = sh() * 60 + mins;
+                            setStore(
+                              slot().day as IDayName,
+                              slotIdx(),
+                              "start",
+                              newTime
+                            );
+                            props.onChange(store);
                           }}
                         />
 
@@ -291,22 +346,34 @@ const DayGrid = (props: IProps) => {
                         <input
                           id="details_end_hour"
                           type="number"
-                          value={eh}
+                          value={eh()}
                           onInput={(e) => {
                             const hour = +e.currentTarget.value;
-                            const newTime = hour * 60 + em;
-                            setStore(slot.day, slotIdx(), "end", newTime);
+                            const newTime = hour * 60 + em();
+                            setStore(
+                              slot().day as IDayName,
+                              slotIdx(),
+                              "end",
+                              newTime
+                            );
+                            props.onChange(store);
                           }}
                         />
                         <label for="details_end_minute">m</label>
                         <input
                           id="details_end_minute"
                           type="number"
-                          value={em}
+                          value={em()}
                           onInput={(e) => {
                             const mins = +e.currentTarget.value;
-                            const newTime = eh * 60 + mins;
-                            setStore(slot.day, slotIdx(), "start", newTime);
+                            const newTime = eh() * 60 + mins;
+                            setStore(
+                              slot().day as IDayName,
+                              slotIdx(),
+                              "end",
+                              newTime
+                            );
+                            props.onChange(store);
                           }}
                         />
                       </div>
