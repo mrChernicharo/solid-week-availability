@@ -34,7 +34,7 @@ const Marker = styled.div<IMarkerProps>`
   z-index: 50;
   top: ${(props) => props.y + "px"};
   left: ${(props) => props.x + "px"};
-  /* pointer-events: none; */
+  pointer-events: none;
 `;
 
 export { DayColumnContainer, Marker };

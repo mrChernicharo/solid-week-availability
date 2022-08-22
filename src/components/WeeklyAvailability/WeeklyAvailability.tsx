@@ -67,7 +67,7 @@ const WeeklyAvailability = (props) => {
             theme={theme}
             palette={props.palette}
             onChange={(state) => {
-              console.log("hey", { ...state });
+              // console.log("hey", { ...state });
               setState((s) => state);
             }}
           />

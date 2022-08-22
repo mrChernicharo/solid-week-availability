@@ -15,8 +15,7 @@ const color = (props: IProps, color: string) =>
 
 const TimeSlotContainer = styled.div<IProps>`
   position: absolute;
-  /* display: flex; */
-  /* flex-direction: column; */
+
   top: ${(props) => props.top + "px"};
   height: ${(props) => props.bottom - props.top + "px"};
   width: 100%;

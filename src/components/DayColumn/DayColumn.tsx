@@ -77,12 +77,26 @@ const DayColumn = (props: IProps) => {
   });
 
   function handlePointerDown(e: IPointerEvent) {
-    console.log("pointerDown", { pos: clickedPos(), e });
+    // const widgetEl = () => document.querySelector("#widget_root_element");
+    // const wRect = () => getElementRect(widgetEl() as HTMLDivElement);
 
     setClickedPos({
       x: e.offsetX,
-      y: e.offsetY,
+      y: e.clientY - rect().top,
     });
+
+    // console.log("pointerDown", {
+    //   target: e.currentTarget,
+    //   offsetY: e.offsetY,
+    //   pageY: e.pageY,
+    //   clientY: e.clientY,
+    //   rect: rect(),
+    //   scroll: widgetEl()?.scrollTop,
+    //   res: e.clientY - rect().top,
+    //   // pos: clickedPos(),
+    //   // e,
+    //   // d: e.currentTarget.parentElement?.dataset,
+    // });
 
     const clickTime = () => getClickedTime();
 
@@ -132,7 +146,9 @@ const DayColumn = (props: IProps) => {
       data-cy={`day_column_${props.day}`}
       idx={props.colIdx}
     >
-      {localizeWeekday(props.day as IDayName, props.locale, "long")}
+      <div style={{ "pointer-events": "none" }}>
+        {localizeWeekday(props.day as IDayName, props.locale, "long")}
+      </div>
       {/* X Marker */}
       <Show when={clickedPos() !== null}>
         {() => {
@@ -170,6 +186,7 @@ const DayColumn = (props: IProps) => {
             locale={props.locale}
             theme={props.theme}
             palette={props.palette}
+            onTimeSlotHover={console.log}
           ></TimeSlot>
         )}
       </For>
