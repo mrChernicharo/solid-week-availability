@@ -1,8 +1,8 @@
-import { createEffect, onMount, Show } from "solid-js";
+import { createEffect, createSignal, onMount, Show } from "solid-js";
 import { createStore, unwrap } from "solid-js/store";
 import { useTheme } from "solid-styled-components";
 import { getWeekDays } from "../../lib/helpers";
-import { IDayName } from "../../lib/types";
+import { IDayName, IStore } from "../../lib/types";
 import DayGrid from "../DayGrid/DayGrid";
 import SideBar from "../SideBar/SideBar";
 import TopBar from "../TopBar/TopBar";
@@ -10,21 +10,12 @@ import { Container } from "./ContainerStyles";
 
 const WeeklyAvailability = (props) => {
   const theme = useTheme();
+  const [state, setState] = createSignal<IStore | null>(null);
 
   const cols = () =>
     getWeekDays(props.dayCols, {
       firstDay: props.firstDay,
     }) as IDayName[];
-
-  // createEffect(() => {
-  //   setStore;
-  //   store.day;
-  //   // store.Mon[0]?.start;
-  //   console.log(store, store.Mon[0]?.start);
-  //   // console.log({ s: props.minHour, e: props.maxHour });
-  //   // console.log(store.Mon, store.gesture, store.day);
-  //   // console.log(unwrap(store.slot));
-  // });
 
   return (
     <Show when={props.open}>
@@ -77,10 +68,15 @@ const WeeklyAvailability = (props) => {
             palette={props.palette}
             onChange={(state) => {
               console.log("hey", { ...state });
+              setState((s) => state);
             }}
           />
         </div>
       </Container>
+
+      <div>
+        <pre>{JSON.stringify(state(), null, 2)}</pre>
+      </div>
     </Show>
   );
 };

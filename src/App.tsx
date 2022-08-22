@@ -99,6 +99,7 @@ const App: Component = () => {
         <input
           id="start_hour"
           type="number"
+          style={{ width: "60px" }}
           value={minHour()}
           onInput={(e) => {
             setMinHour(+e.currentTarget.value);
@@ -109,6 +110,7 @@ const App: Component = () => {
         <input
           id="end_hour"
           type="number"
+          style={{ width: "60px" }}
           value={endHour()}
           onInput={(e) => setEndHour(+e.currentTarget.value)}
         />
@@ -118,6 +120,7 @@ const App: Component = () => {
           <input
             id="col_height"
             type="number"
+            style={{ width: "60px" }}
             value={colHeight()}
             onInput={(e) => setColHeight(+e.currentTarget.value)}
           />
@@ -126,6 +129,7 @@ const App: Component = () => {
           <input
             id="widget_height"
             type="number"
+            style={{ width: "60px" }}
             value={widgetHeight()}
             onInput={(e) => setWidgetHeight(+e.currentTarget.value)}
           />
@@ -134,6 +138,7 @@ const App: Component = () => {
           <input
             id="header_height"
             type="number"
+            style={{ width: "60px" }}
             value={headerHeight()}
             onInput={(e) => setHeaderHeight(+e.currentTarget.value)}
           />
@@ -142,6 +147,7 @@ const App: Component = () => {
           <input
             id="col_width"
             type="number"
+            style={{ width: "60px" }}
             value={colWidth()}
             onInput={(e) => setColWidth(+e.currentTarget.value)}
           />

@@ -23,6 +23,7 @@ import {
   IPalette,
   IPointerEvent,
   IPos,
+  IStore,
   ITimeSlot,
 } from "../../lib/types";
 import DayColumn from "../DayColumn/DayColumn";
@@ -39,10 +40,6 @@ import {
   MODAL_HEIGHT,
   MODAL_WIDTH,
 } from "../../lib/constants";
-
-type IStore = {
-  [k in IDayName]: ITimeSlot[];
-} & { slot: ITimeSlot | null; day: IDayName; gesture: "idle" | "drag:ready" };
 
 interface IProps {
   cols: IDayName[];
@@ -95,13 +92,14 @@ const DayGrid = (props: IProps) => {
 
     if (columnClick.clickedSlots.length) {
       setStore("slot", columnClick.clickedSlots.at(-1)!);
+      setStore("gesture", "drag:ready");
     } else {
       setStore("slot", null);
     }
 
-    setStore("gesture", "drag:ready");
     setStore("day", columnClick.day);
     handleModals();
+    props.onChange(store);
   }
 
   function createNewTimeSlot() {
@@ -390,6 +388,7 @@ const DayGrid = (props: IProps) => {
                       </div>
                       <button
                         onclick={(e) => {
+                          setStore("gesture", "idle");
                           setDetailsModalOpen(false);
                         }}
                       >
@@ -409,6 +408,7 @@ const DayGrid = (props: IProps) => {
             setCreateModalOpen(false);
             setMergeModalOpen(false);
             setDetailsModalOpen(false);
+            setStore("gesture", "idle");
           }}
         />
       </Show>

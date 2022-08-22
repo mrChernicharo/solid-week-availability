@@ -3,6 +3,10 @@ export type IPointerEvent = PointerEvent & {
   target: Element;
 };
 
+export type IStore = {
+  [k in IDayName]: ITimeSlot[];
+} & { slot: ITimeSlot | null; day: IDayName; gesture: "idle" | "drag:ready" };
+
 export type IPalette = "light" | "dark";
 
 export type IDayColumn = {

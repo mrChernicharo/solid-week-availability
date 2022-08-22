@@ -86,10 +86,9 @@ const DayColumn = (props: IProps) => {
     // console.log({ ...props });
   });
 
-  function handleClick(e: IPointerEvent) {
-    if (e.buttons !== 1) return; // left-click only!
-
-    // console.log("dayColumn::handleClick", e);
+  function handlePointerUp(e: IPointerEvent) {
+    // if (e.buttons !== 1) return; // left-click only!
+    // console.log("dayColumn::handlePointerUp", e);
 
     setClickedPos({
       x: e.offsetX,
@@ -147,7 +146,7 @@ const DayColumn = (props: IProps) => {
       width={props.width}
       theme={props.theme}
       palette={props.palette}
-      onPointerDown={handleClick}
+      onPointerUp={handlePointerUp}
       data-cy={`day_column_${props.day}`}
       idx={props.colIdx}
     >
