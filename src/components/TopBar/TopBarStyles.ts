@@ -2,7 +2,7 @@ import { DefaultTheme, styled } from "solid-styled-components";
 
 interface IProps {
   theme: DefaultTheme;
-  palette: "light" | "dark";
+  palette: IPalette;
   height: number;
   colWidth: number;
   cols: string[];

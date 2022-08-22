@@ -6,7 +6,7 @@ interface IProps {
   colHeight: number;
   itemCount: number;
   theme: DefaultTheme;
-  palette: "light" | "dark";
+  palette: IPalette;
 }
 
 interface IModalProps {
@@ -16,7 +16,7 @@ interface IModalProps {
   top: number;
   left: number;
   theme: DefaultTheme;
-  palette: "light" | "dark";
+  palette: IPalette;
 }
 
 const color = (props: IProps | IModalProps, color: string) =>

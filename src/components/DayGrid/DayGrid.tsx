@@ -20,6 +20,7 @@ import {
 import {
   IColumnClick,
   IDayName,
+  IPalette,
   IPointerEvent,
   IPos,
   ITimeSlot,
@@ -54,7 +55,7 @@ interface IProps {
   widgetHeight: number;
   firstDay: IDayName;
   theme: DefaultTheme;
-  palette: "light" | "dark";
+  palette: IPalette;
   onChange: (store: IStore) => void;
 }
 
@@ -65,12 +66,12 @@ const DayGrid = (props: IProps) => {
   let modalPos: IPos = { x: 0, y: 0 };
   let columnClick: IColumnClick;
 
-  const localeCols = () =>
-    getWeekDays(props.cols, {
-      firstDay: props.firstDay,
-      locale: props.locale,
-      format: "long",
-    }) as IDayName[];
+  // const localeCols = () =>
+  //   getWeekDays(props.cols, {
+  //     firstDay: props.firstDay,
+  //     locale: props.locale,
+  //     format: "long",
+  //   }) as IDayName[];
 
   props.cols.forEach((col: IDayName) => {
     initialStore[col] = [];
@@ -86,18 +87,10 @@ const DayGrid = (props: IProps) => {
 
   // console.log("DayGridProps", { ...props, s: { ...unwrap(store) } });
 
-  createEffect(() => {
-    //   // DAY_NAMES.forEach((day) => {
-    //   //   store[day];
-    //   // });
-    // console.log(localeCols());
-    //   props.onChange(store);
-  });
+  createEffect(() => {});
 
   function handleColumnClick(e: IPointerEvent, obj: IColumnClick) {
-    // @ts-ignore
     columnClick = structuredClone(obj) || { ...obj };
-    // console.log("columnClick", { ...columnClick });
 
     if (columnClick.clickedSlots.length) {
       setStore("slot", columnClick.clickedSlots.at(-1)!);
@@ -107,8 +100,6 @@ const DayGrid = (props: IProps) => {
 
     setStore("gesture", "drag:ready");
     setStore("day", columnClick.day);
-    // props.onChange(store);
-    // props.onChange(unwrap(store));
     handleModals();
   }
 
@@ -132,11 +123,11 @@ const DayGrid = (props: IProps) => {
   }
 
   function handleModals() {
-    const widget = () => document.querySelector("#widget_root_element");
-    const wRect = () => getElementRect(widget() as HTMLDivElement);
+    const widgetEl = () => document.querySelector("#widget_root_element");
+    const wRect = () => getElementRect(widgetEl() as HTMLDivElement);
 
-    const scrollOffsetY = widget()?.scrollTop || 0;
-    const scrollOffsetX = widget()?.scrollLeft || 0;
+    const scrollOffsetY = widgetEl()?.scrollTop || 0;
+    const scrollOffsetX = widgetEl()?.scrollLeft || 0;
 
     modalPos.x = columnClick.pos.x + props.colWidth * columnClick.colIdx;
     modalPos.x =
@@ -158,12 +149,10 @@ const DayGrid = (props: IProps) => {
   }
 
   createEffect(() => {
-    console.log({
-      //   day: unwrap(store.day),
-      slot: unwrap(store.slot),
-      id: unwrap(store.slot?.id),
-      //   store: unwrap(store),
-    });
+    // console.log({
+    //   slot: unwrap(store.slot),
+    //   id: unwrap(store.slot?.id),
+    // });
   });
 
   return (
@@ -183,7 +172,6 @@ const DayGrid = (props: IProps) => {
           <DayColumn
             day={col}
             colIdx={i()}
-            localeDayName={localeCols()[i()]}
             locale={props.locale}
             height={props.colHeight}
             headerHeight={props.headerHeight}
@@ -228,6 +216,7 @@ const DayGrid = (props: IProps) => {
           palette={props.palette}
         >
           <div>
+            {/* CREATE MODAL */}
             <Show when={createModalOpen()}>
               <button
                 data-cy="close_modal_btn"
@@ -248,6 +237,8 @@ const DayGrid = (props: IProps) => {
                 </button>
               </main>
             </Show>
+
+            {/* MERGE MODAL */}
             <Show when={mergeModalOpen()}>
               <button
                 data-cy="close_modal_btn"
@@ -277,20 +268,26 @@ const DayGrid = (props: IProps) => {
                 </button>
               </main>
             </Show>
+
+            {/* DETAILS MODAL */}
             <Show when={detailsModalOpen() && store.slot !== null}>
               <main>
                 {() => {
                   const slot = () => store.slot!;
+
                   const slotIdx = () =>
                     store[store.day].findIndex((s) => s.id === slot().id) || 0;
-                  //prettier-ignore
-                  const [sh, sm] = [() => Math.floor(slot().start / 60), () => slot().start % 60];
+
+                  const [sh, sm] = [
+                    () => Math.floor(slot().start / 60),
+                    () => slot().start % 60,
+                  ];
                   const [eh, em] = [
                     () => Math.floor(slot().end / 60),
                     () => slot().end % 60,
                   ];
 
-                  console.log(slot().id);
+                  // console.log(slot().id);
 
                   return (
                     <>
@@ -308,8 +305,17 @@ const DayGrid = (props: IProps) => {
                         )}
                       </p>
                       <p>
-                        {readableTime(slot().start, props.locale)} -
-                        {readableTime(slot().end, props.locale)}
+                        {() =>
+                          readableTime(
+                            store[slot().day!][slotIdx()].start,
+                            props.locale
+                          )
+                        }
+                        -
+                        {readableTime(
+                          store[slot().day!][slotIdx()].end,
+                          props.locale
+                        )}
                       </p>
                       <div class="details_form">
                         <p>from</p>

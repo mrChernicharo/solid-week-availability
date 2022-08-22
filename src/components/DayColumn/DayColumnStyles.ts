@@ -4,7 +4,7 @@ interface IProps {
   width: number;
   height: number;
   theme: DefaultTheme;
-  palette: "light" | "dark";
+  palette: IPalette;
   idx: number;
 }
 

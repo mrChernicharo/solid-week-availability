@@ -3,7 +3,7 @@ interface IProps {
   height: number;
   colWidth: number;
   theme: DefaultTheme;
-  palette: "light" | "dark";
+  palette: IPalette;
   itemCount: number;
 }
 

@@ -1,5 +1,6 @@
 import { DefaultTheme, styled } from "solid-styled-components";
 import { SCROLL_BAR } from "../../lib/constants";
+import { IPalette } from "../../lib/types";
 
 interface IProps {
   cols: string[];
@@ -7,7 +8,7 @@ interface IProps {
   height: number;
   widgetHeight: number;
   theme: DefaultTheme;
-  palette: "light" | "dark";
+  palette: IPalette;
 }
 
 const color = (props: IProps, color: string) =>
