@@ -8,7 +8,7 @@ import {
   FaSolidX,
 } from "solid-icons/fa";
 import { createEffect, createSignal, For, on, Show } from "solid-js";
-import { createStore, unwrap } from "solid-js/store";
+import { createStore, SetStoreFunction, unwrap } from "solid-js/store";
 import {
   getElementRect,
   getHours,
@@ -56,23 +56,25 @@ interface IProps {
   firstDay: string;
   theme: DefaultTheme;
   palette: "light" | "dark";
-  onChange: (store: IStore) => void;
+  store: IStore;
+  setStore: SetStoreFunction<IStore>;
+  onChange: () => void;
 }
 
-const initialStore = { slot: null, day: "Mon", gesture: "idle" };
+// const initialStore = { slot: null, day: "Mon", gesture: "idle" };
 
 const DayGrid = (props: IProps) => {
   let gridRef: HTMLDivElement;
   let modalPos: IPos = { x: 0, y: 0 };
   let columnClick: IColumnClick;
 
-  props.cols.forEach((col: IDayName) => {
-    initialStore[col] = [];
-  });
+  // props.cols.forEach((col: IDayName) => {
+  //   initialStore[col] = [];
+  // });
 
   const HOURS = () => getHours(props.minHour, props.maxHour, props.locale);
 
-  const [store, setStore] = createStore(initialStore as IStore);
+  // const [store, setStore] = createStore(initialStore as IStore);
 
   const [createModalOpen, setCreateModalOpen] = createSignal(false);
   const [mergeModalOpen, setMergeModalOpen] = createSignal(false);
@@ -81,11 +83,6 @@ const DayGrid = (props: IProps) => {
   // console.log("DayGridProps", { ...props, s: { ...unwrap(store) } });
 
   // createEffect(() => {
-  //   // DAY_NAMES.forEach((day) => {
-  //   //   store[day];
-  //   // });
-
-  //   props.onChange(store);
   // });
 
   function handleColumnClick(e: IPointerEvent, obj: IColumnClick) {
@@ -94,15 +91,16 @@ const DayGrid = (props: IProps) => {
     // console.log("columnClick", { ...columnClick });
 
     if (columnClick.clickedSlots.length) {
-      setStore("slot", columnClick.clickedSlots.at(-1)!);
+      props.setStore("slot", columnClick.clickedSlots.at(-1)!);
     } else {
-      setStore("slot", null);
+      props.setStore("slot", null);
     }
 
-    setStore("gesture", "drag:ready");
-    setStore("day", columnClick.day);
+    props.setStore("gesture", "drag:ready");
+    props.setStore("day", columnClick.day);
     // props.onChange(store);
-    // props.onChange(unwrap(store));
+    props.onChange();
+
     handleModals();
   }
 
@@ -120,9 +118,8 @@ const DayGrid = (props: IProps) => {
   function mergeSlots() {
     const newSlot = createNewTimeSlot();
     const day = columnClick.day;
-    const merged = getMergedTimeslots(newSlot, store[day]);
-    setStore(day, merged);
-    props.onChange(store);
+    const merged = getMergedTimeslots(newSlot, props.store[day]);
+    props.setStore(day, merged);
   }
 
   function handleModals() {
@@ -151,14 +148,7 @@ const DayGrid = (props: IProps) => {
     if (!mergeModalOpen()) setCreateModalOpen(true);
   }
 
-  createEffect(() => {
-    console.log({
-      //   day: unwrap(store.day),
-      slot: unwrap(store.slot),
-      id: unwrap(store.slot?.id),
-      //   store: unwrap(store),
-    });
-  });
+  // createEffect(() => {});
 
   return (
     <DayGridContainer
@@ -193,7 +183,7 @@ const DayGrid = (props: IProps) => {
             showTimeSlotModal={() => {
               setTimeout(() => setDetailsModalOpen(true), 0);
             }}
-            timeSlots={store[col]}
+            timeSlots={props.store[col]}
           />
         )}
       </For>
@@ -232,8 +222,10 @@ const DayGrid = (props: IProps) => {
                 <button
                   onclick={(e) => {
                     const newSlot = createNewTimeSlot();
-                    setStore(columnClick.day, (slots) => [...slots, newSlot]);
-                    props.onChange(store);
+                    props.setStore(columnClick.day, (slots) => [
+                      ...slots,
+                      newSlot,
+                    ]);
                     setCreateModalOpen(false);
                   }}
                 >
@@ -261,8 +253,10 @@ const DayGrid = (props: IProps) => {
                 <button
                   onclick={(e) => {
                     const newSlot = createNewTimeSlot();
-                    setStore(columnClick.day, (slots) => [...slots, newSlot]);
-                    props.onChange(store);
+                    props.setStore(columnClick.day, (slots) => [
+                      ...slots,
+                      newSlot,
+                    ]);
                     setMergeModalOpen(false);
                   }}
                 >
@@ -270,12 +264,14 @@ const DayGrid = (props: IProps) => {
                 </button>
               </main>
             </Show>
-            <Show when={detailsModalOpen() && store.slot !== null}>
+            <Show when={detailsModalOpen() && props.store.slot !== null}>
               <main>
                 {() => {
-                  const slot = () => store.slot!;
+                  const slot = () => props.store.slot!;
                   const slotIdx = () =>
-                    store[store.day].findIndex((s) => s.id === slot().id) || 0;
+                    props.store[props.store.day].findIndex(
+                      (s) => s.id === slot().id
+                    ) || 0;
                   //prettier-ignore
                   const [sh, sm] = [() => Math.floor(slot().start / 60), () => slot().start % 60];
                   const [eh, em] = [
@@ -314,13 +310,13 @@ const DayGrid = (props: IProps) => {
                           onInput={(e) => {
                             const hour = +e.currentTarget.value;
                             const newTime = hour * 60 + sm();
-                            setStore(
+                            props.setStore(
                               slot().day as IDayName,
                               slotIdx(),
                               "start",
                               newTime
                             );
-                            props.onChange(store);
+                            props.onChange();
                           }}
                         />
                         <label for="details_start_minute">m</label>
@@ -331,13 +327,13 @@ const DayGrid = (props: IProps) => {
                           onInput={(e) => {
                             const mins = +e.currentTarget.value;
                             const newTime = sh() * 60 + mins;
-                            setStore(
+                            props.setStore(
                               slot().day as IDayName,
                               slotIdx(),
                               "start",
                               newTime
                             );
-                            props.onChange(store);
+                            props.onChange();
                           }}
                         />
 
@@ -350,13 +346,13 @@ const DayGrid = (props: IProps) => {
                           onInput={(e) => {
                             const hour = +e.currentTarget.value;
                             const newTime = hour * 60 + em();
-                            setStore(
+                            props.setStore(
                               slot().day as IDayName,
                               slotIdx(),
                               "end",
                               newTime
                             );
-                            props.onChange(store);
+                            props.onChange();
                           }}
                         />
                         <label for="details_end_minute">m</label>
@@ -367,13 +363,13 @@ const DayGrid = (props: IProps) => {
                           onInput={(e) => {
                             const mins = +e.currentTarget.value;
                             const newTime = eh() * 60 + mins;
-                            setStore(
+                            props.setStore(
                               slot().day as IDayName,
                               slotIdx(),
                               "end",
                               newTime
                             );
-                            props.onChange(store);
+                            props.onChange();
                           }}
                         />
                       </div>

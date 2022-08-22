@@ -17,6 +17,8 @@ const App: Component = () => {
   const [cols, setCols] = createSignal(DAY_NAMES);
   const [locale, setLocale] = createSignal("pt-BR");
 
+  const [value, setValue] = createSignal({});
+
   // createEffect(() => {
   // });
 
@@ -43,7 +45,7 @@ const App: Component = () => {
         <div>
           <label for="locale">locale</label>
           <select id="locale" onInput={(e) => setLocale(e.currentTarget.value)}>
-            <For each={["en", "pt-BR", "de", "jpn"]}>
+            <For each={["pt-BR", "en", "de", "jpn"]}>
               {(locale) => <option>{locale}</option>}
             </For>
           </select>
@@ -52,6 +54,7 @@ const App: Component = () => {
           <select
             id="first_day"
             onInput={(e) => setFirstDay(e.currentTarget.value)}
+            value={firstDay()}
           >
             <For each={DAY_NAMES}>{(day) => <option>{day}</option>}</For>
           </select>
@@ -150,8 +153,10 @@ const App: Component = () => {
         colHeight={colHeight()}
         colMinWidth={colWidth()}
         minSnap={30}
-        // onChange={(val) => console.log(val)}
+        onChange={(val) => setValue(val)}
       />
+
+      <pre>{JSON.stringify(value(), null, 2)}</pre>
     </div>
   );
 };

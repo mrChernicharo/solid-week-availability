@@ -1,23 +1,41 @@
 import { createEffect, onMount, Show } from "solid-js";
+import { createStore, unwrap } from "solid-js/store";
 import { useTheme } from "solid-styled-components";
 import { getWeekDays } from "../../lib/helpers";
+import { IDayName, ITimeSlot } from "../../lib/types";
 import DayGrid from "../DayGrid/DayGrid";
 import SideBar from "../SideBar/SideBar";
 import TopBar from "../TopBar/TopBar";
 import { Container } from "./ContainerStyles";
+type IStore = {
+  [k in IDayName]: ITimeSlot[];
+} & { slot: ITimeSlot | null; day: IDayName; gesture: "idle" | "drag:ready" };
+const initialStore = { slot: null, day: "Mon", gesture: "idle" };
 
 const WeeklyAvailability = (props) => {
+  props.dayCols.forEach((col: IDayName) => {
+    initialStore[col] = [];
+  });
   const theme = useTheme();
 
-  createEffect(() => {
-    // console.log({ s: props.minHour, e: props.maxHour });
-  });
+  const [store, setStore] = createStore(initialStore as IStore);
+
   const cols = () =>
     getWeekDays(props.dayCols, {
       firstDay: props.firstDay,
       locale: props.locale,
       format: "long",
     });
+
+  // createEffect(() => {
+  //   setStore;
+  //   store.day;
+  //   // store.Mon[0]?.start;
+  //   console.log(store, store.Mon[0]?.start);
+  //   // console.log({ s: props.minHour, e: props.maxHour });
+  //   // console.log(store.Mon, store.gesture, store.day);
+  //   // console.log(unwrap(store.slot));
+  // });
 
   return (
     <Show when={props.open}>
@@ -68,9 +86,9 @@ const WeeklyAvailability = (props) => {
             firstDay={props.firstDay}
             theme={theme}
             palette={props.palette}
-            onChange={(state) => {
-              console.log("hey!", { ...state });
-            }}
+            store={store}
+            setStore={setStore}
+            onChange={() => props.onChange(store)}
           />
         </div>
       </Container>
