@@ -186,7 +186,6 @@ const DayColumn = (props: IProps) => {
             locale={props.locale}
             theme={props.theme}
             palette={props.palette}
-            onTimeSlotHover={console.log}
           ></TimeSlot>
         )}
       </For>

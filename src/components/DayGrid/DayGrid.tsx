@@ -99,22 +99,22 @@ const DayGrid = (props: IProps) => {
     if (store.gesture === "idle") return;
 
     if (store.gesture === "drag:ready") {
-      let action;
+      const actions = {
+        top_resize_handle: "drag:top",
+        bottom_resize_handle: "drag:bottom",
+        middle: "drag:middle",
+      };
+      setStore("gesture", actions[e.srcElement.classList[0]]);
+    }
 
-      switch (e.srcElement.classList[0]) {
-        case "top_resize_handle":
-          action = "drag:top";
-          break;
-        case "bottom_resize_handle":
-          action = "drag:bottom";
-          break;
-        case "middle":
-        default:
-          action = "drag:middle";
-          break;
-      }
-
-      setStore("gesture", action);
+    if (store.gesture === "drag:top") {
+      console.log("TOP RESIZE");
+    }
+    if (store.gesture === "drag:bottom") {
+      console.log("BOTTOM RESIZE");
+    }
+    if (store.gesture === "drag:middle") {
+      console.log("MIDDLE DRAG");
     }
   }
 

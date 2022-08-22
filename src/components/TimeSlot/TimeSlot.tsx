@@ -12,15 +12,11 @@ interface ITimeSlotProps extends ParentProps {
   locale: string;
   theme: DefaultTheme;
   palette: IPalette;
-  onTimeSlotHover: any;
 }
 
 export default function TimeSlot(props: ITimeSlotProps) {
-  const [hover, setHover] = createSignal<string | null>(null);
-
   createEffect(() => {
     // console.log(hover());
-    props.onTimeSlotHover(hover());
   });
 
   return (
@@ -30,22 +26,10 @@ export default function TimeSlot(props: ITimeSlotProps) {
       bottom={props.bottom}
       theme={props.theme}
       palette={props.palette}
-      data-hover={hover()}
-      onPointerDown={(e) => {
-        // console.log("oooooh");
-        // e.preventDefault();
-      }}
-      onPointerOut={(e) => setHover(null)}
     >
       <div class="timeSlot_content">
-        <div
-          class="top_resize_handle"
-          onPointerOver={(e) => setHover(`${props.id}_top`)}
-        ></div>
-        <div
-          class="middle"
-          onPointerOver={(e) => setHover(`${props.id}_middle`)}
-        >
+        <div class="top_resize_handle"></div>
+        <div class="middle">
           <div style={{ "pointer-events": "none" }}>
             <span>
               {readableTime(props.timeSlot.start, props.locale)} -
@@ -53,10 +37,7 @@ export default function TimeSlot(props: ITimeSlotProps) {
             </span>
           </div>
         </div>
-        <div
-          class="bottom_resize_handle"
-          onPointerOver={(e) => setHover(`${props.id}_bottom`)}
-        ></div>
+        <div class="bottom_resize_handle"></div>
       </div>
     </TimeSlotContainer>
   );
