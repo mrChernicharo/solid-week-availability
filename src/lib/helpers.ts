@@ -1,9 +1,9 @@
-import { DAY_NAMES, HALF_SLOT } from "./constants";
-import { IDayName, ITimeSlot } from "./types";
+import { WEEKDAYS, HALF_SLOT } from "./constants";
+import { IWeekday, ITimeSlot } from "./types";
 
 // returns ordered dayCols based on dayCols and firstDay
 export const localizeWeekday = (
-  weekday: IDayName,
+  weekday: IWeekday,
   locale: string,
   format: "short" | "long" | "narrow"
 ) => {
@@ -19,8 +19,8 @@ export const localizeWeekday = (
   return d.toLocaleDateString(locale, { weekday: format });
 };
 
-export const weekdayToJs = (weekday: IDayName) =>
-  DAY_NAMES.indexOf(normalizeWeekday(weekday));
+export const weekdayToJs = (weekday: IWeekday) =>
+  WEEKDAYS.indexOf(normalizeWeekday(weekday));
 
 export const normalizeWeekday = (weekday: string) =>
   weekday[0].toUpperCase() + weekday.slice(1, 3).toLowerCase();
@@ -28,7 +28,7 @@ export const normalizeWeekday = (weekday: string) =>
 export const getWeekDays = (
   dayCols: string[],
   options: {
-    firstDay: IDayName;
+    firstDay: IWeekday;
     locale?: string;
     format?: "short" | "long" | "narrow";
     noFormatting?: boolean;
@@ -39,7 +39,7 @@ export const getWeekDays = (
 
   const startDay = {
     weekday,
-    dayNum: DAY_NAMES.indexOf(weekday),
+    dayNum: WEEKDAYS.indexOf(weekday),
   };
 
   const weekdays: {

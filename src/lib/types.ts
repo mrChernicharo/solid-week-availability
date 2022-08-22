@@ -4,10 +4,10 @@ export type IPointerEvent = PointerEvent & {
 };
 
 export type IStore = {
-  [k in IDayName]: ITimeSlot[];
+  [k in IWeekday]: ITimeSlot[];
 } & {
   slot: ITimeSlot | null;
-  day: IDayName;
+  day: IWeekday;
   gesture: "idle" | "drag:ready" | "drag:middle" | "drag:top" | "drag:bottom";
 };
 
@@ -26,7 +26,7 @@ export type ITimeSlot = {
   day?: string;
   color?: string;
 };
-export type IDayName = "Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat";
+export type IWeekday = "Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat";
 
 export interface IPos {
   x: number;
@@ -35,7 +35,7 @@ export interface IPos {
 export interface IColumnClick {
   minutes: number;
   pos: IPos;
-  day: IDayName;
+  day: IWeekday;
   clickedOnExistingSlot: boolean;
   clickedSlots: ITimeSlot[];
   nearbySlots: ITimeSlot[];

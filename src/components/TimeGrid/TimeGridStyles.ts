@@ -23,7 +23,7 @@ interface IModalProps {
 const color = (props: IProps | IModalProps, color: string) =>
   props.theme[props.palette][color];
 
-const DayGridContainer = styled.div<IProps>`
+const TimeGridContainer = styled.div<IProps>`
   position: relative;
   width: ${(props) => props.colWidth * props.cols.length + "px"};
   height: ${(props) => props.colHeight + "px"};
@@ -106,4 +106,4 @@ const MarkerOverlay = styled.div`
   z-index: 30;
 `;
 
-export { DayGridContainer, ModalContainer, MarkerOverlay };
+export { TimeGridContainer, ModalContainer, MarkerOverlay };

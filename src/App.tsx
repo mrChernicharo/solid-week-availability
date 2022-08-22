@@ -1,7 +1,7 @@
 import { Component, createEffect, createSignal, For } from "solid-js";
 
 import WeeklyAvailability from "./components/WeeklyAvailability/WeeklyAvailability";
-import { DAY_NAMES } from "./lib/constants";
+import { WEEKDAYS } from "./lib/constants";
 
 const App: Component = () => {
   const [isOpen, setIsOpen] = createSignal(true);
@@ -14,7 +14,7 @@ const App: Component = () => {
   const [firstDay, setFirstDay] = createSignal("Mon");
   const [minHour, setMinHour] = createSignal(0);
   const [endHour, setEndHour] = createSignal(24);
-  const [cols, setCols] = createSignal(DAY_NAMES);
+  const [cols, setCols] = createSignal(WEEKDAYS);
   const [locale, setLocale] = createSignal("pt-BR");
 
   const [value, setValue] = createSignal({});
@@ -65,12 +65,12 @@ const App: Component = () => {
             value={firstDay()}
             onInput={(e) => setFirstDay(e.currentTarget.value)}
           >
-            <For each={DAY_NAMES}>{(day) => <option>{day}</option>}</For>
+            <For each={WEEKDAYS}>{(day) => <option>{day}</option>}</For>
           </select>
         </div>
 
         <div>
-          <For each={DAY_NAMES}>
+          <For each={WEEKDAYS}>
             {(day, i) => (
               <>
                 <input

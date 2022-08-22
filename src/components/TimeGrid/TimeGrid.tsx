@@ -27,7 +27,7 @@ import {
 } from "../../lib/helpers";
 import {
   IColumnClick,
-  IDayName,
+  IWeekday,
   IPalette,
   IPointerEvent,
   IPos,
@@ -36,21 +36,21 @@ import {
 } from "../../lib/types";
 import DayColumn from "../DayColumn/DayColumn";
 import {
-  DayGridContainer,
+  TimeGridContainer,
   MarkerOverlay,
   ModalContainer,
-} from "./DayGridStyles";
+} from "./TimeGridStyles";
 import idMaker from "@melodev/id-maker";
 import { DefaultTheme } from "solid-styled-components";
 import {
-  DAY_NAMES,
+  WEEKDAYS,
   HALF_SLOT,
   MODAL_HEIGHT,
   MODAL_WIDTH,
 } from "../../lib/constants";
 
 interface IProps {
-  cols: IDayName[];
+  cols: IWeekday[];
   minHour: number;
   maxHour: number;
   locale: string;
@@ -58,7 +58,7 @@ interface IProps {
   colHeight: number;
   headerHeight: number;
   widgetHeight: number;
-  firstDay: IDayName;
+  firstDay: IWeekday;
   theme: DefaultTheme;
   palette: IPalette;
   onChange: (store: IStore) => void;
@@ -66,12 +66,12 @@ interface IProps {
 
 const initialStore = { slot: null, day: "Mon", gesture: "idle" };
 
-const DayGrid = (props: IProps) => {
+const TimeGrid = (props: IProps) => {
   let gridRef: HTMLDivElement;
   let columnClick: IColumnClick;
   let modalPos: IPos = { x: 0, y: 0 };
 
-  props.cols.forEach((col: IDayName) => {
+  props.cols.forEach((col: IWeekday) => {
     initialStore[col] = [];
   });
 
@@ -83,7 +83,7 @@ const DayGrid = (props: IProps) => {
   const [mergeModalOpen, setMergeModalOpen] = createSignal(false);
   const [detailsModalOpen, setDetailsModalOpen] = createSignal(false);
 
-  // console.log("DayGridProps", { ...props, s: { ...unwrap(store) } });
+  // console.log("TimeGridProps", { ...props, s: { ...unwrap(store) } });
 
   createEffect(() => {
     gridRef.addEventListener("pointermove", handlePointerMove);
@@ -181,7 +181,7 @@ const DayGrid = (props: IProps) => {
   // createEffect(() => {});
 
   return (
-    <DayGridContainer
+    <TimeGridContainer
       ref={gridRef!}
       cols={props.cols}
       colHeight={props.colHeight}
@@ -193,7 +193,7 @@ const DayGrid = (props: IProps) => {
     >
       {/* DAY COLUMNS */}
       <For each={props.cols}>
-        {(col: IDayName, i) => (
+        {(col: IWeekday, i) => (
           <DayColumn
             day={col}
             colIdx={i()}
@@ -332,7 +332,7 @@ const DayGrid = (props: IProps) => {
                       </button>
                       <p>
                         {localizeWeekday(
-                          slot().day as IDayName,
+                          slot().day as IWeekday,
                           props.locale,
                           "long"
                         )}
@@ -361,7 +361,7 @@ const DayGrid = (props: IProps) => {
                             const hour = +e.currentTarget.value;
                             const newTime = hour * 60 + sm();
                             setStore(
-                              slot().day as IDayName,
+                              slot().day as IWeekday,
                               slotIdx(),
                               "start",
                               newTime
@@ -378,7 +378,7 @@ const DayGrid = (props: IProps) => {
                             const mins = +e.currentTarget.value;
                             const newTime = sh() * 60 + mins;
                             setStore(
-                              slot().day as IDayName,
+                              slot().day as IWeekday,
                               slotIdx(),
                               "start",
                               newTime
@@ -397,7 +397,7 @@ const DayGrid = (props: IProps) => {
                             const hour = +e.currentTarget.value;
                             const newTime = hour * 60 + em();
                             setStore(
-                              slot().day as IDayName,
+                              slot().day as IWeekday,
                               slotIdx(),
                               "end",
                               newTime
@@ -414,7 +414,7 @@ const DayGrid = (props: IProps) => {
                             const mins = +e.currentTarget.value;
                             const newTime = eh() * 60 + mins;
                             setStore(
-                              slot().day as IDayName,
+                              slot().day as IWeekday,
                               slotIdx(),
                               "end",
                               newTime
@@ -447,8 +447,8 @@ const DayGrid = (props: IProps) => {
           }}
         />
       </Show>
-    </DayGridContainer>
+    </TimeGridContainer>
   );
 };
 
-export default DayGrid;
+export default TimeGrid;

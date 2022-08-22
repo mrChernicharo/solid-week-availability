@@ -10,7 +10,7 @@ import {
 } from "../../lib/helpers";
 import {
   IColumnClick,
-  IDayName,
+  IWeekday,
   IPalette,
   IPointerEvent,
   IPos,
@@ -23,7 +23,7 @@ import { DefaultTheme } from "solid-styled-components";
 import TimeSlot from "../TimeSlot/TimeSlot";
 
 interface IProps {
-  day: IDayName;
+  day: IWeekday;
   locale: string;
   colIdx: number;
   minHour: number;
@@ -147,7 +147,7 @@ const DayColumn = (props: IProps) => {
       idx={props.colIdx}
     >
       <div style={{ "pointer-events": "none" }}>
-        {localizeWeekday(props.day as IDayName, props.locale, "long")}
+        {localizeWeekday(props.day as IWeekday, props.locale, "long")}
       </div>
       {/* X Marker */}
       <Show when={clickedPos() !== null}>
