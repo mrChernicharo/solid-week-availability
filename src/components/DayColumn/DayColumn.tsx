@@ -40,6 +40,7 @@ interface IProps {
   headerHeight: number;
   theme: DefaultTheme;
 
+  clickedOut: () => void;
   showTimeSlotModal: () => void;
   showOverlapConfirm: () => void;
   onColumnClick: (e: IPointerEvent, obj: IColumnClick) => void;
@@ -80,63 +81,72 @@ const DayColumn = (props: IProps) => {
 
   const [clickedPos, setClickedPos] = createSignal<IPos | null>(null);
 
+  const getOverlappingSlots = (clickTime: number) =>
+    findOverlappingSlots(clickTime, clickTime, props.timeSlots);
+
+  const getSlotsNearby = (clickTime: number) =>
+    findOverlappingSlots(
+      clickTime - HALF_SLOT,
+      clickTime + HALF_SLOT,
+      props.timeSlots
+    );
+
+  const getTime = () =>
+    yPosToTime(
+      clickedPos()?.y!, // offsetY gets click pos relative to clicked node
+      props.minHour,
+      props.maxHour,
+      rect().height
+    );
+
   createEffect(() => {
     // console.log(clickedPos());
     // setClickedPos(null);
     // console.log({ ...props });
   });
 
-  function handlePointerUp(e: IPointerEvent) {
-    // if (e.buttons !== 1) return; // left-click only!
-    // console.log("dayColumn::handlePointerUp", e);
+  function handlePointerDown(e: IPointerEvent) {
+    console.log("pointerDown", { pos: clickedPos(), e });
 
     setClickedPos({
       x: e.offsetX,
       y: e.offsetY,
     });
 
-    const clickTime = yPosToTime(
-      e.offsetY, // offsetY gets click pos relative to clicked node
-      props.minHour,
-      props.maxHour,
-      rect().height
-    );
-
-    const overlappingSlots = findOverlappingSlots(
-      clickTime,
-      clickTime,
-      props.timeSlots
-    );
-
-    const slotsNearby = findOverlappingSlots(
-      clickTime - HALF_SLOT,
-      clickTime + HALF_SLOT,
-      props.timeSlots
-    );
+    const clickTime = () => getTime();
 
     let clickedOnExistingSlot = false;
-    if (overlappingSlots.length) {
+    if (getOverlappingSlots(clickTime()).length) {
       clickedOnExistingSlot = true;
-      props.showTimeSlotModal();
-    } else if (slotsNearby.length) {
+    } else if (getSlotsNearby(clickTime()).length) {
       props.showOverlapConfirm();
     }
 
     // columnClick marker
     const colClick: IColumnClick = {
-      minutes: clickTime,
+      minutes: clickTime(),
       pos: clickedPos()!,
       day: props.day,
       colIdx: props.colIdx,
-      clickedSlots: unwrap(overlappingSlots),
+      clickedSlots: unwrap(getOverlappingSlots(clickTime())),
       clickedOnExistingSlot,
-      nearbySlots: [...unwrap(slotsNearby)],
+      nearbySlots: [...unwrap(getSlotsNearby(clickTime()))],
     };
     props.onColumnClick(e, colClick);
 
     // make X icon disappear
     clearTimeout(timeout);
     timeout = setTimeout(() => setClickedPos(null), MARKER_TIME);
+  }
+
+  function handlePointerUp(e: IPointerEvent) {
+    const clickTime = () => getTime();
+
+    if (getOverlappingSlots(clickTime()).length) {
+      props.showTimeSlotModal();
+    }
+
+    props.clickedOut();
   }
 
   return (
@@ -146,6 +156,7 @@ const DayColumn = (props: IProps) => {
       width={props.width}
       theme={props.theme}
       palette={props.palette}
+      onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
       data-cy={`day_column_${props.day}`}
       idx={props.colIdx}

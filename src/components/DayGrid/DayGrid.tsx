@@ -63,13 +63,6 @@ const DayGrid = (props: IProps) => {
   let modalPos: IPos = { x: 0, y: 0 };
   let columnClick: IColumnClick;
 
-  // const localeCols = () =>
-  //   getWeekDays(props.cols, {
-  //     firstDay: props.firstDay,
-  //     locale: props.locale,
-  //     format: "long",
-  //   }) as IDayName[];
-
   props.cols.forEach((col: IDayName) => {
     initialStore[col] = [];
   });
@@ -92,13 +85,12 @@ const DayGrid = (props: IProps) => {
 
     if (columnClick.clickedSlots.length) {
       setStore("slot", columnClick.clickedSlots.at(-1)!);
-      setStore("gesture", "drag:ready");
     } else {
       setStore("slot", null);
     }
 
     setStore("day", columnClick.day);
-    handleModals();
+    updateModalState();
     props.onChange(store);
   }
 
@@ -120,7 +112,7 @@ const DayGrid = (props: IProps) => {
     setStore(day, merged);
   }
 
-  function handleModals() {
+  function updateModalState() {
     const widgetEl = () => document.querySelector("#widget_root_element");
     const wRect = () => getElementRect(widgetEl() as HTMLDivElement);
 
@@ -141,17 +133,13 @@ const DayGrid = (props: IProps) => {
 
     if (columnClick.clickedOnExistingSlot) {
       console.log("WE HAVE OVERLAPPING TIMESLOTS!");
+      setStore("gesture", "drag:ready");
       return;
     }
     if (!mergeModalOpen()) setCreateModalOpen(true);
   }
 
-  createEffect(() => {
-    // console.log({
-    //   slot: unwrap(store.slot),
-    //   id: unwrap(store.slot?.id),
-    // });
-  });
+  // createEffect(() => {});
 
   return (
     <DayGridContainer
@@ -184,9 +172,13 @@ const DayGrid = (props: IProps) => {
               setMergeModalOpen(true);
             }}
             showTimeSlotModal={() => {
-              setTimeout(() => setDetailsModalOpen(true), 0);
+              setDetailsModalOpen(true);
+              // setTimeout(() => setDetailsModalOpen(true), 0);
             }}
             timeSlots={store[col]}
+            clickedOut={() => {
+              setStore("gesture", "idle");
+            }}
           />
         )}
       </For>
@@ -218,7 +210,9 @@ const DayGrid = (props: IProps) => {
             <Show when={createModalOpen()}>
               <button
                 data-cy="close_modal_btn"
-                onclick={(e) => setCreateModalOpen(false)}
+                onclick={(e) => {
+                  setCreateModalOpen(false);
+                }}
               >
                 <FaSolidX />
               </button>
@@ -239,7 +233,9 @@ const DayGrid = (props: IProps) => {
             <Show when={mergeModalOpen()}>
               <button
                 data-cy="close_modal_btn"
-                onclick={(e) => setMergeModalOpen(false)}
+                onclick={(e) => {
+                  setMergeModalOpen(false);
+                }}
               >
                 <FaSolidX />
               </button>
@@ -289,7 +285,9 @@ const DayGrid = (props: IProps) => {
                     <>
                       <button
                         data-cy="close_modal_btn"
-                        onclick={(e) => setDetailsModalOpen(false)}
+                        onclick={(e) => {
+                          setDetailsModalOpen(false);
+                        }}
                       >
                         <FaSolidX />
                       </button>
@@ -388,7 +386,6 @@ const DayGrid = (props: IProps) => {
                       </div>
                       <button
                         onclick={(e) => {
-                          setStore("gesture", "idle");
                           setDetailsModalOpen(false);
                         }}
                       >
@@ -408,7 +405,6 @@ const DayGrid = (props: IProps) => {
             setCreateModalOpen(false);
             setMergeModalOpen(false);
             setDetailsModalOpen(false);
-            setStore("gesture", "idle");
           }}
         />
       </Show>
