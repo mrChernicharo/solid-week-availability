@@ -7,7 +7,15 @@ import {
   FaSolidPaperclip,
   FaSolidX,
 } from "solid-icons/fa";
-import { createEffect, createSignal, For, on, Show } from "solid-js";
+import {
+  createEffect,
+  createSignal,
+  For,
+  on,
+  onCleanup,
+  onMount,
+  Show,
+} from "solid-js";
 import { createStore, SetStoreFunction, unwrap } from "solid-js/store";
 import {
   getElementRect,
@@ -60,8 +68,8 @@ const initialStore = { slot: null, day: "Mon", gesture: "idle" };
 
 const DayGrid = (props: IProps) => {
   let gridRef: HTMLDivElement;
-  let modalPos: IPos = { x: 0, y: 0 };
   let columnClick: IColumnClick;
+  let modalPos: IPos = { x: 0, y: 0 };
 
   props.cols.forEach((col: IDayName) => {
     initialStore[col] = [];
@@ -77,7 +85,31 @@ const DayGrid = (props: IProps) => {
 
   // console.log("DayGridProps", { ...props, s: { ...unwrap(store) } });
 
+  createEffect(() => {
+    gridRef.addEventListener("pointermove", handlePointerMove);
+  });
+
+  onCleanup(() => {
+    gridRef.removeEventListener("pointermove", handlePointerMove);
+  });
+
   createEffect(() => {});
+
+  function handlePointerMove(e) {
+    if (store.gesture === "idle") return;
+
+    if (store.gesture === "drag:ready") {
+      console.log(e);
+
+      // if (isTopHandle) {
+      // 	return setStore('gesture', 'resize:top:active');
+      // }
+      // if (iSBottomHandle) {
+      // 	return setStore('gesture', 'resize:bottom:active');
+      // }
+      // return setStore('gesture', 'drag:active');
+    }
+  }
 
   function handleColumnClick(e: IPointerEvent, obj: IColumnClick) {
     // @ts-ignore

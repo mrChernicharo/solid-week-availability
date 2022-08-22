@@ -5,7 +5,11 @@ export type IPointerEvent = PointerEvent & {
 
 export type IStore = {
   [k in IDayName]: ITimeSlot[];
-} & { slot: ITimeSlot | null; day: IDayName; gesture: "idle" | "drag:ready" };
+} & {
+  slot: ITimeSlot | null;
+  day: IDayName;
+  gesture: "idle" | "drag:ready" | "drag:middle" | "drag:top" | "drag:bottom";
+};
 
 export type IPalette = "light" | "dark";
 

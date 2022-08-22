@@ -20,13 +20,8 @@ import { DayColumnContainer, Marker } from "./DayColumnStyles";
 import { FaSolidPlus } from "solid-icons/fa";
 import { unwrap } from "solid-js/store";
 import { DefaultTheme } from "solid-styled-components";
-interface ITimeSlotProps extends ParentProps {
-  id: string;
-  top: number;
-  bottom: number;
-  timeSlot: ITimeSlot;
-  locale: string;
-}
+import TimeSlot from "../TimeSlot/TimeSlot";
+
 interface IProps {
   day: IDayName;
   locale: string;
@@ -49,30 +44,6 @@ interface IProps {
 
 const ICON_SIZE = 16;
 
-const TimeSlot = (props: ITimeSlotProps) => {
-  // timeToYPos(props.timeSlot.start);
-  // console.log("timeslot", { ...props });
-
-  return (
-    <div
-      style={{
-        position: "absolute",
-        width: "100%",
-        height: props.bottom - props.top + "px",
-        background: "lightgreen",
-        top: props.top + "px",
-        "pointer-events": "none",
-        opacity: 0.8,
-      }}
-    >
-      <span style={{ "font-size": "small" }}>
-        {readableTime(props.timeSlot.start, props.locale)} -
-        {readableTime(props.timeSlot.end, props.locale)}
-      </span>
-    </div>
-  );
-};
-
 const DayColumn = (props: IProps) => {
   let columnRef: HTMLDivElement;
   let timeout;
@@ -91,7 +62,7 @@ const DayColumn = (props: IProps) => {
       props.timeSlots
     );
 
-  const getTime = () =>
+  const getClickedTime = () =>
     yPosToTime(
       clickedPos()?.y!, // offsetY gets click pos relative to clicked node
       props.minHour,
@@ -113,7 +84,7 @@ const DayColumn = (props: IProps) => {
       y: e.offsetY,
     });
 
-    const clickTime = () => getTime();
+    const clickTime = () => getClickedTime();
 
     let clickedOnExistingSlot = false;
     if (getOverlappingSlots(clickTime()).length) {
@@ -140,7 +111,7 @@ const DayColumn = (props: IProps) => {
   }
 
   function handlePointerUp(e: IPointerEvent) {
-    const clickTime = () => getTime();
+    const clickTime = () => getClickedTime();
 
     if (getOverlappingSlots(clickTime()).length) {
       props.showTimeSlotModal();
@@ -197,6 +168,8 @@ const DayColumn = (props: IProps) => {
             )}
             timeSlot={slot}
             locale={props.locale}
+            theme={props.theme}
+            palette={props.palette}
           ></TimeSlot>
         )}
       </For>

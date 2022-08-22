@@ -1,4 +1,5 @@
 import { DefaultTheme, styled } from "solid-styled-components";
+import { IPalette } from "../../lib/types";
 
 interface IProps {
   theme: DefaultTheme;
