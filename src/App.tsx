@@ -23,29 +23,38 @@ const App: Component = () => {
   // });
 
   return (
-    <div>
-      <div style={{ "text-align": "center" }}>
+    <main>
+      <section class="controls" style={{ "text-align": "center" }}>
         <h1>Weekly Availability</h1>
 
         <div>
-          <div>palette: {palette()}</div>
-          <div>open: {isOpen() ? "true" : "false"}</div>
+          <div>
+            <button
+              data-cy="palette_btn"
+              onClick={(e) =>
+                setPalette(palette() === "light" ? "dark" : "light")
+              }
+            >
+              {palette() === "light" ? "Dark" : "Light"} mode
+            </button>
+            palette: {palette()}
+          </div>
+          <div>
+            <button data-cy="open_btn" onClick={(e) => setIsOpen(!isOpen())}>
+              {isOpen() ? "Close" : "Open"}
+            </button>
+            open: {isOpen() ? "true" : "false"}
+          </div>
         </div>
-
-        <button
-          onClick={(e) => setPalette(palette() === "light" ? "dark" : "light")}
-          data-cy="palette_btn"
-        >
-          change palette
-        </button>
-        <button onClick={(e) => setIsOpen(!isOpen())} data-cy="open_btn">
-          {isOpen() ? "Close" : "Open"}
-        </button>
 
         <div>
           <label for="locale">locale</label>
-          <select id="locale" onInput={(e) => setLocale(e.currentTarget.value)}>
-            <For each={["pt-BR", "en", "de", "jpn"]}>
+          <select
+            id="locale"
+            value={locale()}
+            onInput={(e) => setLocale(e.currentTarget.value)}
+          >
+            <For each={["en", "pt-BR", "de", "it", "fr", "jpn"]}>
               {(locale) => <option>{locale}</option>}
             </For>
           </select>
@@ -53,12 +62,13 @@ const App: Component = () => {
           <label for="first_day">first_day</label>
           <select
             id="first_day"
-            onInput={(e) => setFirstDay(e.currentTarget.value)}
             value={firstDay()}
+            onInput={(e) => setFirstDay(e.currentTarget.value)}
           >
             <For each={DAY_NAMES}>{(day) => <option>{day}</option>}</For>
           </select>
         </div>
+
         <div>
           <For each={DAY_NAMES}>
             {(day, i) => (
@@ -136,7 +146,7 @@ const App: Component = () => {
             onInput={(e) => setColWidth(+e.currentTarget.value)}
           />
         </div>
-      </div>
+      </section>
 
       <WeeklyAvailability
         locale={locale()}
@@ -155,9 +165,7 @@ const App: Component = () => {
         minSnap={30}
         onChange={(val) => setValue(val)}
       />
-
-      <pre>{JSON.stringify(value(), null, 2)}</pre>
-    </div>
+    </main>
   );
 };
 

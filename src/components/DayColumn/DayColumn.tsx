@@ -1,15 +1,9 @@
-import {
-  createEffect,
-  createSignal,
-  For,
-  ParentProps,
-  PropsWithChildren,
-  Show,
-} from "solid-js";
+import { createEffect, createSignal, For, ParentProps, Show } from "solid-js";
 import { HALF_SLOT, MARKER_TIME } from "../../lib/constants";
 import {
   findOverlappingSlots,
   getElementRect,
+  localizeWeekday,
   readableTime,
   timeToYPos,
   yPosToTime,
@@ -17,6 +11,7 @@ import {
 import {
   IColumnClick,
   IDayName,
+  IPalette,
   IPointerEvent,
   IPos,
   ITimeSlot,
@@ -39,7 +34,7 @@ interface IProps {
   minHour: number;
   maxHour: number;
   timeSlots: ITimeSlot[];
-  palette: "light" | "dark";
+  palette: IPalette;
   width: number;
   height: number;
   headerHeight: number;
@@ -88,6 +83,7 @@ const DayColumn = (props: IProps) => {
   createEffect(() => {
     // console.log(clickedPos());
     // setClickedPos(null);
+    // console.log({ ...props });
   });
 
   function handleClick(e: IPointerEvent) {
@@ -112,13 +108,6 @@ const DayColumn = (props: IProps) => {
       clickTime,
       props.timeSlots
     );
-
-    if (overlappingSlots.length > 1)
-      console.log(
-        "we have more than one overlapping timeslot",
-        overlappingSlots
-      );
-    // throw new Error("should there be more than 1?");
 
     const slotsNearby = findOverlappingSlots(
       clickTime - HALF_SLOT,
@@ -162,6 +151,7 @@ const DayColumn = (props: IProps) => {
       data-cy={`day_column_${props.day}`}
       idx={props.colIdx}
     >
+      {localizeWeekday(props.day as IDayName, props.locale, "long")}
       {/* X Marker */}
       <Show when={clickedPos() !== null}>
         {() => {
@@ -178,6 +168,7 @@ const DayColumn = (props: IProps) => {
         }}
       </Show>
 
+      {/* TimeSlots */}
       <For each={props.timeSlots}>
         {(slot: ITimeSlot) => (
           <TimeSlot

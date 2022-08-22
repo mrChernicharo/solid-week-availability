@@ -2,30 +2,19 @@ import { createEffect, onMount, Show } from "solid-js";
 import { createStore, unwrap } from "solid-js/store";
 import { useTheme } from "solid-styled-components";
 import { getWeekDays } from "../../lib/helpers";
-import { IDayName, ITimeSlot } from "../../lib/types";
+import { IDayName } from "../../lib/types";
 import DayGrid from "../DayGrid/DayGrid";
 import SideBar from "../SideBar/SideBar";
 import TopBar from "../TopBar/TopBar";
 import { Container } from "./ContainerStyles";
-type IStore = {
-  [k in IDayName]: ITimeSlot[];
-} & { slot: ITimeSlot | null; day: IDayName; gesture: "idle" | "drag:ready" };
-const initialStore = { slot: null, day: "Mon", gesture: "idle" };
 
 const WeeklyAvailability = (props) => {
-  props.dayCols.forEach((col: IDayName) => {
-    initialStore[col] = [];
-  });
   const theme = useTheme();
-
-  const [store, setStore] = createStore(initialStore as IStore);
 
   const cols = () =>
     getWeekDays(props.dayCols, {
       firstDay: props.firstDay,
-      locale: props.locale,
-      format: "long",
-    });
+    }) as IDayName[];
 
   // createEffect(() => {
   //   setStore;
@@ -53,6 +42,7 @@ const WeeklyAvailability = (props) => {
           height={props.headerHeight}
           colWidth={props.colMinWidth}
           locale={props.locale}
+          firstDay={props.firstDay}
           theme={theme}
           palette={props.palette}
         />
@@ -74,8 +64,7 @@ const WeeklyAvailability = (props) => {
             palette={props.palette}
           />
           <DayGrid
-            cols={props.dayCols}
-            localizedCols={cols()}
+            cols={cols()}
             minHour={props.minHour}
             maxHour={props.maxHour}
             locale={props.locale}
@@ -86,9 +75,9 @@ const WeeklyAvailability = (props) => {
             firstDay={props.firstDay}
             theme={theme}
             palette={props.palette}
-            store={store}
-            setStore={setStore}
-            onChange={() => props.onChange(store)}
+            onChange={(state) => {
+              console.log("hey", { ...state });
+            }}
           />
         </div>
       </Container>
