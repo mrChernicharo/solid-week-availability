@@ -21,11 +21,11 @@ const TimeSlotContainer = styled.div<IProps>`
   height: ${(props) => props.bottom - props.top + "px"};
   width: 100%;
   background: dodgerblue;
-  pointer-events: none;
+  /* pointer-events: none; */
   opacity: 0.8;
   font-size: small;
 
-  .timeslot_content {
+  .timeSlot_content {
     position: relative;
     height: 100%;
 

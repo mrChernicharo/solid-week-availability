@@ -99,8 +99,16 @@ const DayGrid = (props: IProps) => {
     if (store.gesture === "idle") return;
 
     if (store.gesture === "drag:ready") {
-      console.log(e);
+      console.log({ timeSlotContentEl: e.srcElement.children[0].children[0] });
+      const topThumbRegex = /_TopThumb_/g;
+      const bottomThumbRegex = /_BottomThumb_/g;
 
+      // const isTopHandle = !!Array.from(e.srcElement.classList).find((c: any) =>
+      //   c.match(topThumbRegex)
+      // );
+      // const iSBottomHandle = !!Array.from(e.srcElement.classList).find(
+      //   (c: any) => c.match(bottomThumbRegex)
+      // );
       // if (isTopHandle) {
       // 	return setStore('gesture', 'resize:top:active');
       // }

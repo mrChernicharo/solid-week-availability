@@ -153,7 +153,6 @@ const DayColumn = (props: IProps) => {
       <For each={props.timeSlots}>
         {(slot: ITimeSlot) => (
           <TimeSlot
-            id={`timeSlot_${slot.id}`}
             top={timeToYPos(
               slot.start,
               props.minHour,
@@ -166,6 +165,7 @@ const DayColumn = (props: IProps) => {
               props.maxHour,
               props.height
             )}
+            id={slot.id}
             timeSlot={slot}
             locale={props.locale}
             theme={props.theme}
