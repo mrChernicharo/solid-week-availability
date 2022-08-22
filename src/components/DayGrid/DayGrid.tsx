@@ -45,7 +45,6 @@ type IStore = {
 
 interface IProps {
   cols: IDayName[];
-  localizedCols: string[];
   minHour: number;
   maxHour: number;
   locale: string;
@@ -53,7 +52,7 @@ interface IProps {
   colHeight: number;
   headerHeight: number;
   widgetHeight: number;
-  firstDay: string;
+  firstDay: IDayName;
   theme: DefaultTheme;
   palette: "light" | "dark";
   onChange: (store: IStore) => void;
@@ -65,6 +64,13 @@ const DayGrid = (props: IProps) => {
   let gridRef: HTMLDivElement;
   let modalPos: IPos = { x: 0, y: 0 };
   let columnClick: IColumnClick;
+
+  const localeCols = () =>
+    getWeekDays(props.cols, {
+      firstDay: props.firstDay,
+      locale: props.locale,
+      format: "long",
+    }) as IDayName[];
 
   props.cols.forEach((col: IDayName) => {
     initialStore[col] = [];
@@ -80,13 +86,13 @@ const DayGrid = (props: IProps) => {
 
   // console.log("DayGridProps", { ...props, s: { ...unwrap(store) } });
 
-  // createEffect(() => {
-  //   // DAY_NAMES.forEach((day) => {
-  //   //   store[day];
-  //   // });
-
-  //   props.onChange(store);
-  // });
+  createEffect(() => {
+    //   // DAY_NAMES.forEach((day) => {
+    //   //   store[day];
+    //   // });
+    // console.log(localeCols());
+    //   props.onChange(store);
+  });
 
   function handleColumnClick(e: IPointerEvent, obj: IColumnClick) {
     // @ts-ignore
@@ -163,7 +169,7 @@ const DayGrid = (props: IProps) => {
   return (
     <DayGridContainer
       ref={gridRef!}
-      cols={props.localizedCols}
+      cols={props.cols}
       colHeight={props.colHeight}
       colWidth={props.colWidth}
       theme={props.theme}
@@ -177,6 +183,7 @@ const DayGrid = (props: IProps) => {
           <DayColumn
             day={col}
             colIdx={i()}
+            localeDayName={localeCols()[i()]}
             locale={props.locale}
             height={props.colHeight}
             headerHeight={props.headerHeight}

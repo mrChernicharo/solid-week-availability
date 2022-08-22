@@ -1,6 +1,7 @@
 import { createEffect, onMount, Show } from "solid-js";
 import { useTheme } from "solid-styled-components";
 import { getWeekDays } from "../../lib/helpers";
+import { IDayName } from "../../lib/types";
 import DayGrid from "../DayGrid/DayGrid";
 import SideBar from "../SideBar/SideBar";
 import TopBar from "../TopBar/TopBar";
@@ -15,9 +16,7 @@ const WeeklyAvailability = (props) => {
   const cols = () =>
     getWeekDays(props.dayCols, {
       firstDay: props.firstDay,
-      locale: props.locale,
-      format: "long",
-    });
+    }) as IDayName[];
 
   return (
     <Show when={props.open}>
@@ -35,6 +34,7 @@ const WeeklyAvailability = (props) => {
           height={props.headerHeight}
           colWidth={props.colMinWidth}
           locale={props.locale}
+          firstDay={props.firstDay}
           theme={theme}
           palette={props.palette}
         />
@@ -56,8 +56,7 @@ const WeeklyAvailability = (props) => {
             palette={props.palette}
           />
           <DayGrid
-            cols={props.dayCols}
-            localizedCols={cols()}
+            cols={cols()}
             minHour={props.minHour}
             maxHour={props.maxHour}
             locale={props.locale}

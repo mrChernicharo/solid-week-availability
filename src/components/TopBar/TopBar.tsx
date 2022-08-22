@@ -5,6 +5,12 @@ import { TopBarContainer } from "./TopBarStyles";
 const TopBar = (props) => {
   // console.log("TopBarProps", { ...props });
   // console.log(getWeekDays(props.locale, "long"));
+  const localeCols = () =>
+    getWeekDays(props.cols, {
+      firstDay: props.firstDay,
+      locale: props.locale,
+      format: "long",
+    });
 
   return (
     <TopBarContainer
@@ -16,7 +22,7 @@ const TopBar = (props) => {
       data-cy="top_bar"
     >
       <div class="shim" data-cy="top_bar_shim"></div>
-      <For each={props.cols}>
+      <For each={localeCols()}>
         {(col: string) => (
           <div class="weekday" data-cy={`top_bar_weekday_${col}`}>
             {col}
