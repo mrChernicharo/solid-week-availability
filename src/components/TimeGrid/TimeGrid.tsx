@@ -173,11 +173,9 @@ const TimeGrid = (props: IProps) => {
     return newTimeSlot;
   }
 
-  function mergeSlots() {
-    const newSlot = createNewTimeSlot();
-    const day = columnClick.day;
-    const merged = getMergedTimeslots(newSlot, store[day]);
-    setStore(day, merged);
+  function mergeSlots(newSlot: ITimeSlot) {
+    const merged = getMergedTimeslots(newSlot, store[newSlot.day]);
+    setStore(newSlot.day, merged);
   }
 
   function updateModalState() {
@@ -255,7 +253,8 @@ const TimeGrid = (props: IProps) => {
               console.log("call clickedOut", overlapping);
               if (overlapping.length > 0) {
                 console.log("we have overlapping timeslots on this drop !");
-                // setMergeModalOpen(true);
+                setMergeModalOpen(true);
+                // mergeSlots(store.slot!);
               }
               // getOverlappingSlots(store[col])
 
@@ -302,7 +301,7 @@ const TimeGrid = (props: IProps) => {
                 <button
                   onclick={(e) => {
                     const newSlot = createNewTimeSlot();
-                    setStore(columnClick.day, (slots) => [...slots, newSlot]);
+                    setStore(newSlot.day, (slots) => [...slots, newSlot]);
                     setCreateModalOpen(false);
                   }}
                 >
@@ -322,19 +321,28 @@ const TimeGrid = (props: IProps) => {
                 <FaSolidX />
               </button>
               <main>
+                {/* Merge */}
                 <button
                   onclick={(e) => {
-                    mergeSlots();
+                    console.log({
+                      columnClick: columnClick.clickedSlots,
+                      store: store[columnClick.day][0],
+                    });
+
+                    columnClick.clickedSlots.length
+                      ? mergeSlots(store[columnClick.day][0])
+                      : mergeSlots(createNewTimeSlot());
                     setMergeModalOpen(false);
                   }}
                 >
                   <FaSolidLayerGroup size={24} />
                 </button>
 
+                {/* Create New */}
                 <button
                   onclick={(e) => {
                     const newSlot = createNewTimeSlot();
-                    setStore(columnClick.day, (slots) => [...slots, newSlot]);
+                    setStore(newSlot.day, (slots) => [...slots, newSlot]);
                     setMergeModalOpen(false);
                   }}
                 >
