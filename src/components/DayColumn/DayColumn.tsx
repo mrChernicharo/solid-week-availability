@@ -110,7 +110,7 @@ const DayColumn = (props) => {
       width={props.width}
       theme={props.theme}
       palette={props.palette}
-      onClick={props.onClick}
+      onClick={props.onCancelableClick}
       onPointerDown={props.onPointerDown}
       // onPointerDown={handlePointerDown}
       // onPointerUp={handlePointerUp}

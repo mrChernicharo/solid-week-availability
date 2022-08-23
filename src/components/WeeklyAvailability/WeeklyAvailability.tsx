@@ -1,7 +1,7 @@
 import { createEffect, createSignal, onCleanup, onMount, Show } from "solid-js";
 import { createStore, unwrap } from "solid-js/store";
 import { useTheme } from "solid-styled-components";
-import { getWeekDays } from "../../lib/helpers";
+import { getWeekDays, isMobile } from "../../lib/helpers";
 import { IWeekday, IStore, IPalette } from "../../lib/types";
 import TimeGrid from "../TimeGrid/TimeGrid";
 import SideBar from "../SideBar/SideBar";
@@ -36,7 +36,7 @@ const WeeklyAvailability = (props: IProps) => {
   const [store, setStore] = createStore(initialStore as IStore);
 
   function handlePointerDown(e) {
-    // console.log("handlePointerDown", e);
+    console.log("handlePointerDown", e);
     // Mobile -> doesn't fire after touchcancel has been emitted
     // DRAG
     // SCROLL
@@ -60,7 +60,10 @@ const WeeklyAvailability = (props: IProps) => {
     // started moving
   }
   function handlePointerUp(e) {
-    // console.log("handlePointerUp", e);
+    setTimeout(() => {
+      if (isMobile() && e instanceof TouchEvent) return console.log("touchEnd", e);
+      if (!isMobile() && e instanceof PointerEvent) return console.log("pointerUp", e);
+    }, 30);
     // Mobile Behavior -> fires on click-up, if brief
     //                    if long,
     //                         emits pointercancel if you move,
@@ -74,24 +77,24 @@ const WeeklyAvailability = (props: IProps) => {
   }
 
   function onColumnClick(e) {
-    console.log(e);
+    console.log("onColumnClick", e);
   }
 
   onMount(() => {
-    document.addEventListener("click", handleClick);
-    document.addEventListener("pointerup", handlePointerUp);
+    // document.addEventListener("click", handleClick);
     document.addEventListener("pointerdown", handlePointerDown);
-    document.addEventListener("pointercancel", handlePointerCancel);
-    document.addEventListener("touchstart", handleTouchStart);
-    document.addEventListener("touchend", handleTouchEnd);
+    // document.addEventListener("pointercancel", handlePointerCancel);
+    // document.addEventListener("touchstart", handleTouchStart);
+    document.addEventListener("pointerup", handlePointerUp);
+    document.addEventListener("touchend", handlePointerUp);
   });
   onCleanup(() => {
-    document.removeEventListener("pointerup", handlePointerUp);
     document.removeEventListener("pointerdown", handlePointerDown);
-    document.removeEventListener("pointercancel", handlePointerCancel);
-    document.removeEventListener("click", handleClick);
-    document.addEventListener("touchend", handleTouchEnd);
-    document.addEventListener("touchstart", handleTouchStart);
+    // document.removeEventListener("pointercancel", handlePointerCancel);
+    // document.removeEventListener("click", handleClick);
+    document.removeEventListener("pointerup", handlePointerUp);
+    document.addEventListener("touchend", handlePointerUp);
+    // document.addEventListener("touchstart", handleTouchStart);
   });
 
   // touchend + pointerup

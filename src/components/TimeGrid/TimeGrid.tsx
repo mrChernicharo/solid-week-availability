@@ -43,14 +43,14 @@ import { HALF_SLOT, MIN_SLOT_DURATION, MODAL_HEIGHT, MODAL_WIDTH } from "../../l
 
 const TimeGrid = (props) => {
   let columnClick: IColumnClick;
-  let gridRef: HTMLDivElement;
   let modalPos: IPos = { x: 0, y: 0 };
+  let gridRef: HTMLDivElement;
   let clickMoment = 0;
 
   function handlePointerDown(e) {
     clickMoment = Date.now();
   }
-  function handleClick(e) {
+  function handleCancelableClick(e) {
     let clickFinish = Date.now();
     if (clickFinish - clickMoment < 500) props.onColumnClick(e);
   }
@@ -186,7 +186,7 @@ const TimeGrid = (props) => {
             theme={props.theme}
             palette={props.palette}
             timeSlots={[]}
-            onClick={handleClick}
+            onCancelableClick={handleCancelableClick}
             onPointerDown={handlePointerDown}
             // onColumnClick={handleColumnClick}
             // showTimeSlotModal={() => setDetailsModalOpen(true)}

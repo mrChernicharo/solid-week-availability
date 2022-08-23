@@ -16,7 +16,8 @@ export const localizeWeekday = (weekday: IWeekday, locale: string, format: "shor
 
 export const weekdayToJs = (weekday: IWeekday) => WEEKDAYS.indexOf(normalizeWeekday(weekday));
 
-export const normalizeWeekday = (weekday: string) => weekday[0].toUpperCase() + weekday.slice(1, 3).toLowerCase();
+export const normalizeWeekday = (weekday: string) =>
+  (weekday[0].toUpperCase() + weekday.slice(1, 3).toLowerCase()) as IWeekday;
 
 export const getWeekDays = (
   dayCols: string[],
@@ -38,14 +39,14 @@ export const getWeekDays = (
   const weekdays: {
     date: Date;
     dayNum: number;
-    weekday: string;
+    weekday: IWeekday;
     localized: string;
   }[] = [];
 
   let i = 0;
   while (i < 7) {
     const date = new Date(new Date().getTime() + i * 24 * 3600 * 1000);
-    const weekday = date.toLocaleDateString("en", { weekday: "short" });
+    const weekday = date.toLocaleDateString("en", { weekday: "short" }) as IWeekday;
     const localized = date.toLocaleDateString(options.locale || "en", {
       weekday: options.format || "short",
     });
@@ -89,6 +90,12 @@ export const getHours = (minHour: number, maxHour: number, locale = "en") => {
 
   return hours;
 };
+
+//////////*************************************************//////////
+
+export function isMobile() {
+  return window.matchMedia("(pointer:coarse)").matches;
+}
 
 export function getElementRect(ref: HTMLElement) {
   return ref.getBoundingClientRect();
