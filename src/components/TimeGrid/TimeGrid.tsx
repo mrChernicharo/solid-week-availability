@@ -197,14 +197,17 @@ const TimeGrid = (props: IProps) => {
             }}
             clickedOut={() => {
               setStore("gesture", "idle");
-              const overlapping = findOverlappingSlots(store.slot!.start, store.slot!.end, store[col]).filter(
-                (s) => s.id !== store.slot!.id
-              );
 
-              // console.log("call clickedOut", overlapping);
-              if (overlapping.length > 0) {
-                console.log("we have overlapping timeslots on this drop !");
-                setMergeModalOpen(true);
+              if (store.slot) {
+                const overlapping = findOverlappingSlots(store.slot!.start, store.slot!.end, store[col]).filter(
+                  (s) => s.id !== store.slot!.id
+                );
+
+                // console.log("call clickedOut", overlapping);
+                if (overlapping.length > 0) {
+                  console.log("we have overlapping timeslots on this drop !");
+                  setMergeModalOpen(true);
+                }
               }
             }}
           />
@@ -319,7 +322,7 @@ const TimeGrid = (props: IProps) => {
                       </button>
                       <p>{localizeWeekday(slot().day as IWeekday, props.locale, "long")}</p>
                       <p>
-                        {() => readableTime(store[slot().day!][slotIdx()].start, props.locale)}-
+                        {() => readableTime(store[slot().day!][slotIdx()].start, props.locale)} -
                         {readableTime(store[slot().day!][slotIdx()].end, props.locale)}
                       </p>
                       <div class="details_form">
@@ -331,8 +334,13 @@ const TimeGrid = (props: IProps) => {
                           value={sh()}
                           onInput={(e) => {
                             const hour = +e.currentTarget.value;
-                            const newTime = hour * 60 + sm();
+                            let newTime = hour * 60 + sm();
+
+                            // console.log({ hour, newTime, slot: slot(), slotIdx: slotIdx(), sh: sh() });
+
                             setStore(slot().day as IWeekday, slotIdx(), "start", newTime);
+                            setStore("slot", "start", newTime);
+
                             props.onChange(store);
                           }}
                         />
@@ -344,7 +352,10 @@ const TimeGrid = (props: IProps) => {
                           onInput={(e) => {
                             const mins = +e.currentTarget.value;
                             const newTime = sh() * 60 + mins;
+
                             setStore(slot().day as IWeekday, slotIdx(), "start", newTime);
+                            setStore("slot", "start", newTime);
+
                             props.onChange(store);
                           }}
                         />
@@ -358,7 +369,10 @@ const TimeGrid = (props: IProps) => {
                           onInput={(e) => {
                             const hour = +e.currentTarget.value;
                             const newTime = hour * 60 + em();
+
                             setStore(slot().day as IWeekday, slotIdx(), "end", newTime);
+                            setStore("slot", "end", newTime);
+
                             props.onChange(store);
                           }}
                         />
@@ -370,7 +384,10 @@ const TimeGrid = (props: IProps) => {
                           onInput={(e) => {
                             const mins = +e.currentTarget.value;
                             const newTime = eh() * 60 + mins;
+
                             setStore(slot().day as IWeekday, slotIdx(), "end", newTime);
+                            setStore("slot", "end", newTime);
+
                             props.onChange(store);
                           }}
                         />
