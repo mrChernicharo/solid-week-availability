@@ -109,15 +109,15 @@ const TimeGrid = (props: IProps) => {
     }
     const timeDiff = yPosToTime(
       e.movementY,
-      props.minHour,
-      props.maxHour,
+      0,
+      props.maxHour - props.minHour,
       props.colHeight
     );
 
-    // console.log({ start, slotStart, timeDiff });
     // const slot = () => store.slot!;
     let slotStart, slotEnd;
     const { id, day, start, end } = store.slot!;
+    console.log({ start, slotStart, timeDiff });
 
     if (timeDiff !== 0) {
       if (store.gesture === "drag:top") {

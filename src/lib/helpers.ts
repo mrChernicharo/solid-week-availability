@@ -139,6 +139,7 @@ export function yPosToTime(
   const percent = yPos / columnHeight;
 
   const timeClicked = (end - start) * percent + start;
+  console.log({ yPos, minHour, percent, timeClicked });
 
   return Math.round(timeClicked);
 }
