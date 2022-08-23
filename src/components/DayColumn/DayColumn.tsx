@@ -24,7 +24,8 @@ interface IProps {
   clickedOut: () => void;
   showTimeSlotModal: () => void;
   showOverlapConfirm: () => void;
-  onColumnClick: (e: IPointerEvent, obj: IColumnClick) => void;
+  onColumnPointerDown: (e: IPointerEvent, obj: IColumnClick) => void;
+  onColumnClick;
 }
 
 const ICON_SIZE = 16;
@@ -77,7 +78,7 @@ const DayColumn = (props: IProps) => {
     };
 
     console.log(e);
-    props.onColumnClick(e, colClick);
+    props.onColumnPointerDown(e, colClick);
 
     // make X icon disappear
     clearTimeout(timeout);
@@ -107,6 +108,7 @@ const DayColumn = (props: IProps) => {
       width={props.width}
       theme={props.theme}
       palette={props.palette}
+      onClick={props.onColumnClick}
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
       onTouchEnd={handlePointerUp}

@@ -27,7 +27,7 @@ const DayColumnContainer = styled.div<IProps>`
   left: ${(props) => props.width * props.idx + "px"};
   z-index: 2;
 
-  touch-action: none;
+  /* touch-action: none; */
 `;
 
 const Marker = styled.div<IMarkerProps>`

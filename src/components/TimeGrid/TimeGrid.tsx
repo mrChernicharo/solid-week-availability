@@ -110,7 +110,8 @@ const TimeGrid = (props: IProps) => {
     }
   }
 
-  function handleColumnClick(e: IPointerEvent, obj: IColumnClick) {
+  function handleColumnPointerDown(e: IPointerEvent, obj: IColumnClick) {
+    console.log("pointer down");
     columnClick = { ...obj };
 
     if (columnClick.clickedSlots.length) {
@@ -120,9 +121,6 @@ const TimeGrid = (props: IProps) => {
     }
     setStore("day", columnClick.day);
 
-    if (!columnClick.clickedOnExistingSlot && store.gesture === "idle") {
-      updateModalState();
-    }
     if (columnClick.clickedOnExistingSlot) {
       // console.log("WE HAVE OVERLAPPING TIMESLOTS!");
       setStore("gesture", "drag:ready");
@@ -196,7 +194,13 @@ const TimeGrid = (props: IProps) => {
             theme={props.theme}
             palette={props.palette}
             timeSlots={store[col]}
-            onColumnClick={handleColumnClick}
+            onColumnClick={(e) => {
+              console.log("click");
+              if (!columnClick.clickedOnExistingSlot && store.gesture === "idle") {
+                updateModalState();
+              }
+            }}
+            onColumnPointerDown={handleColumnPointerDown}
             showTimeSlotModal={() => setDetailsModalOpen(true)}
             showOverlapConfirm={() => {
               setCreateModalOpen(false);
