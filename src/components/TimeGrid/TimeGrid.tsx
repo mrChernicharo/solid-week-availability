@@ -103,43 +103,46 @@ const TimeGrid = (props: IProps) => {
       setStore("gesture", actions[e.srcElement.classList[0]]);
       return;
     }
+    const timeDiff = yPosToTime(
+      e.movementY,
+      props.minHour,
+      props.maxHour,
+      props.colHeight
+    );
 
-    if (store.gesture === "drag:top") {
-      const timeDiff = yPosToTime(
-        e.movementY,
-        props.minHour,
-        props.maxHour,
-        props.colHeight
-      );
+    // console.log({ start, slotStart, timeDiff });
+    // const slot = () => store.slot!;
+    let slotStart, slotEnd;
+    const { id, day, start, end } = store.slot!;
 
-      // console.log({ start, slotStart, timeDiff });
-
-      if (timeDiff !== 0) {
-        const slot = () => store.slot!;
-        const { id, day, start, end } = slot();
-        let [slotStart, slotEnd] = [start + timeDiff, end];
-        const newSlot: ITimeSlot = {
-          id,
-          day,
-          start: slotStart,
-          end: slotEnd,
-        };
-
-        setStore("slot", newSlot);
-        setStore(day as IWeekday, (prev) => [
-          ...prev.filter((s) => s.id !== id),
-          newSlot,
-        ]);
+    if (timeDiff !== 0) {
+      if (store.gesture === "drag:top") {
+        [slotStart, slotEnd] = [start + timeDiff, end];
       }
 
       // store.slot;
       // console.log("TOP RESIZE", { s: store.slot, off: e.offsetY, newTime });
-    }
-    if (store.gesture === "drag:bottom") {
-      console.log("BOTTOM RESIZE");
-    }
-    if (store.gesture === "drag:middle") {
-      console.log("MIDDLE DRAG");
+      if (store.gesture === "drag:bottom") {
+        console.log("BOTTOM RESIZE");
+        [slotStart, slotEnd] = [start, end + timeDiff];
+      }
+      if (store.gesture === "drag:middle") {
+        console.log("MIDDLE DRAG");
+        [slotStart, slotEnd] = [start + timeDiff, end + timeDiff];
+      }
+
+      const newSlot: ITimeSlot = {
+        id,
+        day,
+        start: slotStart,
+        end: slotEnd,
+      };
+
+      setStore("slot", newSlot);
+      setStore(day as IWeekday, (prev) => [
+        ...prev.filter((s) => s.id !== id),
+        newSlot,
+      ]);
     }
   }
 

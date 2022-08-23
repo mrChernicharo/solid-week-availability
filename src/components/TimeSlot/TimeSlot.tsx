@@ -30,7 +30,7 @@ export default function TimeSlot(props: ITimeSlotProps) {
       <div class="timeSlot_content">
         <div class="top_resize_handle"></div>
         <div class="middle">
-          <div style={{ "pointer-events": "none" }}>
+          <div>
             <span>
               {readableTime(props.timeSlot.start, props.locale)} -
               {readableTime(props.timeSlot.end, props.locale)}
