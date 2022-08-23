@@ -62,6 +62,7 @@ const DayColumn = (props: IProps) => {
     let clickedOnExistingSlot = false;
     if (getOverlappingSlots(clickTime()).length) {
       clickedOnExistingSlot = true;
+      columnRef.style.touchAction = "none";
     } else if (getSlotsNearby(clickTime()).length) {
       props.showOverlapConfirm();
     }
@@ -87,6 +88,7 @@ const DayColumn = (props: IProps) => {
 
   function handlePointerUp(e: IPointerEvent | ITouchEvent) {
     console.log(e);
+    columnRef.style.touchAction = "auto";
 
     const clickTime = () => getClickedTime();
 
