@@ -20,9 +20,9 @@ const TimeSlotContainer = styled.div<IProps>`
   height: ${(props) => props.bottom - props.top + "px"};
   width: 100%;
   background: dodgerblue;
-  /* pointer-events: none; */
   opacity: 0.8;
   font-size: small;
+  user-select: none;
 
   .timeSlot_content {
     position: relative;

@@ -324,14 +324,11 @@ const TimeGrid = (props: IProps) => {
                 {/* Merge */}
                 <button
                   onclick={(e) => {
-                    console.log({
-                      columnClick: columnClick.clickedSlots,
-                      store: store[columnClick.day][0],
-                    });
+                    const newSlot = columnClick.clickedSlots.length
+                      ? store[store.day].find((s) => s.id === store.slot!.id)!
+                      : createNewTimeSlot();
 
-                    columnClick.clickedSlots.length
-                      ? mergeSlots(store[columnClick.day][0])
-                      : mergeSlots(createNewTimeSlot());
+                    mergeSlots(newSlot);
                     setMergeModalOpen(false);
                   }}
                 >
@@ -341,8 +338,10 @@ const TimeGrid = (props: IProps) => {
                 {/* Create New */}
                 <button
                   onclick={(e) => {
-                    const newSlot = createNewTimeSlot();
-                    setStore(newSlot.day, (slots) => [...slots, newSlot]);
+                    if (!columnClick.clickedSlots.length) {
+                      const newSlot = createNewTimeSlot();
+                      setStore(newSlot.day, (slots) => [...slots, newSlot]);
+                    }
                     setMergeModalOpen(false);
                   }}
                 >
