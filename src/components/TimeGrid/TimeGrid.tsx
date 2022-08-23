@@ -24,7 +24,7 @@ import DayColumn from "../DayColumn/DayColumn";
 import { TimeGridContainer, MarkerOverlay, ModalContainer } from "./TimeGridStyles";
 import idMaker from "@melodev/id-maker";
 import { DefaultTheme } from "solid-styled-components";
-import { HALF_SLOT, MODAL_HEIGHT, MODAL_WIDTH } from "../../lib/constants";
+import { HALF_SLOT, MIN_SLOT_DURATION, MODAL_HEIGHT, MODAL_WIDTH } from "../../lib/constants";
 
 interface IProps {
   cols: IWeekday[];
@@ -336,12 +336,23 @@ const TimeGrid = (props: IProps) => {
                             const hour = +e.currentTarget.value;
                             let newTime = hour * 60 + sm();
 
-                            // console.log({ hour, newTime, slot: slot(), slotIdx: slotIdx(), sh: sh() });
+                            if (+e.currentTarget.value < props.minHour) {
+                              newTime = props.minHour * 60;
+                              e.currentTarget.value = String(props.minHour);
+                            }
 
-                            setStore(slot().day as IWeekday, slotIdx(), "start", newTime);
-                            setStore("slot", "start", newTime);
+                            if (newTime < slot().end) {
+                              setStore(slot().day as IWeekday, slotIdx(), "start", newTime);
+                              setStore("slot", "start", newTime);
 
-                            props.onChange(store);
+                              props.onChange(store);
+                            }
+                            //   console.log({
+                            //     newTime,
+                            //     val: e.currentTarget.value,
+                            //     minH: props.minHour,
+                            //     minM: props.minHour * 60,
+                            //   });
                           }}
                         />
                         <label for="details_start_minute">m</label>
@@ -353,10 +364,19 @@ const TimeGrid = (props: IProps) => {
                             const mins = +e.currentTarget.value;
                             const newTime = sh() * 60 + mins;
 
-                            setStore(slot().day as IWeekday, slotIdx(), "start", newTime);
-                            setStore("slot", "start", newTime);
+                            if (newTime < props.minHour * 60) {
+                              e.currentTarget.value = String(mins + 1);
+                              return;
+                            }
 
-                            props.onChange(store);
+                            if (newTime < slot().end - MIN_SLOT_DURATION) {
+                              setStore(slot().day as IWeekday, slotIdx(), "start", newTime);
+                              setStore("slot", "start", newTime);
+
+                              props.onChange(store);
+                            } else {
+                              e.currentTarget.value = String(mins - 1);
+                            }
                           }}
                         />
 
@@ -368,12 +388,19 @@ const TimeGrid = (props: IProps) => {
                           value={eh()}
                           onInput={(e) => {
                             const hour = +e.currentTarget.value;
-                            const newTime = hour * 60 + em();
+                            let newTime = hour * 60 + em();
 
-                            setStore(slot().day as IWeekday, slotIdx(), "end", newTime);
-                            setStore("slot", "end", newTime);
+                            if (newTime > props.maxHour * 60) {
+                              newTime = props.maxHour * 60;
+                              e.currentTarget.value = String(props.maxHour);
+                            }
 
-                            props.onChange(store);
+                            if (newTime > slot().start) {
+                              setStore(slot().day as IWeekday, slotIdx(), "end", newTime);
+                              setStore("slot", "end", newTime);
+
+                              props.onChange(store);
+                            }
                           }}
                         />
                         <label for="details_end_minute">m</label>
@@ -385,10 +412,19 @@ const TimeGrid = (props: IProps) => {
                             const mins = +e.currentTarget.value;
                             const newTime = eh() * 60 + mins;
 
-                            setStore(slot().day as IWeekday, slotIdx(), "end", newTime);
-                            setStore("slot", "end", newTime);
+                            if (newTime > props.maxHour * 60) {
+                              e.currentTarget.value = String(mins - 1);
+                              return;
+                            }
 
-                            props.onChange(store);
+                            if (newTime > slot().start + MIN_SLOT_DURATION) {
+                              setStore(slot().day as IWeekday, slotIdx(), "end", newTime);
+                              setStore("slot", "end", newTime);
+
+                              props.onChange(store);
+                            } else {
+                              e.currentTarget.value = String(mins + 1);
+                            }
                           }}
                         />
                       </div>

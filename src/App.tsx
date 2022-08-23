@@ -12,7 +12,7 @@ const App: Component = () => {
   const [widgetHeight, setWidgetHeight] = createSignal(420);
   const [headerHeight, setHeaderHeight] = createSignal(50);
   const [firstDay, setFirstDay] = createSignal("Mon");
-  const [minHour, setMinHour] = createSignal(0);
+  const [minHour, setMinHour] = createSignal(6);
   const [endHour, setEndHour] = createSignal(16);
   const [cols, setCols] = createSignal(WEEKDAYS);
   const [locale, setLocale] = createSignal("pt-BR");
