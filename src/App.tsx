@@ -2,16 +2,17 @@ import { Component, createEffect, createSignal, For } from "solid-js";
 
 import WeeklyAvailability from "./components/WeeklyAvailability/WeeklyAvailability";
 import { WEEKDAYS } from "./lib/constants";
+import { IPalette, IWeekday } from "./lib/types";
 
 const App: Component = () => {
   const [isOpen, setIsOpen] = createSignal(true);
 
-  const [palette, setPalette] = createSignal("light");
+  const [palette, setPalette] = createSignal<IPalette>("light");
   const [colHeight, setColHeight] = createSignal(800);
   const [colWidth, setColWidth] = createSignal(120);
   const [widgetHeight, setWidgetHeight] = createSignal(420);
   const [headerHeight, setHeaderHeight] = createSignal(50);
-  const [firstDay, setFirstDay] = createSignal("Mon");
+  const [firstDay, setFirstDay] = createSignal<IWeekday>("Mon");
   const [minHour, setMinHour] = createSignal(6);
   const [endHour, setEndHour] = createSignal(16);
   const [cols, setCols] = createSignal(WEEKDAYS);
@@ -44,12 +45,12 @@ const App: Component = () => {
 
         <div>
           <label for="locale">locale</label>
-          <select id="locale" value={locale()} onInput={(e) => setLocale(e.currentTarget.value)}>
+          <select id="locale" value={locale()} onChange={(e) => setLocale(e.currentTarget.value)}>
             <For each={["en", "pt-BR", "de", "it", "fr", "jpn"]}>{(locale) => <option>{locale}</option>}</For>
           </select>
 
           <label for="first_day">first_day</label>
-          <select id="first_day" value={firstDay()} onInput={(e) => setFirstDay(e.currentTarget.value)}>
+          <select id="first_day" value={firstDay()} onChange={(e) => setFirstDay(e.currentTarget.value as IWeekday)}>
             <For each={WEEKDAYS}>{(day) => <option>{day}</option>}</For>
           </select>
         </div>
@@ -86,7 +87,7 @@ const App: Component = () => {
           type="number"
           style={{ width: "60px" }}
           value={minHour()}
-          onInput={(e) => {
+          onChange={(e) => {
             setMinHour(+e.currentTarget.value);
           }}
         />
@@ -97,7 +98,7 @@ const App: Component = () => {
           type="number"
           style={{ width: "60px" }}
           value={endHour()}
-          onInput={(e) => setEndHour(+e.currentTarget.value)}
+          onChange={(e) => setEndHour(+e.currentTarget.value)}
         />
 
         <div>
@@ -107,7 +108,7 @@ const App: Component = () => {
             type="number"
             style={{ width: "60px" }}
             value={colHeight()}
-            onInput={(e) => setColHeight(+e.currentTarget.value)}
+            onChange={(e) => setColHeight(+e.currentTarget.value)}
           />
 
           <label for="widget_height">widget_height</label>
@@ -116,7 +117,7 @@ const App: Component = () => {
             type="number"
             style={{ width: "60px" }}
             value={widgetHeight()}
-            onInput={(e) => setWidgetHeight(+e.currentTarget.value)}
+            onChange={(e) => setWidgetHeight(+e.currentTarget.value)}
           />
 
           <label for="header_height">header_height</label>
@@ -125,7 +126,7 @@ const App: Component = () => {
             type="number"
             style={{ width: "60px" }}
             value={headerHeight()}
-            onInput={(e) => setHeaderHeight(+e.currentTarget.value)}
+            onChange={(e) => setHeaderHeight(+e.currentTarget.value)}
           />
 
           <label for="col_width">col_width</label>
@@ -134,7 +135,7 @@ const App: Component = () => {
             type="number"
             style={{ width: "60px" }}
             value={colWidth()}
-            onInput={(e) => setColWidth(+e.currentTarget.value)}
+            onChange={(e) => setColWidth(+e.currentTarget.value)}
           />
         </div>
       </section>

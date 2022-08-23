@@ -1,4 +1,5 @@
 import { DefaultTheme } from "solid-styled-components";
+import { IWeekday } from "./types";
 
 export const THEME: DefaultTheme = {
   dark: {
@@ -25,7 +26,7 @@ export const THEME: DefaultTheme = {
   },
 };
 
-export const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+export const WEEKDAYS: IWeekday[] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 export const SCROLL_BAR = 17;
 
 export const MARKER_TIME = 400;
