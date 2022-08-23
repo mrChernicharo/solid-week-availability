@@ -2,6 +2,10 @@ export type IPointerEvent = PointerEvent & {
   currentTarget: HTMLDivElement;
   target: Element;
 };
+export type ITouchEvent = TouchEvent & {
+  currentTarget: HTMLDivElement;
+  target: Element;
+};
 
 export type IStore = {
   [k in IWeekday]: ITimeSlot[];

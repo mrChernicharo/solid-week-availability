@@ -1,7 +1,7 @@
 import { createEffect, createSignal, For, Show } from "solid-js";
 import { HALF_SLOT, MARKER_TIME } from "../../lib/constants";
 import { findOverlappingSlots, getElementRect, localizeWeekday, timeToYPos, yPosToTime } from "../../lib/helpers";
-import { IColumnClick, IWeekday, IPalette, IPointerEvent, IPos, ITimeSlot } from "../../lib/types";
+import { IColumnClick, IWeekday, IPalette, IPointerEvent, IPos, ITimeSlot, ITouchEvent } from "../../lib/types";
 import { DayColumnContainer, Marker } from "./DayColumnStyles";
 import { FaSolidPlus } from "solid-icons/fa";
 import { unwrap } from "solid-js/store";
@@ -75,6 +75,8 @@ const DayColumn = (props: IProps) => {
       clickedOnExistingSlot,
       nearbySlots: [...unwrap(getSlotsNearby(clickTime()))],
     };
+
+    console.log(e);
     props.onColumnClick(e, colClick);
 
     // make X icon disappear
@@ -82,7 +84,9 @@ const DayColumn = (props: IProps) => {
     timeout = setTimeout(() => setClickedPos(null), MARKER_TIME);
   }
 
-  function handlePointerUp(e: IPointerEvent) {
+  function handlePointerUp(e: IPointerEvent | ITouchEvent) {
+    console.log(e);
+
     const clickTime = () => getClickedTime();
 
     if (getOverlappingSlots(clickTime()).length) {
@@ -105,6 +109,7 @@ const DayColumn = (props: IProps) => {
       palette={props.palette}
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
+      onTouchEnd={handlePointerUp}
       data-cy={`day_column_${props.day}`}
       idx={props.colIdx}
     >
