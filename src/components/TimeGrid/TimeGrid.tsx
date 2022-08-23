@@ -18,6 +18,7 @@ import {
 } from "solid-js";
 import { createStore, SetStoreFunction, unwrap } from "solid-js/store";
 import {
+  findOverlappingSlots,
   getElementRect,
   getHours,
   getMergedTimeslots,
@@ -79,6 +80,9 @@ const TimeGrid = (props: IProps) => {
   const [mergeModalOpen, setMergeModalOpen] = createSignal(false);
   const [detailsModalOpen, setDetailsModalOpen] = createSignal(false);
 
+  // const getOverlappingSlots = (clickTime: number, timeSlots: ITimeSlot[]) =>
+  // findOverlappingSlots(clickTime, clickTime, timeSlots);
+
   // console.log("TimeGridProps", { ...props, s: { ...unwrap(store) } });
 
   createEffect(() => {
@@ -117,17 +121,15 @@ const TimeGrid = (props: IProps) => {
 
     if (timeDiff !== 0) {
       if (store.gesture === "drag:top") {
+        // console.log("TOP RESIZE", { s: store.slot, off: e.offsetY, newTime });
         [slotStart, slotEnd] = [start + timeDiff, end];
       }
-
-      // store.slot;
-      // console.log("TOP RESIZE", { s: store.slot, off: e.offsetY, newTime });
       if (store.gesture === "drag:bottom") {
-        console.log("BOTTOM RESIZE");
+        // console.log("BOTTOM RESIZE");
         [slotStart, slotEnd] = [start, end + timeDiff];
       }
       if (store.gesture === "drag:middle") {
-        console.log("MIDDLE DRAG");
+        // console.log("MIDDLE DRAG");
         [slotStart, slotEnd] = [start + timeDiff, end + timeDiff];
       }
 
@@ -155,7 +157,6 @@ const TimeGrid = (props: IProps) => {
     } else {
       setStore("slot", null);
     }
-    console.log("handleColumnClick");
     setStore("day", columnClick.day);
     updateModalState();
     props.onChange(store);
@@ -199,7 +200,7 @@ const TimeGrid = (props: IProps) => {
         : modalPos.y - MODAL_HEIGHT;
 
     if (columnClick.clickedOnExistingSlot) {
-      console.log("WE HAVE OVERLAPPING TIMESLOTS!");
+      // console.log("WE HAVE OVERLAPPING TIMESLOTS!");
       setStore("gesture", "drag:ready");
       return;
     }
@@ -233,6 +234,7 @@ const TimeGrid = (props: IProps) => {
             maxHour={props.maxHour}
             theme={props.theme}
             palette={props.palette}
+            timeSlots={store[col]}
             onColumnClick={handleColumnClick}
             showOverlapConfirm={() => {
               setCreateModalOpen(false);
@@ -242,9 +244,22 @@ const TimeGrid = (props: IProps) => {
               setDetailsModalOpen(true);
               // setTimeout(() => setDetailsModalOpen(true), 0);
             }}
-            timeSlots={store[col]}
             clickedOut={() => {
               setStore("gesture", "idle");
+              const overlapping = findOverlappingSlots(
+                store.slot!.start,
+                store.slot!.end,
+                store[col]
+              ).filter((s) => s.id !== store.slot!.id);
+
+              console.log("call clickedOut", overlapping);
+              if (overlapping.length > 0) {
+                console.log("we have overlapping timeslots on this drop !");
+                // setMergeModalOpen(true);
+              }
+              // getOverlappingSlots(store[col])
+
+              //
             }}
           />
         )}
@@ -345,8 +360,6 @@ const TimeGrid = (props: IProps) => {
                     () => Math.floor(slot().end / 60),
                     () => slot().end % 60,
                   ];
-
-                  // console.log(slot().id);
 
                   return (
                     <>

@@ -52,6 +52,14 @@ const DayColumn = (props: IProps) => {
 
   const [clickedPos, setClickedPos] = createSignal<IPos | null>(null);
 
+  const getClickedTime = () =>
+    yPosToTime(
+      clickedPos()?.y!, // offsetY gets click pos relative to clicked node
+      props.minHour,
+      props.maxHour,
+      rect().height
+    );
+
   const getOverlappingSlots = (clickTime: number) =>
     findOverlappingSlots(clickTime, clickTime, props.timeSlots);
 
@@ -61,20 +69,6 @@ const DayColumn = (props: IProps) => {
       clickTime + HALF_SLOT,
       props.timeSlots
     );
-
-  const getClickedTime = () =>
-    yPosToTime(
-      clickedPos()?.y!, // offsetY gets click pos relative to clicked node
-      props.minHour,
-      props.maxHour,
-      rect().height
-    );
-
-  createEffect(() => {
-    // console.log(clickedPos());
-    // setClickedPos(null);
-    // console.log({ ...props });
-  });
 
   function handlePointerDown(e: IPointerEvent) {
     // const widgetEl = () => document.querySelector("#widget_root_element");
@@ -131,9 +125,14 @@ const DayColumn = (props: IProps) => {
       props.showTimeSlotModal();
     }
 
-    console.log("call clickedOut");
     props.clickedOut();
   }
+
+  createEffect(() => {
+    // console.log(clickedPos());
+    // setClickedPos(null);
+    // console.log({ ...props });
+  });
 
   return (
     <DayColumnContainer
