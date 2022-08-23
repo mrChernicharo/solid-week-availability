@@ -322,7 +322,7 @@ const TimeGrid = (props: IProps) => {
                       </button>
                       <p>{localizeWeekday(slot().day as IWeekday, props.locale, "long")}</p>
                       <p>
-                        {() => readableTime(store[slot().day!][slotIdx()].start, props.locale)} -
+                        {readableTime(store[slot().day!][slotIdx()].start, props.locale)} -
                         {readableTime(store[slot().day!][slotIdx()].end, props.locale)}
                       </p>
                       <div class="details_form">
@@ -336,6 +336,13 @@ const TimeGrid = (props: IProps) => {
                             const hour = +e.currentTarget.value;
                             let newTime = hour * 60 + sm();
 
+                            // handle start > end (crossing)
+                            if (+e.currentTarget.value * 60 > slot().end) {
+                              e.currentTarget.value = String(+e.currentTarget.value - 1);
+                              newTime = slot().end - MIN_SLOT_DURATION;
+                            }
+
+                            // handle start < minHour (top overflow)
                             if (+e.currentTarget.value < props.minHour) {
                               newTime = props.minHour * 60;
                               e.currentTarget.value = String(props.minHour);
@@ -347,12 +354,6 @@ const TimeGrid = (props: IProps) => {
 
                               props.onChange(store);
                             }
-                            //   console.log({
-                            //     newTime,
-                            //     val: e.currentTarget.value,
-                            //     minH: props.minHour,
-                            //     minM: props.minHour * 60,
-                            //   });
                           }}
                         />
                         <label for="details_start_minute">m</label>
@@ -390,6 +391,13 @@ const TimeGrid = (props: IProps) => {
                             const hour = +e.currentTarget.value;
                             let newTime = hour * 60 + em();
 
+                            // handle start < end (crossing)
+                            if (+e.currentTarget.value * 60 < slot().start) {
+                              e.currentTarget.value = String(+e.currentTarget.value + 1);
+                              newTime = slot().start + MIN_SLOT_DURATION;
+                            }
+
+                            // handle end > maxHour (bottom overflow)
                             if (newTime > props.maxHour * 60) {
                               newTime = props.maxHour * 60;
                               e.currentTarget.value = String(props.maxHour);
