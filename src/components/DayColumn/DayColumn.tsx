@@ -131,6 +131,7 @@ const DayColumn = (props: IProps) => {
       props.showTimeSlotModal();
     }
 
+    console.log("call clickedOut");
     props.clickedOut();
   }
 

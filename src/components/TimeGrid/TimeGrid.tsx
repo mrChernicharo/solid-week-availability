@@ -24,6 +24,7 @@ import {
   getWeekDays,
   localizeWeekday,
   readableTime,
+  yPosToTime,
 } from "../../lib/helpers";
 import {
   IColumnClick,
@@ -42,12 +43,7 @@ import {
 } from "./TimeGridStyles";
 import idMaker from "@melodev/id-maker";
 import { DefaultTheme } from "solid-styled-components";
-import {
-  WEEKDAYS,
-  HALF_SLOT,
-  MODAL_HEIGHT,
-  MODAL_WIDTH,
-} from "../../lib/constants";
+import { HALF_SLOT, MODAL_HEIGHT, MODAL_WIDTH } from "../../lib/constants";
 
 interface IProps {
   cols: IWeekday[];
@@ -105,10 +101,39 @@ const TimeGrid = (props: IProps) => {
         middle: "drag:middle",
       };
       setStore("gesture", actions[e.srcElement.classList[0]]);
+      return;
     }
 
     if (store.gesture === "drag:top") {
-      console.log("TOP RESIZE");
+      const timeDiff = yPosToTime(
+        e.movementY,
+        props.minHour,
+        props.maxHour,
+        props.colHeight
+      );
+
+      // console.log({ start, slotStart, timeDiff });
+
+      if (timeDiff !== 0) {
+        const slot = () => store.slot!;
+        const { id, day, start, end } = slot();
+        let [slotStart, slotEnd] = [start + timeDiff, end];
+        const newSlot: ITimeSlot = {
+          id,
+          day,
+          start: slotStart,
+          end: slotEnd,
+        };
+
+        setStore("slot", newSlot);
+        setStore(day as IWeekday, (prev) => [
+          ...prev.filter((s) => s.id !== id),
+          newSlot,
+        ]);
+      }
+
+      // store.slot;
+      // console.log("TOP RESIZE", { s: store.slot, off: e.offsetY, newTime });
     }
     if (store.gesture === "drag:bottom") {
       console.log("BOTTOM RESIZE");
@@ -127,7 +152,7 @@ const TimeGrid = (props: IProps) => {
     } else {
       setStore("slot", null);
     }
-
+    console.log("handleColumnClick");
     setStore("day", columnClick.day);
     updateModalState();
     props.onChange(store);
