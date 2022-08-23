@@ -1,4 +1,5 @@
 import { DefaultTheme, styled } from "solid-styled-components";
+import { IPalette } from "../../lib/types";
 interface IProps {
   height: number;
   colWidth: number;
@@ -7,10 +8,7 @@ interface IProps {
   itemCount: number;
 }
 
-const color = (props: IProps, color: string) =>
-  props.theme[props.palette][color];
-
-// border: 1px solid ${(props) => color(props, "primary")};
+const color = (props: IProps, color: string) => props.theme[props.palette][color];
 
 const SideBarContainer = styled.div<IProps>`
   width: ${(props) => props.colWidth + "px"};

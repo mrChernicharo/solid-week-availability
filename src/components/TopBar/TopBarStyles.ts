@@ -9,8 +9,7 @@ interface IProps {
   cols: string[];
 }
 
-const color = (props: IProps, color: string) =>
-  props.theme[props.palette][color];
+const color = (props: IProps, color: string) => props.theme[props.palette][color];
 
 //   border: 1px solid ${(props) => color(props, "primary")};
 const TopBarContainer = styled.div<IProps>`

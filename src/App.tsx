@@ -12,8 +12,8 @@ const App: Component = () => {
   const [widgetHeight, setWidgetHeight] = createSignal(420);
   const [headerHeight, setHeaderHeight] = createSignal(50);
   const [firstDay, setFirstDay] = createSignal("Mon");
-  const [minHour, setMinHour] = createSignal(7);
-  const [endHour, setEndHour] = createSignal(18);
+  const [minHour, setMinHour] = createSignal(0);
+  const [endHour, setEndHour] = createSignal(16);
   const [cols, setCols] = createSignal(WEEKDAYS);
   const [locale, setLocale] = createSignal("pt-BR");
 
@@ -29,12 +29,7 @@ const App: Component = () => {
 
         <div>
           <div>
-            <button
-              data-cy="palette_btn"
-              onClick={(e) =>
-                setPalette(palette() === "light" ? "dark" : "light")
-              }
-            >
+            <button data-cy="palette_btn" onClick={(e) => setPalette(palette() === "light" ? "dark" : "light")}>
               {palette() === "light" ? "Dark" : "Light"} mode
             </button>
             palette: {palette()}
@@ -49,22 +44,12 @@ const App: Component = () => {
 
         <div>
           <label for="locale">locale</label>
-          <select
-            id="locale"
-            value={locale()}
-            onInput={(e) => setLocale(e.currentTarget.value)}
-          >
-            <For each={["en", "pt-BR", "de", "it", "fr", "jpn"]}>
-              {(locale) => <option>{locale}</option>}
-            </For>
+          <select id="locale" value={locale()} onInput={(e) => setLocale(e.currentTarget.value)}>
+            <For each={["en", "pt-BR", "de", "it", "fr", "jpn"]}>{(locale) => <option>{locale}</option>}</For>
           </select>
 
           <label for="first_day">first_day</label>
-          <select
-            id="first_day"
-            value={firstDay()}
-            onInput={(e) => setFirstDay(e.currentTarget.value)}
-          >
+          <select id="first_day" value={firstDay()} onInput={(e) => setFirstDay(e.currentTarget.value)}>
             <For each={WEEKDAYS}>{(day) => <option>{day}</option>}</For>
           </select>
         </div>

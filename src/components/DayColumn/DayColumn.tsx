@@ -1,21 +1,7 @@
-import { createEffect, createSignal, For, ParentProps, Show } from "solid-js";
+import { createEffect, createSignal, For, Show } from "solid-js";
 import { HALF_SLOT, MARKER_TIME } from "../../lib/constants";
-import {
-  findOverlappingSlots,
-  getElementRect,
-  localizeWeekday,
-  readableTime,
-  timeToYPos,
-  yPosToTime,
-} from "../../lib/helpers";
-import {
-  IColumnClick,
-  IWeekday,
-  IPalette,
-  IPointerEvent,
-  IPos,
-  ITimeSlot,
-} from "../../lib/types";
+import { findOverlappingSlots, getElementRect, localizeWeekday, timeToYPos, yPosToTime } from "../../lib/helpers";
+import { IColumnClick, IWeekday, IPalette, IPointerEvent, IPos, ITimeSlot } from "../../lib/types";
 import { DayColumnContainer, Marker } from "./DayColumnStyles";
 import { FaSolidPlus } from "solid-icons/fa";
 import { unwrap } from "solid-js/store";
@@ -39,7 +25,6 @@ interface IProps {
   showTimeSlotModal: () => void;
   showOverlapConfirm: () => void;
   onColumnClick: (e: IPointerEvent, obj: IColumnClick) => void;
-  // columnHeight: number;
 }
 
 const ICON_SIZE = 16;
@@ -60,37 +45,16 @@ const DayColumn = (props: IProps) => {
       rect().height
     );
 
-  const getOverlappingSlots = (clickTime: number) =>
-    findOverlappingSlots(clickTime, clickTime, props.timeSlots);
+  const getOverlappingSlots = (clickTime: number) => findOverlappingSlots(clickTime, clickTime, props.timeSlots);
 
   const getSlotsNearby = (clickTime: number) =>
-    findOverlappingSlots(
-      clickTime - HALF_SLOT,
-      clickTime + HALF_SLOT,
-      props.timeSlots
-    );
+    findOverlappingSlots(clickTime - HALF_SLOT, clickTime + HALF_SLOT, props.timeSlots);
 
   function handlePointerDown(e: IPointerEvent) {
-    // const widgetEl = () => document.querySelector("#widget_root_element");
-    // const wRect = () => getElementRect(widgetEl() as HTMLDivElement);
-
     setClickedPos({
       x: e.offsetX,
       y: e.clientY - rect().top,
     });
-
-    // console.log("pointerDown", {
-    //   target: e.currentTarget,
-    //   offsetY: e.offsetY,
-    //   pageY: e.pageY,
-    //   clientY: e.clientY,
-    //   rect: rect(),
-    //   scroll: widgetEl()?.scrollTop,
-    //   res: e.clientY - rect().top,
-    //   // pos: clickedPos(),
-    //   // e,
-    //   // d: e.currentTarget.parentElement?.dataset,
-    // });
 
     const clickTime = () => getClickedTime();
 
@@ -129,8 +93,6 @@ const DayColumn = (props: IProps) => {
   }
 
   createEffect(() => {
-    // console.log(clickedPos());
-    // setClickedPos(null);
     // console.log({ ...props });
   });
 
@@ -146,9 +108,7 @@ const DayColumn = (props: IProps) => {
       data-cy={`day_column_${props.day}`}
       idx={props.colIdx}
     >
-      <div style={{ "pointer-events": "none" }}>
-        {localizeWeekday(props.day as IWeekday, props.locale, "long")}
-      </div>
+      <div style={{ "pointer-events": "none" }}>{localizeWeekday(props.day as IWeekday, props.locale, "long")}</div>
       {/* X Marker */}
       <Show when={clickedPos() !== null}>
         {() => {
@@ -169,18 +129,8 @@ const DayColumn = (props: IProps) => {
       <For each={props.timeSlots}>
         {(slot: ITimeSlot) => (
           <TimeSlot
-            top={timeToYPos(
-              slot.start,
-              props.minHour,
-              props.maxHour,
-              props.height
-            )}
-            bottom={timeToYPos(
-              slot.end,
-              props.minHour,
-              props.maxHour,
-              props.height
-            )}
+            top={timeToYPos(slot.start, props.minHour, props.maxHour, props.height)}
+            bottom={timeToYPos(slot.end, props.minHour, props.maxHour, props.height)}
             id={slot.id}
             timeSlot={slot}
             locale={props.locale}

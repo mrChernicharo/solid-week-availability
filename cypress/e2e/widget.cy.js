@@ -22,7 +22,7 @@ describe('example to-do app', () => {
     //   cy.get('.todo-list li').last().should('have.text', 'Walk the dog')
     })
 
-    it('opens and closes', () => {
+    it('widget can be opened and closed', () => {
       cy.get('[data-cy="open_btn"]').click()
 
       cy.get('#widget_root_element').should('not.exist')

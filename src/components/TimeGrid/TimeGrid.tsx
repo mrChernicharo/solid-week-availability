@@ -44,15 +44,13 @@ interface IProps {
 const initialStore = { slot: null, day: "Mon", gesture: "idle" };
 
 const TimeGrid = (props: IProps) => {
-  let gridRef: HTMLDivElement;
-  let columnClick: IColumnClick;
-  let modalPos: IPos = { x: 0, y: 0 };
-
   props.cols.forEach((col: IWeekday) => {
     initialStore[col] = [];
   });
 
-  const HOURS = () => getHours(props.minHour, props.maxHour, props.locale);
+  let gridRef: HTMLDivElement;
+  let columnClick: IColumnClick;
+  let modalPos: IPos = { x: 0, y: 0 };
 
   const [store, setStore] = createStore(initialStore as IStore);
 
@@ -69,6 +67,8 @@ const TimeGrid = (props: IProps) => {
   });
 
   createEffect(() => {});
+
+  const HOURS = () => getHours(props.minHour, props.maxHour, props.locale);
 
   function handlePointerMove(e) {
     if (store.gesture === "idle") return;
@@ -89,15 +89,12 @@ const TimeGrid = (props: IProps) => {
 
     if (timeDiff !== 0) {
       if (store.gesture === "drag:top") {
-        // console.log("TOP RESIZE", { s: store.slot, off: e.offsetY, newTime });
         [slotStart, slotEnd] = [start + timeDiff, end];
       }
       if (store.gesture === "drag:bottom") {
-        // console.log("BOTTOM RESIZE");
         [slotStart, slotEnd] = [start, end + timeDiff];
       }
       if (store.gesture === "drag:middle") {
-        // console.log("MIDDLE DRAG");
         [slotStart, slotEnd] = [start + timeDiff, end + timeDiff];
       }
 
@@ -124,7 +121,7 @@ const TimeGrid = (props: IProps) => {
     }
     setStore("day", columnClick.day);
     updateModalState();
-    props.onChange(store);
+    props.onChange(store); // send state to parent element
   }
 
   function createNewTimeSlot() {

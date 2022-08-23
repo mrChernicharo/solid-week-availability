@@ -32,8 +32,7 @@ export default function TimeSlot(props: ITimeSlotProps) {
         <div class="middle">
           <div style={{ "pointer-events": "none" }}>
             <span>
-              {readableTime(props.timeSlot.start, props.locale)} -
-              {readableTime(props.timeSlot.end, props.locale)}
+              {readableTime(props.timeSlot.start, props.locale)} - {readableTime(props.timeSlot.end, props.locale)}
             </span>
           </div>
         </div>

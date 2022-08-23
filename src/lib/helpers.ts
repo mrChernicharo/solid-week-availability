@@ -2,15 +2,10 @@ import { WEEKDAYS, HALF_SLOT } from "./constants";
 import { IWeekday, ITimeSlot } from "./types";
 
 // returns ordered dayCols based on dayCols and firstDay
-export const localizeWeekday = (
-  weekday: IWeekday,
-  locale: string,
-  format: "short" | "long" | "narrow"
-) => {
-  // new Date().getDate()
-  // const dayDiff =
+export const localizeWeekday = (weekday: IWeekday, locale: string, format: "short" | "long" | "narrow") => {
   let d = new Date();
   let js = weekdayToJs(weekday);
+
   while (d.getDay() !== js) {
     const timestamp = d.getTime();
     d = new Date(timestamp + 24 * 3600 * 1000);
@@ -19,11 +14,9 @@ export const localizeWeekday = (
   return d.toLocaleDateString(locale, { weekday: format });
 };
 
-export const weekdayToJs = (weekday: IWeekday) =>
-  WEEKDAYS.indexOf(normalizeWeekday(weekday));
+export const weekdayToJs = (weekday: IWeekday) => WEEKDAYS.indexOf(normalizeWeekday(weekday));
 
-export const normalizeWeekday = (weekday: string) =>
-  weekday[0].toUpperCase() + weekday.slice(1, 3).toLowerCase();
+export const normalizeWeekday = (weekday: string) => weekday[0].toUpperCase() + weekday.slice(1, 3).toLowerCase();
 
 export const getWeekDays = (
   dayCols: string[],
@@ -85,8 +78,7 @@ export const getHours = (minHour: number, maxHour: number, locale = "en") => {
     if (locale === "en") {
       if (curr === 0) hour = "12 AM";
       if (curr === 12) hour = "12 PM";
-      if (curr !== 0 && curr !== 12)
-        hour = curr < 12 ? curr + " AM" : curr - 12 + " PM";
+      if (curr !== 0 && curr !== 12) hour = curr < 12 ? curr + " AM" : curr - 12 + " PM";
     } else {
       hour = curr + ":00";
     }
@@ -107,19 +99,12 @@ export function setCSSVariable(key: string, val: string) {
 }
 
 export function getCSSVariable(key: string) {
-  return getComputedStyle(document.documentElement)
-    .getPropertyValue(key)
-    .trim();
+  return getComputedStyle(document.documentElement).getPropertyValue(key).trim();
 }
 
 //////////*************************************************//////////
 
-export function timeToYPos(
-  minutes: number,
-  minHour: number,
-  maxHour: number,
-  columnHeight: number
-) {
+export function timeToYPos(minutes: number, minHour: number, maxHour: number, columnHeight: number) {
   const [start, end] = [minHour * 60, maxHour * 60];
 
   const percent = (minutes - start) / (end - start);
@@ -128,18 +113,13 @@ export function timeToYPos(
   return res;
 }
 
-export function yPosToTime(
-  yPos: number,
-  minHour: number,
-  maxHour: number,
-  columnHeight: number
-) {
+export function yPosToTime(yPos: number, minHour: number, maxHour: number, columnHeight: number) {
   const [start, end] = [minHour * 60, maxHour * 60];
 
   const percent = yPos / columnHeight;
 
   const timeClicked = (end - start) * percent + start;
-  console.log({ yPos, minHour, percent, timeClicked });
+  // console.log({ yPos, minHour, percent, timeClicked });
 
   return Math.round(timeClicked);
 }
@@ -174,11 +154,7 @@ export function readableTime(minutes: number, locale = "en") {
 
 //////////*************************************************//////////
 
-export function findOverlappingSlots(
-  start: number,
-  end: number,
-  timeSlots: ITimeSlot[]
-) {
+export function findOverlappingSlots(start: number, end: number, timeSlots: ITimeSlot[]) {
   const overlappingItems = timeSlots.filter(
     (s, i) =>
       (start <= s.start && start <= s.end && end >= s.start && end <= s.end) || // top overlap
@@ -198,18 +174,11 @@ export function getMergedTimeslots(newTimeSlot, timeslots) {
   const overlappingItems = findOverlappingSlots(start, end, timeslots);
 
   if (overlappingItems?.length > 0) {
-    const overlappingIds = overlappingItems
-      .map((item) => item.id)
-      .concat(newTimeSlot.id);
+    const overlappingIds = overlappingItems.map((item) => item.id).concat(newTimeSlot.id);
 
-    const mergedSlot = mergeTimeslots(
-      [...timeslots, newTimeSlot],
-      overlappingIds
-    );
+    const mergedSlot = mergeTimeslots([...timeslots, newTimeSlot], overlappingIds);
 
-    const filteredSlots = timeslots.filter(
-      (item) => !overlappingIds.includes(item.id)
-    );
+    const filteredSlots = timeslots.filter((item) => !overlappingIds.includes(item.id));
 
     const mergedSlots = [...filteredSlots, mergedSlot];
 
@@ -220,16 +189,13 @@ export function getMergedTimeslots(newTimeSlot, timeslots) {
 }
 
 export function mergeTimeslots(timeSlots, overlappingIds) {
-  const overlapping = timeSlots.filter((item) =>
-    overlappingIds.includes(item.id)
-  );
+  const overlapping = timeSlots.filter((item) => overlappingIds.includes(item.id));
 
   // console.log('before merge', overlapping);
 
   const mergedSlot: ITimeSlot = overlapping.reduce(
     (acc, next) => {
-      (acc.start = Math.min(acc.start, next.start)),
-        (acc.end = Math.max(acc.end, next.end));
+      (acc.start = Math.min(acc.start, next.start)), (acc.end = Math.max(acc.end, next.end));
 
       return acc;
     },

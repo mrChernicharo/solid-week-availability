@@ -4,7 +4,7 @@ import { TopBarContainer } from "./TopBarStyles";
 
 const TopBar = (props) => {
   // console.log("TopBarProps", { ...props });
-  // console.log(getWeekDays(props.locale, "long"));
+
   const localeCols = () =>
     getWeekDays(props.cols, {
       firstDay: props.firstDay,

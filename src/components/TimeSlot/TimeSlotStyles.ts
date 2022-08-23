@@ -10,8 +10,7 @@ interface IProps {
   palette: IPalette;
 }
 
-const color = (props: IProps, color: string) =>
-  props.theme[props.palette][color];
+const color = (props: IProps, color: string) => props.theme[props.palette][color];
 
 const TimeSlotContainer = styled.div<IProps>`
   position: absolute;
