@@ -7,15 +7,7 @@ import {
   FaSolidPaperclip,
   FaSolidX,
 } from "solid-icons/fa";
-import {
-  createEffect,
-  createSignal,
-  For,
-  on,
-  onCleanup,
-  onMount,
-  Show,
-} from "solid-js";
+import { createEffect, createSignal, For, on, onCleanup, onMount, Show } from "solid-js";
 import { createStore, SetStoreFunction, unwrap } from "solid-js/store";
 import {
   findOverlappingSlots,
@@ -27,21 +19,9 @@ import {
   readableTime,
   yPosToTime,
 } from "../../lib/helpers";
-import {
-  IColumnClick,
-  IWeekday,
-  IPalette,
-  IPointerEvent,
-  IPos,
-  IStore,
-  ITimeSlot,
-} from "../../lib/types";
+import { IColumnClick, IWeekday, IPalette, IPointerEvent, IPos, IStore, ITimeSlot } from "../../lib/types";
 import DayColumn from "../DayColumn/DayColumn";
-import {
-  TimeGridContainer,
-  MarkerOverlay,
-  ModalContainer,
-} from "./TimeGridStyles";
+import { TimeGridContainer, MarkerOverlay, ModalContainer } from "./TimeGridStyles";
 import idMaker from "@melodev/id-maker";
 import { DefaultTheme } from "solid-styled-components";
 import { HALF_SLOT, MODAL_HEIGHT, MODAL_WIDTH } from "../../lib/constants";
@@ -80,11 +60,6 @@ const TimeGrid = (props: IProps) => {
   const [mergeModalOpen, setMergeModalOpen] = createSignal(false);
   const [detailsModalOpen, setDetailsModalOpen] = createSignal(false);
 
-  // const getOverlappingSlots = (clickTime: number, timeSlots: ITimeSlot[]) =>
-  // findOverlappingSlots(clickTime, clickTime, timeSlots);
-
-  // console.log("TimeGridProps", { ...props, s: { ...unwrap(store) } });
-
   createEffect(() => {
     gridRef.addEventListener("pointermove", handlePointerMove);
   });
@@ -107,17 +82,10 @@ const TimeGrid = (props: IProps) => {
       setStore("gesture", actions[e.srcElement.classList[0]]);
       return;
     }
-    const timeDiff = yPosToTime(
-      e.movementY,
-      0,
-      props.maxHour - props.minHour,
-      props.colHeight
-    );
+    const timeDiff = yPosToTime(e.movementY, 0, props.maxHour - props.minHour, props.colHeight);
 
-    // const slot = () => store.slot!;
     let slotStart, slotEnd;
     const { id, day, start, end } = store.slot!;
-    console.log({ start, slotStart, timeDiff });
 
     if (timeDiff !== 0) {
       if (store.gesture === "drag:top") {
@@ -141,10 +109,7 @@ const TimeGrid = (props: IProps) => {
       };
 
       setStore("slot", newSlot);
-      setStore(day as IWeekday, (prev) => [
-        ...prev.filter((s) => s.id !== id),
-        newSlot,
-      ]);
+      setStore(day as IWeekday, (prev) => [...prev.filter((s) => s.id !== id), newSlot]);
     }
   }
 
@@ -186,16 +151,10 @@ const TimeGrid = (props: IProps) => {
     const scrollOffsetX = widgetEl()?.scrollLeft || 0;
 
     modalPos.x = columnClick.pos.x + props.colWidth * columnClick.colIdx;
-    modalPos.x =
-      modalPos.x - scrollOffsetX < wRect().width / 2
-        ? modalPos.x
-        : modalPos.x - MODAL_WIDTH;
+    modalPos.x = modalPos.x - scrollOffsetX < wRect().width / 2 ? modalPos.x : modalPos.x - MODAL_WIDTH;
 
     modalPos.y = columnClick.pos.y;
-    modalPos.y =
-      modalPos.y < wRect().height / 2 + scrollOffsetY
-        ? modalPos.y
-        : modalPos.y - MODAL_HEIGHT;
+    modalPos.y = modalPos.y < wRect().height / 2 + scrollOffsetY ? modalPos.y : modalPos.y - MODAL_HEIGHT;
 
     if (columnClick.clickedOnExistingSlot) {
       // console.log("WE HAVE OVERLAPPING TIMESLOTS!");
@@ -234,31 +193,22 @@ const TimeGrid = (props: IProps) => {
             palette={props.palette}
             timeSlots={store[col]}
             onColumnClick={handleColumnClick}
+            showTimeSlotModal={() => setDetailsModalOpen(true)}
             showOverlapConfirm={() => {
               setCreateModalOpen(false);
               setMergeModalOpen(true);
             }}
-            showTimeSlotModal={() => {
-              setDetailsModalOpen(true);
-              // setTimeout(() => setDetailsModalOpen(true), 0);
-            }}
             clickedOut={() => {
               setStore("gesture", "idle");
-              const overlapping = findOverlappingSlots(
-                store.slot!.start,
-                store.slot!.end,
-                store[col]
-              ).filter((s) => s.id !== store.slot!.id);
+              const overlapping = findOverlappingSlots(store.slot!.start, store.slot!.end, store[col]).filter(
+                (s) => s.id !== store.slot!.id
+              );
 
-              console.log("call clickedOut", overlapping);
+              // console.log("call clickedOut", overlapping);
               if (overlapping.length > 0) {
                 console.log("we have overlapping timeslots on this drop !");
                 setMergeModalOpen(true);
-                // mergeSlots(store.slot!);
               }
-              // getOverlappingSlots(store[col])
-
-              //
             }}
           />
         )}
@@ -311,7 +261,7 @@ const TimeGrid = (props: IProps) => {
             </Show>
 
             {/* MERGE MODAL */}
-            <Show when={mergeModalOpen()}>
+            <Show when={mergeModalOpen() && !detailsModalOpen()}>
               <button
                 data-cy="close_modal_btn"
                 onclick={(e) => {
@@ -355,18 +305,10 @@ const TimeGrid = (props: IProps) => {
               <main>
                 {() => {
                   const slot = () => store.slot!;
+                  const slotIdx = () => store[store.day].findIndex((s) => s.id === slot().id) || 0;
 
-                  const slotIdx = () =>
-                    store[store.day].findIndex((s) => s.id === slot().id) || 0;
-
-                  const [sh, sm] = [
-                    () => Math.floor(slot().start / 60),
-                    () => slot().start % 60,
-                  ];
-                  const [eh, em] = [
-                    () => Math.floor(slot().end / 60),
-                    () => slot().end % 60,
-                  ];
+                  const [sh, sm] = [() => Math.floor(slot().start / 60), () => slot().start % 60];
+                  const [eh, em] = [() => Math.floor(slot().end / 60), () => slot().end % 60];
 
                   return (
                     <>
@@ -378,25 +320,10 @@ const TimeGrid = (props: IProps) => {
                       >
                         <FaSolidX />
                       </button>
+                      <p>{localizeWeekday(slot().day as IWeekday, props.locale, "long")}</p>
                       <p>
-                        {localizeWeekday(
-                          slot().day as IWeekday,
-                          props.locale,
-                          "long"
-                        )}
-                      </p>
-                      <p>
-                        {() =>
-                          readableTime(
-                            store[slot().day!][slotIdx()].start,
-                            props.locale
-                          )
-                        }
-                        -
-                        {readableTime(
-                          store[slot().day!][slotIdx()].end,
-                          props.locale
-                        )}
+                        {() => readableTime(store[slot().day!][slotIdx()].start, props.locale)}-
+                        {readableTime(store[slot().day!][slotIdx()].end, props.locale)}
                       </p>
                       <div class="details_form">
                         <p>from</p>
@@ -408,12 +335,7 @@ const TimeGrid = (props: IProps) => {
                           onInput={(e) => {
                             const hour = +e.currentTarget.value;
                             const newTime = hour * 60 + sm();
-                            setStore(
-                              slot().day as IWeekday,
-                              slotIdx(),
-                              "start",
-                              newTime
-                            );
+                            setStore(slot().day as IWeekday, slotIdx(), "start", newTime);
                             props.onChange(store);
                           }}
                         />
@@ -425,12 +347,7 @@ const TimeGrid = (props: IProps) => {
                           onInput={(e) => {
                             const mins = +e.currentTarget.value;
                             const newTime = sh() * 60 + mins;
-                            setStore(
-                              slot().day as IWeekday,
-                              slotIdx(),
-                              "start",
-                              newTime
-                            );
+                            setStore(slot().day as IWeekday, slotIdx(), "start", newTime);
                             props.onChange(store);
                           }}
                         />
@@ -444,12 +361,7 @@ const TimeGrid = (props: IProps) => {
                           onInput={(e) => {
                             const hour = +e.currentTarget.value;
                             const newTime = hour * 60 + em();
-                            setStore(
-                              slot().day as IWeekday,
-                              slotIdx(),
-                              "end",
-                              newTime
-                            );
+                            setStore(slot().day as IWeekday, slotIdx(), "end", newTime);
                             props.onChange(store);
                           }}
                         />
@@ -461,12 +373,7 @@ const TimeGrid = (props: IProps) => {
                           onInput={(e) => {
                             const mins = +e.currentTarget.value;
                             const newTime = eh() * 60 + mins;
-                            setStore(
-                              slot().day as IWeekday,
-                              slotIdx(),
-                              "end",
-                              newTime
-                            );
+                            setStore(slot().day as IWeekday, slotIdx(), "end", newTime);
                             props.onChange(store);
                           }}
                         />
@@ -474,6 +381,10 @@ const TimeGrid = (props: IProps) => {
                       <button
                         onclick={(e) => {
                           setDetailsModalOpen(false);
+
+                          if (findOverlappingSlots(slot().start, slot().end, store[store.day])) {
+                            setMergeModalOpen(true);
+                          }
                         }}
                       >
                         <FaSolidCheck size={24} />
