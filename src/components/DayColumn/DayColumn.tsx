@@ -36,7 +36,7 @@ const DayColumn = (props) => {
 
   // const rect = () => getElementRect(columnRef);
 
-  const [clickedPos, setClickedPos] = createSignal<IPos | null>(null);
+  // const [clickedPos, setClickedPos] = createSignal<IPos | null>(null);
 
   // const getClickedTime = () =>
   //   yPosToTime(
@@ -110,7 +110,8 @@ const DayColumn = (props) => {
       width={props.width}
       theme={props.theme}
       palette={props.palette}
-      onClick={props.onColumnClick}
+      onClick={props.onClick}
+      onPointerDown={props.onPointerDown}
       // onPointerDown={handlePointerDown}
       // onPointerUp={handlePointerUp}
       // onTouchEnd={handlePointerUp}
@@ -119,7 +120,7 @@ const DayColumn = (props) => {
     >
       <div style={{ "pointer-events": "none" }}>{localizeWeekday(props.day as IWeekday, props.locale, "long")}</div>
       {/* X Marker */}
-      <Show when={clickedPos() !== null}>
+      {/* <Show when={clickedPos() !== null}>
         {() => {
           const [x, y] = [
             () => Math.round((clickedPos()?.x || 0) - (ICON_SIZE / 2 - 2)),
@@ -132,10 +133,10 @@ const DayColumn = (props) => {
             </Marker>
           );
         }}
-      </Show>
+      </Show> */}
 
       {/* TimeSlots */}
-      <For each={props.timeSlots}>
+      {/* <For each={props.timeSlots}>
         {(slot: ITimeSlot) => (
           <TimeSlot
             top={timeToYPos(slot.start, props.minHour, props.maxHour, props.height)}
@@ -147,7 +148,7 @@ const DayColumn = (props) => {
             palette={props.palette}
           ></TimeSlot>
         )}
-      </For>
+      </For> */}
     </DayColumnContainer>
   );
 };

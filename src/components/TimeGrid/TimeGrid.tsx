@@ -41,16 +41,19 @@ import { HALF_SLOT, MIN_SLOT_DURATION, MODAL_HEIGHT, MODAL_WIDTH } from "../../l
 //   onChange: (store: IStore) => void;
 // }
 
-const initialStore = { slot: null, day: "Mon", gesture: "idle" };
-
 const TimeGrid = (props) => {
-  // props.cols.forEach((col: IWeekday) => {
-  //   initialStore[col] = [];
-  // });
-
-  let gridRef: HTMLDivElement;
   let columnClick: IColumnClick;
+  let gridRef: HTMLDivElement;
   let modalPos: IPos = { x: 0, y: 0 };
+  let clickMoment = 0;
+
+  function handlePointerDown(e) {
+    clickMoment = Date.now();
+  }
+  function handleClick(e) {
+    let clickFinish = Date.now();
+    if (clickFinish - clickMoment < 500) props.onColumnClick(e);
+  }
 
   // createEffect(() => {
   //   gridRef.addEventListener("pointermove", handlePointerMove);
@@ -183,6 +186,8 @@ const TimeGrid = (props) => {
             theme={props.theme}
             palette={props.palette}
             timeSlots={[]}
+            onClick={handleClick}
+            onPointerDown={handlePointerDown}
             // onColumnClick={handleColumnClick}
             // showTimeSlotModal={() => setDetailsModalOpen(true)}
             // showOverlapConfirm={() => {

@@ -157,6 +157,10 @@ const App: Component = () => {
         minSnap={30}
         onChange={(val) => setValue(val)}
       />
+
+      <div>
+        <pre>{JSON.stringify(value(), null, 2)}</pre>
+      </div>
     </main>
   );
 };
