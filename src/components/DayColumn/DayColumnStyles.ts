@@ -15,8 +15,7 @@ interface IMarkerProps {
   iconSize: number;
 }
 
-const color = (props: IProps, color: string) =>
-  props.theme[props.palette][color];
+const color = (props: IProps, color: string) => props.theme[props.palette][color];
 
 const DayColumnContainer = styled.div<IProps>`
   border-left: 1px solid ${(props) => color(props, "primary")};
@@ -27,6 +26,8 @@ const DayColumnContainer = styled.div<IProps>`
   position: absolute;
   left: ${(props) => props.width * props.idx + "px"};
   z-index: 2;
+
+  touch-action: none;
 `;
 
 const Marker = styled.div<IMarkerProps>`

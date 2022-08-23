@@ -111,8 +111,7 @@ const TimeGrid = (props: IProps) => {
   }
 
   function handleColumnClick(e: IPointerEvent, obj: IColumnClick) {
-    // @ts-ignore
-    columnClick = structuredClone(obj) || { ...obj };
+    columnClick = { ...obj };
 
     if (columnClick.clickedSlots.length) {
       setStore("slot", columnClick.clickedSlots.at(-1)!);
@@ -120,8 +119,37 @@ const TimeGrid = (props: IProps) => {
       setStore("slot", null);
     }
     setStore("day", columnClick.day);
-    updateModalState();
+
+    if (!columnClick.clickedOnExistingSlot && store.gesture === "idle") {
+      updateModalState();
+    }
+    if (columnClick.clickedOnExistingSlot) {
+      // console.log("WE HAVE OVERLAPPING TIMESLOTS!");
+      setStore("gesture", "drag:ready");
+      return;
+    }
     props.onChange(store); // send state to parent element
+  }
+
+  function updateModalState() {
+    const widgetEl = () => document.querySelector("#widget_root_element");
+    const wRect = () => getElementRect(widgetEl() as HTMLDivElement);
+
+    const scrollOffsetY = widgetEl()?.scrollTop || 0;
+    const scrollOffsetX = widgetEl()?.scrollLeft || 0;
+
+    modalPos.x = columnClick.pos.x + props.colWidth * columnClick.colIdx;
+    modalPos.x = modalPos.x - scrollOffsetX < wRect().width / 2 ? modalPos.x : modalPos.x - MODAL_WIDTH;
+
+    modalPos.y = columnClick.pos.y;
+    modalPos.y = modalPos.y < wRect().height / 2 + scrollOffsetY ? modalPos.y : modalPos.y - MODAL_HEIGHT;
+
+    // if (columnClick.clickedOnExistingSlot) {
+    //   // console.log("WE HAVE OVERLAPPING TIMESLOTS!");
+    //   setStore("gesture", "drag:ready");
+    //   return;
+    // }
+    if (!mergeModalOpen()) setCreateModalOpen(true);
   }
 
   function createNewTimeSlot() {
@@ -138,27 +166,6 @@ const TimeGrid = (props: IProps) => {
   function mergeSlots(newSlot: ITimeSlot) {
     const merged = getMergedTimeslots(newSlot, store[newSlot.day]);
     setStore(newSlot.day, merged);
-  }
-
-  function updateModalState() {
-    const widgetEl = () => document.querySelector("#widget_root_element");
-    const wRect = () => getElementRect(widgetEl() as HTMLDivElement);
-
-    const scrollOffsetY = widgetEl()?.scrollTop || 0;
-    const scrollOffsetX = widgetEl()?.scrollLeft || 0;
-
-    modalPos.x = columnClick.pos.x + props.colWidth * columnClick.colIdx;
-    modalPos.x = modalPos.x - scrollOffsetX < wRect().width / 2 ? modalPos.x : modalPos.x - MODAL_WIDTH;
-
-    modalPos.y = columnClick.pos.y;
-    modalPos.y = modalPos.y < wRect().height / 2 + scrollOffsetY ? modalPos.y : modalPos.y - MODAL_HEIGHT;
-
-    if (columnClick.clickedOnExistingSlot) {
-      // console.log("WE HAVE OVERLAPPING TIMESLOTS!");
-      setStore("gesture", "drag:ready");
-      return;
-    }
-    if (!mergeModalOpen()) setCreateModalOpen(true);
   }
 
   // createEffect(() => {});
@@ -197,6 +204,7 @@ const TimeGrid = (props: IProps) => {
             }}
             clickedOut={() => {
               setStore("gesture", "idle");
+              // if (!store.slot) updateModalState();
 
               if (store.slot) {
                 const overlapping = findOverlappingSlots(store.slot!.start, store.slot!.end, store[col]).filter(
