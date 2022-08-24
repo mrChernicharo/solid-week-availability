@@ -64,25 +64,8 @@ const WeeklyAvailability = (props: IProps) => {
     findOverlappingSlots(clickTime - HALF_SLOT, clickTime + HALF_SLOT, store[store.day]);
 
   ///// *************** *************** *************** *************** /////
-  {
-    // function handlePointerUp(e) {
-  }
 
-  function handlePointerDown(e) {
-    // console.log(
-    //   "handlePointerDown"
-    //   );
-    // e,
-    // e.path,
-    // e.path.map((el) => el.id),
-    // Array.from(e.path).filter((el) => "timeSlot_".includes(el.id))
-    // { el: [...e.path].find((el) => "timeSlot_".match(el.id)) }
-    // if overTimeslot
-    // const y = Math.round(e.clientY - rect().top);
-    // if (getOverlappingSlots(clickTime).length) {
-    // setStore("gesture", "drag:ready");
-    // }
-  }
+  function handlePointerDown(e) {}
 
   function _handleColumnClick(e, day, pos, colIdx) {
     setStore("lastPos", pos);
@@ -157,10 +140,14 @@ const WeeklyAvailability = (props: IProps) => {
 
     console.log("pointerUp", { e, slot });
 
-    if (slot?.start && slot?.end) {
-      const overlapping = findOverlappingSlots(slot.start, slot.end, store[store.day]);
+    if (slot?.start && slot?.end && store.modal !== "drop:merge") {
+      const overlapping = findOverlappingSlots(
+        slot.start,
+        slot.end,
+        store[store.day].filter((s) => s.id !== slot.id)
+      );
 
-      if (overlapping.length > 1) {
+      if (overlapping.length > 0) {
         setStore("lastPos", { ...store.lastPos, time: slot.start + (slot.end - slot.start) });
         setStore("slotId", store.slotId);
         setStore("modal", "drop:merge");
@@ -270,16 +257,15 @@ const WeeklyAvailability = (props: IProps) => {
               headerHeight={props.headerHeight}
               colWidth={props.colMinWidth}
               palette={props.palette}
-              onClose={() => setStore("modal", "closed")}
+              onClose={() => {
+                setStore("modal", "closed");
+                setStore("slotId", "");
+              }}
               onCreateTimeSlot={(newSlot) => {
                 setStore(newSlot.day, (slots) => [...slots, newSlot]);
-                setStore("day", newSlot.day);
-                setStore("slotId", newSlot.id);
               }}
               onMergeTimeSlots={(newSlot: ITimeSlot) => {
-                setStore("day", newSlot.day);
                 const merged = getMergedTimeslots(newSlot, store[store.day]);
-                setStore("slotId", merged[0].id);
                 setStore(store.day, merged);
               }}
             />

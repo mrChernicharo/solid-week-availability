@@ -20,14 +20,17 @@ export default function Modal(props) {
     let modalPos = { x: 0, y: 0 };
     const widgetEl = () => document.querySelector("#widget_root_element");
     const wRect = () => getElementRect(widgetEl() as HTMLDivElement);
+
     const scrollOffsetY = widgetEl()?.scrollTop || 0;
     const scrollOffsetX = widgetEl()?.scrollLeft || 0;
 
+    // TODO: gotta review this
     modalPos.x = props.lastPos.x - scrollOffsetX;
     modalPos.x = modalPos.x < wRect().width / 2 ? modalPos.x : modalPos.x - MODAL_WIDTH;
 
-    modalPos.y = props.lastPos.y + wRect().top + props.headerHeight - scrollOffsetY;
-    modalPos.y = modalPos.y - wRect().top < wRect().height / 2 ? modalPos.y : modalPos.y - MODAL_HEIGHT;
+    modalPos.y = props.lastPos.y + wRect().top + props.headerHeight + window.scrollY - scrollOffsetY;
+    modalPos.y =
+      modalPos.y - wRect().top < (wRect().height + window.scrollY) / 2 ? modalPos.y : modalPos.y - MODAL_HEIGHT;
 
     return setModalPos(modalPos);
   }
