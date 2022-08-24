@@ -26,9 +26,15 @@ interface IProps {
   palette: IPalette;
 }
 
-const initialStore = { slot: null, day: "Mon", gesture: "idle", lastPos: { x: 0, y: 0 }, modal: "closed" };
-
 const WeeklyAvailability = (props: IProps) => {
+  const initialStore = {
+    slot: null,
+    day: "Mon",
+    gesture: "idle",
+    lastPos: { x: 0, y: 0, time: props.minHour },
+    modal: "closed",
+  };
+
   const theme = useTheme();
 
   const [store, setStore] = createStore(initialStore as IStore);
@@ -41,9 +47,10 @@ const WeeklyAvailability = (props: IProps) => {
     setStore("gesture", "drag:ready");
   }
 
-  function _handleColumnClick(e, pos) {
-    console.log("onColumnClick", e, pos);
+  function _handleColumnClick(e, day, pos) {
+    // console.log("onColumnClick", e, day, pos);
     setStore("lastPos", pos);
+    setStore("day", day);
 
     if (store.modal === "closed") {
       // if (overTimeslot)
@@ -150,6 +157,7 @@ const WeeklyAvailability = (props: IProps) => {
             <Modal
               type={store.modal}
               lastPos={store.lastPos}
+              day={store.day}
               theme={theme}
               palette={props.palette}
               onClose={() => setStore("modal", "closed")}

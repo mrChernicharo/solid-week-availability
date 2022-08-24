@@ -19,7 +19,7 @@ import {
   readableTime,
   yPosToTime,
 } from "../../lib/helpers";
-import { IColumnClick, IWeekday, IPalette, IPointerEvent, IPos, IStore, ITimeSlot } from "../../lib/types";
+import { IWeekday, IPalette, IPointerEvent, IPos, IStore, ITimeSlot } from "../../lib/types";
 import DayColumn from "../DayColumn/DayColumn";
 import { TimeGridContainer } from "./TimeGridStyles";
 import idMaker from "@melodev/id-maker";
@@ -48,8 +48,8 @@ const TimeGrid = (props) => {
 
   const HOURS = () => getHours(props.minHour, props.maxHour, props.locale);
 
-  function handleColumnClick(e, pos) {
-    props.onColumnClick(e, pos);
+  function handleColumnClick(e, day, pos) {
+    props.onColumnClick(e, day, pos);
   }
   {
     // function handlePointerMove(e) {
@@ -97,15 +97,6 @@ const TimeGrid = (props) => {
     //   setStore("day", columnClick.day);
     //   updateModalState();
     //   props.onChange(store); // send state to parent element
-    // }
-    // function createNewTimeSlot() {
-    //   const newTimeSlot: ITimeSlot = {
-    //     id: idMaker(),
-    //     start: columnClick.minutes - HALF_SLOT,
-    //     end: columnClick.minutes + HALF_SLOT,
-    //     day: columnClick.day,
-    //   };
-    //   return newTimeSlot;
     // }
     // function mergeSlots(newSlot: ITimeSlot) {
     //   const merged = getMergedTimeslots(newSlot, store[newSlot.day]);

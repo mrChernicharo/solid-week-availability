@@ -1,10 +1,21 @@
 import { props } from "cypress/types/bluebird";
 import { FaSolidX, FaSolidCalendarPlus } from "solid-icons/fa";
 import { Show } from "solid-js";
-import { MODAL_WIDTH, MODAL_HEIGHT } from "../../lib/constants";
+import { MODAL_WIDTH, MODAL_HEIGHT, HALF_SLOT } from "../../lib/constants";
+import { ITimeSlot, IWeekday } from "../../lib/types";
 import { MarkerOverlay, ModalContainer } from "./ModalStyles";
+import idMaker from "@melodev/id-maker";
 
 export default function Modal(props) {
+  function createNewTimeSlot(day: IWeekday, time: number) {
+    const newTimeSlot: ITimeSlot = {
+      id: idMaker(),
+      start: time - HALF_SLOT,
+      end: time + HALF_SLOT,
+      day,
+    };
+    return newTimeSlot;
+  }
   return (
     <div>
       {/* MODALS */}
@@ -28,7 +39,7 @@ export default function Modal(props) {
             <main>
               <button
                 onclick={(e) => {
-                  // const newSlot = createNewTimeSlot();
+                  const newSlot = createNewTimeSlot(props.day, props.lastPos.time);
                   // setStore(newSlot.day, (slots) => [...slots, newSlot]);
                   // setCreateModalOpen(false);
                 }}

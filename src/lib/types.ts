@@ -37,13 +37,14 @@ export type IWeekday = "Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat";
 export interface IPos {
   x: number;
   y: number;
+  time?: number;
 }
-export interface IColumnClick {
-  minutes: number;
-  pos: IPos;
-  day: IWeekday;
-  clickedOnExistingSlot: boolean;
-  clickedSlots: ITimeSlot[];
-  nearbySlots: ITimeSlot[];
-  colIdx: number;
-}
+// export interface IColumnClick {
+//   minutes: number;
+//   pos: IPos;
+//   day: IWeekday;
+//   clickedOnExistingSlot: boolean;
+//   clickedSlots: ITimeSlot[];
+//   nearbySlots: ITimeSlot[];
+//   colIdx: number;
+// }

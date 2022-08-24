@@ -1,7 +1,7 @@
 import { createEffect, createSignal, For, Show } from "solid-js";
 import { HALF_SLOT, MARKER_TIME } from "../../lib/constants";
 import { findOverlappingSlots, getElementRect, localizeWeekday, timeToYPos, yPosToTime } from "../../lib/helpers";
-import { IColumnClick, IWeekday, IPalette, IPointerEvent, IPos, ITimeSlot, ITouchEvent } from "../../lib/types";
+import { IWeekday, IPalette, IPointerEvent, IPos, ITimeSlot, ITouchEvent } from "../../lib/types";
 import { DayColumnContainer, Marker } from "./DayColumnStyles";
 import { FaSolidPlus } from "solid-icons/fa";
 import { unwrap } from "solid-js/store";
@@ -43,12 +43,14 @@ const DayColumn = (props) => {
     let clickFinish = Date.now();
 
     if (clickFinish - clickMoment < 500) {
+      const y = Math.round(e.clientY - rect().top);
       const pos = {
         x: e.offsetX,
-        y: Math.round(e.clientY - rect().top),
+        y,
+        time: yPosToTime(y, props.minHour, props.maxHour, props.height),
       };
 
-      props.onCancelableClick(e, pos);
+      props.onCancelableClick(e, props.day, pos);
     }
   }
 
