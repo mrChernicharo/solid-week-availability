@@ -13,6 +13,8 @@ export type IStore = {
   slot: ITimeSlot | null;
   day: IWeekday;
   gesture: "idle" | "drag:ready" | "drag:middle" | "drag:top" | "drag:bottom";
+  lastPos: IPos; // for positioning modal?
+  modal: "closed" | "create" | "merge" | "details";
 };
 
 export type IPalette = "light" | "dark";

@@ -1,4 +1,4 @@
-import { createEffect, createSignal, onCleanup, onMount, Show } from "solid-js";
+import { createEffect, createSignal, onCleanup, onMount, Show, splitProps } from "solid-js";
 import { createStore, unwrap } from "solid-js/store";
 import { useTheme } from "solid-styled-components";
 import { getWeekDays, isMobile } from "../../lib/helpers";
@@ -7,7 +7,8 @@ import TimeGrid from "../TimeGrid/TimeGrid";
 import SideBar from "../SideBar/SideBar";
 import TopBar from "../TopBar/TopBar";
 import { Container } from "./ContainerStyles";
-const initialStore = { slot: null, day: "Mon", gesture: "idle" };
+import { WEEKDAYS } from "../../lib/constants";
+import Modal from "../Modal/Modal";
 
 interface IProps {
   locale: string;
@@ -25,79 +26,66 @@ interface IProps {
   palette: IPalette;
 }
 
+const initialStore = { slot: null, day: "Mon", gesture: "idle", lastPos: { x: 0, y: 0 }, modal: "closed" };
+
 const WeeklyAvailability = (props: IProps) => {
   const theme = useTheme();
 
-  // let isMobile = () => window.matchMedia("(any-pointer:coarse)").matches;
-  // setInterval(() => {
-  //   console.log({ isMobile: isMobile() });
-  // }, 2000);
-
   const [store, setStore] = createStore(initialStore as IStore);
 
+  const timeslots = () => Object.keys(store).filter((k) => k in WEEKDAYS);
+
   function handlePointerDown(e) {
-    console.log("handlePointerDown", e);
-    // Mobile -> doesn't fire after touchcancel has been emitted
-    // DRAG
-    // SCROLL
-  }
-  function handleClick(e) {
-    // Mobile Behavior -> fires only if you clicked briefly
-    //
-    // Desktop Behavior -> fires on click up, always
-    //
-    // WE WANT THIS TO FIRE RELIABLY -> ONLY IF WE CLICKED BRIEFLY
-    // clearTimeout(clickTimeout);
-    // OPEN/CLOSE MODAL
+    // console.log("handlePointerDown", e);
+    // if overTimeslot
+    setStore("gesture", "drag:ready");
   }
 
-  function handleTouchStart(e) {
-    // console.log("handleTouchStart", e);
+  function _handleColumnClick(e, pos) {
+    console.log("onColumnClick", e, pos);
+    setStore("lastPos", pos);
+
+    if (store.modal === "closed") {
+      // if (overTimeslot)
+      setStore("modal", "create");
+    }
+
+    // setStore("gesture", "idle");
   }
 
-  function handlePointerCancel(e) {
-    // console.log("handlePointerCancel", e); // fires on mobile only
-    // started moving
-  }
   function handlePointerUp(e) {
     setTimeout(() => {
-      if (isMobile() && e instanceof TouchEvent) return console.log("touchEnd", e);
-      if (!isMobile() && e instanceof PointerEvent) return console.log("pointerUp", e);
+      if (isMobile() && e instanceof TouchEvent) {
+        // console.log("touchEnd", e);
+        setStore("gesture", "idle");
+      }
+      if (!isMobile() && e instanceof PointerEvent) {
+        // console.log("pointerUp", e);
+        setStore("gesture", "idle");
+      }
     }, 30);
-    // Mobile Behavior -> fires on click-up, if brief
-    //                    if long,
-    //                         emits pointercancel if you move,
-    //                         emits contextmenu if you hold still
-    //
-    // Desktop Behavior -> fires on click-up always
-    // CLEAN STUFF
-  }
-  function handleTouchEnd(e) {
-    // console.log("handleTouchEnd", e);
   }
 
-  function onColumnClick(e) {
-    console.log("onColumnClick", e);
-  }
+  createEffect(() => {
+    props.onChange(store);
+  });
 
   onMount(() => {
-    // document.addEventListener("click", handleClick);
     document.addEventListener("pointerdown", handlePointerDown);
-    // document.addEventListener("pointercancel", handlePointerCancel);
-    // document.addEventListener("touchstart", handleTouchStart);
     document.addEventListener("pointerup", handlePointerUp);
     document.addEventListener("touchend", handlePointerUp);
+    // document.addEventListener("click", handleClick);
+    // document.addEventListener("pointercancel", handlePointerCancel);
+    // document.addEventListener("touchstart", handleTouchStart);
   });
   onCleanup(() => {
     document.removeEventListener("pointerdown", handlePointerDown);
-    // document.removeEventListener("pointercancel", handlePointerCancel);
-    // document.removeEventListener("click", handleClick);
     document.removeEventListener("pointerup", handlePointerUp);
     document.addEventListener("touchend", handlePointerUp);
+    // document.removeEventListener("pointercancel", handlePointerCancel);
+    // document.removeEventListener("click", handleClick);
     // document.addEventListener("touchstart", handleTouchStart);
   });
-
-  // touchend + pointerup
 
   const cols = () =>
     getWeekDays(props.dayCols, {
@@ -152,12 +140,21 @@ const WeeklyAvailability = (props: IProps) => {
             firstDay={props.firstDay}
             theme={theme}
             palette={props.palette}
-            onColumnClick={onColumnClick}
+            onColumnClick={_handleColumnClick}
+            timeSlots={timeslots()}
             onChange={() => {
-              console.log({ ...store });
-              props.onChange(store);
+              // props.onChange(store);
             }}
           />
+          <Show when={store.modal !== "closed"}>
+            <Modal
+              type={store.modal}
+              lastPos={store.lastPos}
+              theme={theme}
+              palette={props.palette}
+              onClose={() => setStore("modal", "closed")}
+            />
+          </Show>
         </div>
       </Container>
     </Show>

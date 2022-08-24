@@ -32,7 +32,25 @@ const ICON_SIZE = 16;
 
 const DayColumn = (props) => {
   let columnRef: HTMLDivElement;
-  let timeout;
+  let clickMoment = 0;
+
+  const rect = () => getElementRect(columnRef);
+
+  function handlePointerDown(e) {
+    clickMoment = Date.now();
+  }
+  function handleCancelableClick(e) {
+    let clickFinish = Date.now();
+
+    if (clickFinish - clickMoment < 500) {
+      const pos = {
+        x: e.offsetX,
+        y: Math.round(e.clientY - rect().top),
+      };
+
+      props.onCancelableClick(e, pos);
+    }
+  }
 
   // const rect = () => getElementRect(columnRef);
 
@@ -110,8 +128,8 @@ const DayColumn = (props) => {
       width={props.width}
       theme={props.theme}
       palette={props.palette}
-      onClick={props.onCancelableClick}
-      onPointerDown={props.onPointerDown}
+      onClick={handleCancelableClick}
+      onPointerDown={handlePointerDown}
       // onPointerDown={handlePointerDown}
       // onPointerUp={handlePointerUp}
       // onTouchEnd={handlePointerUp}
