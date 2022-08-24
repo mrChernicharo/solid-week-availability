@@ -110,16 +110,20 @@ const WeeklyAvailability = (props: IProps) => {
     const timeDiff = yPosToTime(e.movementY, 0, props.maxHour - props.minHour, props.colHeight);
     const [day, id] = [store.day, store.slotId];
     const { start, end } = getSlot(day, id)!;
+    const [topLimit, bottomLimit] = [props.minHour * 60, props.maxHour * 60];
 
     if (timeDiff !== 0) {
       if (store.gesture === "drag:top") {
         [slotStart, slotEnd] = [start + timeDiff, end];
+        if (slotStart < topLimit || slotStart > slotEnd - HALF_SLOT) return;
       }
       if (store.gesture === "drag:bottom") {
         [slotStart, slotEnd] = [start, end + timeDiff];
+        if (slotEnd > bottomLimit || slotEnd < slotStart + HALF_SLOT) return;
       }
       if (store.gesture === "drag:middle") {
         [slotStart, slotEnd] = [start + timeDiff, end + timeDiff];
+        if (slotStart < topLimit || slotEnd > bottomLimit) return;
       }
       const newSlot: ITimeSlot = {
         id,
