@@ -48,44 +48,10 @@ const TimeGrid = (props) => {
 
   const HOURS = () => getHours(props.minHour, props.maxHour, props.locale);
 
-  function handleColumnClick(e, day, pos) {
-    props.onColumnClick(e, day, pos);
+  function handleColumnClick(e, day, pos, colIdx) {
+    props.onColumnClick(e, day, pos, colIdx);
   }
   {
-    // function handlePointerMove(e) {
-    //   if (store.gesture === "idle") return;
-    //   if (store.gesture === "drag:ready") {
-    //     const actions = {
-    //       top_resize_handle: "drag:top",
-    //       bottom_resize_handle: "drag:bottom",
-    //       middle: "drag:middle",
-    //     };
-    //     setStore("gesture", actions[e.srcElement.classList[0]]);
-    //     return;
-    //   }
-    //   const timeDiff = yPosToTime(e.movementY, 0, props.maxHour - props.minHour, props.colHeight);
-    //   let slotStart, slotEnd;
-    //   const { id, day, start, end } = store.slot!;
-    //   if (timeDiff !== 0) {
-    //     if (store.gesture === "drag:top") {
-    //       [slotStart, slotEnd] = [start + timeDiff, end];
-    //     }
-    //     if (store.gesture === "drag:bottom") {
-    //       [slotStart, slotEnd] = [start, end + timeDiff];
-    //     }
-    //     if (store.gesture === "drag:middle") {
-    //       [slotStart, slotEnd] = [start + timeDiff, end + timeDiff];
-    //     }
-    //     const newSlot: ITimeSlot = {
-    //       id,
-    //       day,
-    //       start: slotStart,
-    //       end: slotEnd,
-    //     };
-    //     setStore("slot", newSlot);
-    //     setStore(day as IWeekday, (prev) => [...prev.filter((s) => s.id !== id), newSlot]);
-    //   }
-    // }
     // function handleColumnClick(e: IPointerEvent, obj: IColumnClick) {
     //   // @ts-ignore
     //   columnClick = structuredClone(obj) || { ...obj };
@@ -153,6 +119,8 @@ const TimeGrid = (props) => {
             timeSlots={props.timeSlots[col]}
             onCancelableClick={handleColumnClick}
             onSlotClick={props.onSlotClick}
+            isDragging={props.currentDay === col && props.currentGesture !== "idle"}
+            // currentGesture={props.currentGesture}
 
             // onPointerDown={handlePointerDown}
             // onColumnClick={handleColumnClick}

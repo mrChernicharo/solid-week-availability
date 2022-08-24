@@ -16,6 +16,10 @@ interface ITimeSlotProps extends ParentProps {
 }
 
 export default function TimeSlot(props: ITimeSlotProps) {
+  function handlePointerDown(e) {
+    props.onSlotClick(e, props.timeSlot);
+  }
+
   createEffect(() => {
     // console.log(hover());
   });
@@ -27,10 +31,7 @@ export default function TimeSlot(props: ITimeSlotProps) {
       bottom={props.bottom}
       theme={props.theme}
       palette={props.palette}
-      onPointerDown={(e) => {
-        // console.log(`timeSlot_${props.id}`, e.currentTarget)
-        props.onSlotClick(e, props.timeSlot);
-      }}
+      onPointerDown={handlePointerDown}
     >
       <div class="timeSlot_content">
         <div class="top_resize_handle"></div>

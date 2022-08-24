@@ -45,12 +45,12 @@ const DayColumn = (props) => {
     if (clickFinish - clickMoment < 500) {
       const y = Math.round(e.clientY - rect().top);
       const pos = {
-        x: e.offsetX,
+        x: props.width * props.colIdx + props.width * 0.5 + e.offsetX,
         y,
         time: yPosToTime(y, props.minHour, props.maxHour, props.height),
       };
 
-      props.onCancelableClick(e, props.day, pos);
+      props.onCancelableClick(e, props.day, pos, props.colIdx);
     }
   }
 
@@ -120,11 +120,13 @@ const DayColumn = (props) => {
       palette={props.palette}
       onClick={handleCancelableClick}
       onPointerDown={handlePointerDown}
+      data-cy={`day_column_${props.day}`}
+      idx={props.colIdx}
       // onPointerDown={handlePointerDown}
       // onPointerUp={handlePointerUp}
       // onTouchEnd={handlePointerUp}
-      data-cy={`day_column_${props.day}`}
-      idx={props.colIdx}
+      style={{ "touch-action": props.isDragging ? "none" : "unset" }}
+      // style={{ "touch-action": "none" }}
     >
       <div style={{ "pointer-events": "none" }}>{localizeWeekday(props.day as IWeekday, props.locale, "long")}</div>
       {/* X Marker */}

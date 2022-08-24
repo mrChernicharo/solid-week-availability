@@ -2,7 +2,7 @@ import { createEffect, createSignal, onCleanup, onMount, Show, splitProps } from
 import { createStore, unwrap } from "solid-js/store";
 import { useTheme } from "solid-styled-components";
 import { findOverlappingSlots, getWeekDays, isMobile, timeToYPos, yPosToTime } from "../../lib/helpers";
-import { IWeekday, IStore, IPalette } from "../../lib/types";
+import { IWeekday, IStore, IPalette, ITimeSlot } from "../../lib/types";
 import TimeGrid from "../TimeGrid/TimeGrid";
 import SideBar from "../SideBar/SideBar";
 import TopBar from "../TopBar/TopBar";
@@ -69,7 +69,7 @@ const WeeklyAvailability = (props: IProps) => {
     // }
   }
 
-  function _handleColumnClick(e, day, pos) {
+  function _handleColumnClick(e, day, pos, colIdx) {
     setStore("lastPos", pos);
     setStore("day", day);
 
@@ -87,36 +87,71 @@ const WeeklyAvailability = (props: IProps) => {
   }
 
   function _handleSlotClick(e, slot) {
-    console.log("_handleSlotClick", e, slot);
-
-    if (store.gesture === "idle") setStore("gesture", "drag:ready");
-
-    if (store.gesture === "drag:ready") {
-      console.log("drag");
+    // console.log("_handleSlotClick", { e, slot });
+    if (store.gesture === "idle") {
+      setStore("gesture", "drag:ready");
+      setStore("slot", slot);
     }
   }
 
   function handlePointerUp(e) {
-    setTimeout(() => {
-      if (isMobile() && e instanceof TouchEvent) {
-        // console.log("touchEnd", e);
-        setStore("gesture", "idle");
-      }
-      if (!isMobile() && e instanceof PointerEvent) {
-        // console.log("pointerUp", e);
-        setStore("gesture", "idle");
-      }
-    }, 30);
+    // setTimeout(() => {
+    if (isMobile() && e instanceof TouchEvent) {
+      // console.log("touchEnd", e);
+      // setStore("gesture", "idle");
+      // setStore("slot", null);
+    }
+    if (!isMobile() && e instanceof PointerEvent) {
+      // console.log("pointerUp", e);
+    }
+    setStore("gesture", "idle");
+    setStore("slot", null);
+    // }, 100);
   }
 
   function handlePointerMove(e) {
     if (store.gesture === "idle") return;
 
-    console.log("drag");
+    if (store.gesture === "drag:ready") {
+      const actions = {
+        top_resize_handle: "drag:top",
+        bottom_resize_handle: "drag:bottom",
+        middle: "drag:middle",
+      };
+      setStore("gesture", actions[e.srcElement.classList[0]]);
+      return;
+    }
+
+    let slotStart, slotEnd;
+    const timeDiff = yPosToTime(e.movementY, 0, props.maxHour - props.minHour, props.colHeight);
+    const { id, day, start, end } = store.slot!;
+
+    if (timeDiff !== 0) {
+      if (store.gesture === "drag:top") {
+        [slotStart, slotEnd] = [start + timeDiff, end];
+      }
+      if (store.gesture === "drag:bottom") {
+        [slotStart, slotEnd] = [start, end + timeDiff];
+      }
+      if (store.gesture === "drag:middle") {
+        [slotStart, slotEnd] = [start + timeDiff, end + timeDiff];
+      }
+      const newSlot: ITimeSlot = {
+        id,
+        day,
+        start: slotStart,
+        end: slotEnd,
+      };
+      setStore("slot", newSlot);
+      setStore(day as IWeekday, (prev) => [...prev.filter((s) => s.id !== id), newSlot]);
+    }
+
+    // console.log("drag");
   }
 
   createEffect(() => {
     props.onChange(store);
+    console.log(store.gesture);
   });
 
   onMount(() => {
@@ -169,6 +204,7 @@ const WeeklyAvailability = (props: IProps) => {
           style={{
             display: "inline-flex",
             width: props.colMinWidth * (cols().length + 0.5) + "px",
+            "touch-action": store.gesture !== "idle" ? "none" : "unset",
           }}
         >
           <SideBar
@@ -195,6 +231,8 @@ const WeeklyAvailability = (props: IProps) => {
             timeSlots={allTimeSlots()}
             onColumnClick={_handleColumnClick}
             onSlotClick={_handleSlotClick}
+            currentGesture={store.gesture}
+            currentDay={store.day}
             // onChange={() => {
             //   // props.onChange(store);
             // }}
