@@ -7,7 +7,7 @@ import TimeGrid from "../TimeGrid/TimeGrid";
 import SideBar from "../SideBar/SideBar";
 import TopBar from "../TopBar/TopBar";
 import { Container } from "./ContainerStyles";
-import { WEEKDAYS } from "../../lib/constants";
+import { HALF_SLOT, WEEKDAYS } from "../../lib/constants";
 import Modal from "../Modal/Modal";
 
 interface IProps {
@@ -35,16 +35,23 @@ const WeeklyAvailability = (props: IProps) => {
     modal: "closed",
   };
 
-  for (let k of WEEKDAYS) {
-    initialStore[k] = [];
-  }
-
   const theme = useTheme();
 
   const [store, setStore] = createStore(initialStore as IStore);
+  for (let k of WEEKDAYS) {
+    setStore(k, []);
+  }
 
-  const allTimeslots = () => Object.keys(store).filter((k) => k in WEEKDAYS);
+  const allTimeSlots = () => {
+    const copy = {};
+    for (let k of WEEKDAYS) {
+      copy[k] = store[k];
+    }
+    return copy;
+  };
   const getOverlappingSlots = (clickTime: number) => findOverlappingSlots(clickTime, clickTime, store[store.day]);
+  const getNearbySlots = (clickTime: number) =>
+    findOverlappingSlots(clickTime - HALF_SLOT, clickTime + HALF_SLOT, store[store.day]);
 
   function handlePointerDown(e) {
     // console.log("handlePointerDown", e);
@@ -57,14 +64,14 @@ const WeeklyAvailability = (props: IProps) => {
     setStore("day", day);
 
     if (store.modal === "closed") {
-      const overlapping = getOverlappingSlots(pos.time);
-      console.log({ overlapping });
-      if (overlapping.length) {
+      if (getOverlappingSlots(pos.time).length) {
         setStore("modal", "details");
         return;
       }
-      // const getOverlappingSlots = (clickTime: number) => findOverlappingSlots(clickTime, clickTime, store[store.day]);
-
+      if (getNearbySlots(pos.time).length) {
+        setStore("modal", "merge");
+        return;
+      }
       setStore("modal", "create");
     }
 
@@ -159,7 +166,8 @@ const WeeklyAvailability = (props: IProps) => {
             theme={theme}
             palette={props.palette}
             onColumnClick={_handleColumnClick}
-            timeSlots={allTimeslots()}
+            timeSlots={allTimeSlots()}
+            // timeSlots={[store.Mon, store.Tue, store.Wed, store.Thu, store.Fri, store.Sat, store.Sun]}
             onChange={() => {
               // props.onChange(store);
             }}

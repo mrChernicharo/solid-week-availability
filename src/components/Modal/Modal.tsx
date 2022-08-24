@@ -52,7 +52,9 @@ export default function Modal(props) {
             </main>
           </Show>
 
+          {/* MERGE MODAL */}
           <Show when={props.type === "merge"}>
+            <CloseButton onClick={props.onClose} />
             <main></main>
           </Show>
 
@@ -221,7 +223,6 @@ export default function Modal(props) {
 
   //     <div>
 
-  //       {/* MERGE MODAL */}
   //       <Show when={mergeModalOpen() && !detailsModalOpen()}>
   //         <button
   //           data-cy="close_modal_btn"

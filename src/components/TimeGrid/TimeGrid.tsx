@@ -120,6 +120,11 @@ const TimeGrid = (props) => {
     // }
     // createEffect(() => {});
   }
+
+  // const timeslots = () => {
+  //   console.log(props.timeSlots);
+  //   return ;
+  // };
   return (
     <TimeGridContainer
       ref={gridRef!}
@@ -145,7 +150,7 @@ const TimeGrid = (props) => {
             maxHour={props.maxHour}
             theme={props.theme}
             palette={props.palette}
-            timeSlots={[]}
+            timeSlots={props.timeSlots[col]}
             onCancelableClick={handleColumnClick}
 
             // onPointerDown={handlePointerDown}
