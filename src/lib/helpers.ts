@@ -162,6 +162,7 @@ export function readableTime(minutes: number, locale = "en") {
 //////////*************************************************//////////
 
 export function findOverlappingSlots(start: number, end: number, timeSlots: ITimeSlot[]) {
+  console.log(start, end, timeSlots);
   const overlappingItems = timeSlots.filter(
     (s, i) =>
       (start <= s.start && start <= s.end && end >= s.start && end <= s.end) || // top overlap

@@ -58,6 +58,7 @@ export default function Modal(props) {
 
           {/* DETAILS MODAL */}
           <Show when={props.type === "details"}>
+            <CloseButton onClick={props.onClose} />
             <main>
               {/* 
            {() => {

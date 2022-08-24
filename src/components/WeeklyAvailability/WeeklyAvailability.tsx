@@ -58,9 +58,10 @@ const WeeklyAvailability = (props: IProps) => {
 
     if (store.modal === "closed") {
       const overlapping = getOverlappingSlots(pos.time);
-      console.log(overlapping);
+      console.log({ overlapping });
       if (overlapping.length) {
         setStore("modal", "details");
+        return;
       }
       // const getOverlappingSlots = (clickTime: number) => findOverlappingSlots(clickTime, clickTime, store[store.day]);
 
