@@ -128,7 +128,9 @@ const DayColumn = (props) => {
       style={{ "touch-action": props.isDragging ? "none" : "unset" }}
       // style={{ "touch-action": "none" }}
     >
-      <div style={{ "pointer-events": "none" }}>{localizeWeekday(props.day as IWeekday, props.locale, "long")}</div>
+      <div style={{ "pointer-events": "none" }}>
+        {localizeWeekday(props.day as IWeekday, props.locale, "long")}
+      </div>
       {/* X Marker */}
       {/* <Show when={clickedPos() !== null}>
         {() => {
