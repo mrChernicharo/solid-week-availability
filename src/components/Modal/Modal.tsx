@@ -1,5 +1,5 @@
 import { props } from "cypress/types/bluebird";
-import { FaSolidX, FaSolidCalendarPlus } from "solid-icons/fa";
+import { FaSolidX, FaSolidCalendarPlus, FaSolidLayerGroup } from "solid-icons/fa";
 import { Show } from "solid-js";
 import { MODAL_WIDTH, MODAL_HEIGHT, HALF_SLOT } from "../../lib/constants";
 import { ITimeSlot, IWeekday } from "../../lib/types";
@@ -55,7 +55,31 @@ export default function Modal(props) {
           {/* MERGE MODAL */}
           <Show when={props.type === "merge"}>
             <CloseButton onClick={props.onClose} />
-            <main></main>
+            <main>
+              {/* Merge */}
+              <button
+                onclick={(e) => {
+                  // const newSlot = columnClick.clickedSlots.length
+                  //   ? store[store.day].find((s) => s.id === store.slot!.id)!
+                  //   : createNewTimeSlot();
+                  // mergeSlots(newSlot);
+                  // setMergeModalOpen(false);
+                  props.onClose();
+                }}
+              >
+                <FaSolidLayerGroup size={24} />
+              </button>
+
+              {/* Create New */}
+              <button
+                onclick={(e) => {
+                  props.onCreateTimeSlot(createNewTimeSlot(props.day, props.lastPos.time));
+                  props.onClose();
+                }}
+              >
+                <FaSolidCalendarPlus size={24} />
+              </button>
+            </main>
           </Show>
 
           {/* DETAILS MODAL */}
@@ -233,32 +257,7 @@ export default function Modal(props) {
   //           <FaSolidX />
   //         </button>
   //         <main>
-  //           {/* Merge */}
-  //           <button
-  //             onclick={(e) => {
-  //               const newSlot = columnClick.clickedSlots.length
-  //                 ? store[store.day].find((s) => s.id === store.slot!.id)!
-  //                 : createNewTimeSlot();
-
-  //               mergeSlots(newSlot);
-  //               setMergeModalOpen(false);
-  //             }}
-  //           >
-  //             <FaSolidLayerGroup size={24} />
-  //           </button>
-
-  //           {/* Create New */}
-  //           <button
-  //             onclick={(e) => {
-  //               if (!columnClick.clickedSlots.length) {
-  //                 const newSlot = createNewTimeSlot();
-  //                 setStore(newSlot.day, (slots) => [...slots, newSlot]);
-  //               }
-  //               setMergeModalOpen(false);
-  //             }}
-  //           >
-  //             <FaSolidCalendarPlus size={24} />
-  //           </button>
+  //
   //         </main>
   //       </Show>
 

@@ -56,20 +56,6 @@ const WeeklyAvailability = (props: IProps) => {
   ///// *************** *************** *************** *************** /////
   {
     // function handlePointerUp(e) {
-    //   console.log("pointerUp", e, { isMobile: isMobile() });
-    //   // setTimeout(() => {
-    //   if (e instanceof TouchEvent) {
-    //     // console.log("touchEnd", e);
-    //     // setStore("gesture", "idle");
-    //     // setStore("slot", null);
-    //   }
-    //   if (!isMobile() && e instanceof PointerEvent) {
-    //     setStore("gesture", "idle");
-    //     setStore("slot", null);
-    //     // console.log("pointerUp", e);
-    //   }
-    //   // }, 0);
-    // }
   }
 
   function handlePointerDown(e) {
@@ -113,12 +99,6 @@ const WeeklyAvailability = (props: IProps) => {
     }
   }
 
-  function handleDragEnd(e) {
-    console.log("pointerUp", e);
-    setStore("gesture", "idle");
-    setStore("slot", null);
-  }
-
   function handlePointerMove(e) {
     if (store.gesture === "idle") return;
 
@@ -134,7 +114,7 @@ const WeeklyAvailability = (props: IProps) => {
 
     let slotStart, slotEnd;
     const timeDiff = yPosToTime(e.movementY, 0, props.maxHour - props.minHour, props.colHeight);
-    const { id, day, start, end } = store.slot!;
+    const { id, day, start, end } = { ...store.slot! };
 
     if (timeDiff !== 0) {
       if (store.gesture === "drag:top") {
@@ -157,6 +137,12 @@ const WeeklyAvailability = (props: IProps) => {
     }
 
     // console.log("drag");
+  }
+
+  function handleDragEnd(e) {
+    console.log("pointerUp", e);
+    setStore("gesture", "idle");
+    // setStore("slot", null);
   }
 
   createEffect(() => {
@@ -229,16 +215,16 @@ const WeeklyAvailability = (props: IProps) => {
           />
           <TimeGrid
             cols={cols()}
+            firstDay={props.firstDay}
             minHour={props.minHour}
             maxHour={props.maxHour}
-            locale={props.locale}
             colWidth={props.colMinWidth}
             colHeight={props.colHeight}
             headerHeight={props.headerHeight}
             widgetHeight={props.widgetHeight}
-            firstDay={props.firstDay}
             theme={theme}
             palette={props.palette}
+            locale={props.locale}
             timeSlots={allTimeSlots()}
             onColumnClick={_handleColumnClick}
             onSlotClick={_handleSlotClick}
@@ -256,7 +242,10 @@ const WeeklyAvailability = (props: IProps) => {
               theme={theme}
               palette={props.palette}
               onClose={() => setStore("modal", "closed")}
-              onCreateTimeSlot={(newSlot) => setStore(newSlot.day, (slots) => [...slots, newSlot])}
+              onCreateTimeSlot={(newSlot) => {
+                setStore(newSlot.day, (slots) => [...slots, newSlot]);
+                // setStore("slot", newSlot);
+              }}
             />
           </Show>
         </div>
