@@ -1,7 +1,15 @@
 import { createEffect, createSignal, onCleanup, onMount, Show, splitProps } from "solid-js";
 import { createStore, unwrap } from "solid-js/store";
 import { useTheme } from "solid-styled-components";
-import { findOverlappingSlots, getWeekDays, isMobile, timeToYPos, yPosToTime } from "../../lib/helpers";
+import {
+  findOverlappingSlots,
+  getMergedTimeslots,
+  getWeekDays,
+  isMobile,
+  mergeTimeslots,
+  timeToYPos,
+  yPosToTime,
+} from "../../lib/helpers";
 import { IWeekday, IStore, IPalette, ITimeSlot } from "../../lib/types";
 import TimeGrid from "../TimeGrid/TimeGrid";
 import SideBar from "../SideBar/SideBar";
@@ -49,7 +57,8 @@ const WeeklyAvailability = (props: IProps) => {
     }
     return copy;
   };
-  const slot = (day: IWeekday, id: string) => store[day].find((s) => s.id === id);
+  const getSlot = (day: IWeekday, id: string) => store[day].find((s) => s.id === id);
+
   const getOverlappingSlots = (clickTime: number) => findOverlappingSlots(clickTime, clickTime, store[store.day]);
   const getNearbySlots = (clickTime: number) =>
     findOverlappingSlots(clickTime - HALF_SLOT, clickTime + HALF_SLOT, store[store.day]);
@@ -117,7 +126,7 @@ const WeeklyAvailability = (props: IProps) => {
     let slotStart, slotEnd;
     const timeDiff = yPosToTime(e.movementY, 0, props.maxHour - props.minHour, props.colHeight);
     const [day, id] = [store.day, store.slotId];
-    const { start, end } = slot(day, id)!;
+    const { start, end } = getSlot(day, id)!;
 
     if (timeDiff !== 0) {
       if (store.gesture === "drag:top") {
@@ -242,11 +251,17 @@ const WeeklyAvailability = (props: IProps) => {
               type={store.modal}
               lastPos={store.lastPos}
               day={store.day}
+              slotId={store.slotId}
               theme={theme}
               palette={props.palette}
               onClose={() => setStore("modal", "closed")}
               onCreateTimeSlot={(newSlot) => {
                 setStore(newSlot.day, (slots) => [...slots, newSlot]);
+                setStore("day", newSlot.day);
+                setStore("slotId", newSlot.id);
+              }}
+              onMergeTimeSlots={(newSlot: ITimeSlot) => {
+                setStore(store.day, getMergedTimeslots(newSlot, store[store.day]));
                 setStore("day", newSlot.day);
                 setStore("slotId", newSlot.id);
               }}
