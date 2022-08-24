@@ -28,7 +28,7 @@ interface IProps {
 
 const WeeklyAvailability = (props: IProps) => {
   const initialStore = {
-    slot: null,
+    slotId: "",
     day: "Mon",
     gesture: "idle",
     lastPos: { x: 0, y: 0, time: props.minHour },
@@ -49,6 +49,7 @@ const WeeklyAvailability = (props: IProps) => {
     }
     return copy;
   };
+  const slot = (day: IWeekday, id: string) => store[day].find((s) => s.id === id);
   const getOverlappingSlots = (clickTime: number) => findOverlappingSlots(clickTime, clickTime, store[store.day]);
   const getNearbySlots = (clickTime: number) =>
     findOverlappingSlots(clickTime - HALF_SLOT, clickTime + HALF_SLOT, store[store.day]);
@@ -95,7 +96,8 @@ const WeeklyAvailability = (props: IProps) => {
     console.log("_handleSlotClick", { e, slot });
     if (store.gesture === "idle") {
       setStore("gesture", "drag:ready");
-      setStore("slot", slot);
+      setStore("slotId", slot.id);
+      setStore("day", slot.day);
     }
   }
 
@@ -114,7 +116,8 @@ const WeeklyAvailability = (props: IProps) => {
 
     let slotStart, slotEnd;
     const timeDiff = yPosToTime(e.movementY, 0, props.maxHour - props.minHour, props.colHeight);
-    const { id, day, start, end } = { ...store.slot! };
+    const [day, id] = [store.day, store.slotId];
+    const { start, end } = slot(day, id)!;
 
     if (timeDiff !== 0) {
       if (store.gesture === "drag:top") {
@@ -132,7 +135,6 @@ const WeeklyAvailability = (props: IProps) => {
         start: slotStart,
         end: slotEnd,
       };
-      setStore("slot", newSlot);
       setStore(day, (prev) => [...prev.filter((s) => s.id !== id), newSlot]);
     }
 
@@ -142,7 +144,7 @@ const WeeklyAvailability = (props: IProps) => {
   function handleDragEnd(e) {
     console.log("pointerUp", e);
     setStore("gesture", "idle");
-    // setStore("slot", null);
+    // setStore("slotId", null);
   }
 
   createEffect(() => {
@@ -155,6 +157,7 @@ const WeeklyAvailability = (props: IProps) => {
     document.addEventListener("pointerdown", handlePointerDown);
     document.addEventListener("pointerup", handleDragEnd);
     document.addEventListener("touchend", handleDragEnd);
+
     // document.addEventListener("touchend", handleTouchEnd);
     // document.addEventListener("click", handleClick);
     // document.addEventListener("pointercancel", handlePointerCancel);
@@ -244,7 +247,8 @@ const WeeklyAvailability = (props: IProps) => {
               onClose={() => setStore("modal", "closed")}
               onCreateTimeSlot={(newSlot) => {
                 setStore(newSlot.day, (slots) => [...slots, newSlot]);
-                // setStore("slot", newSlot);
+                setStore("day", newSlot.day);
+                setStore("slotId", newSlot.id);
               }}
             />
           </Show>

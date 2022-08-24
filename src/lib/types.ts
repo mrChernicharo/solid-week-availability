@@ -10,11 +10,11 @@ export type ITouchEvent = TouchEvent & {
 export type IStore = {
   [k in IWeekday]: ITimeSlot[];
 } & {
-  slot: ITimeSlot | null;
+  slotId: string;
   day: IWeekday;
   gesture: "idle" | "drag:ready" | "drag:middle" | "drag:top" | "drag:bottom";
-  lastPos: IPos; // for positioning modal?
   modal: "closed" | "create" | "merge" | "details";
+  lastPos: IPos; // for positioning modal?
 };
 
 export type IPalette = "light" | "dark";
