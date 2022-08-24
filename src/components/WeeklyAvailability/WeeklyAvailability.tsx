@@ -1,7 +1,7 @@
 import { createEffect, createSignal, onCleanup, onMount, Show, splitProps } from "solid-js";
 import { createStore, unwrap } from "solid-js/store";
 import { useTheme } from "solid-styled-components";
-import { getWeekDays, isMobile } from "../../lib/helpers";
+import { findOverlappingSlots, getWeekDays, isMobile } from "../../lib/helpers";
 import { IWeekday, IStore, IPalette } from "../../lib/types";
 import TimeGrid from "../TimeGrid/TimeGrid";
 import SideBar from "../SideBar/SideBar";
@@ -35,11 +35,16 @@ const WeeklyAvailability = (props: IProps) => {
     modal: "closed",
   };
 
+  for (let k of WEEKDAYS) {
+    initialStore[k] = [];
+  }
+
   const theme = useTheme();
 
   const [store, setStore] = createStore(initialStore as IStore);
 
-  const timeslots = () => Object.keys(store).filter((k) => k in WEEKDAYS);
+  const allTimeslots = () => Object.keys(store).filter((k) => k in WEEKDAYS);
+  const getOverlappingSlots = (clickTime: number) => findOverlappingSlots(clickTime, clickTime, store[store.day]);
 
   function handlePointerDown(e) {
     // console.log("handlePointerDown", e);
@@ -48,12 +53,17 @@ const WeeklyAvailability = (props: IProps) => {
   }
 
   function _handleColumnClick(e, day, pos) {
-    // console.log("onColumnClick", e, day, pos);
     setStore("lastPos", pos);
     setStore("day", day);
 
     if (store.modal === "closed") {
-      // if (overTimeslot)
+      const overlapping = getOverlappingSlots(pos.time);
+      console.log(overlapping);
+      if (overlapping.length) {
+        setStore("modal", "details");
+      }
+      // const getOverlappingSlots = (clickTime: number) => findOverlappingSlots(clickTime, clickTime, store[store.day]);
+
       setStore("modal", "create");
     }
 
@@ -148,7 +158,7 @@ const WeeklyAvailability = (props: IProps) => {
             theme={theme}
             palette={props.palette}
             onColumnClick={_handleColumnClick}
-            timeSlots={timeslots()}
+            timeSlots={allTimeslots()}
             onChange={() => {
               // props.onChange(store);
             }}
@@ -161,6 +171,7 @@ const WeeklyAvailability = (props: IProps) => {
               theme={theme}
               palette={props.palette}
               onClose={() => setStore("modal", "closed")}
+              onCreateTimeSlot={(newSlot) => setStore(newSlot.day, (slots) => [...slots, newSlot])}
             />
           </Show>
         </div>
