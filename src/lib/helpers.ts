@@ -1,5 +1,6 @@
 import { WEEKDAYS, HALF_SLOT } from "./constants";
 import { IWeekday, ITimeSlot } from "./types";
+import idMaker from "@melodev/id-maker";
 
 // returns ordered dayCols based on dayCols and firstDay
 export const localizeWeekday = (weekday: IWeekday, locale: string, format: "short" | "long" | "narrow") => {
@@ -188,7 +189,8 @@ export function getMergedTimeslots(newTimeSlot, timeslots) {
 
     const filteredSlots = timeslots.filter((item) => !overlappingIds.includes(item.id));
 
-    const mergedSlots = [...filteredSlots, mergedSlot];
+    const mergedSlots = [mergedSlot, ...filteredSlots];
+    console.log({ mergedSlot, mergedSlots });
 
     return mergedSlots;
   } else {

@@ -102,7 +102,7 @@ const WeeklyAvailability = (props: IProps) => {
   }
 
   function _handleSlotClick(e, slot) {
-    console.log("_handleSlotClick", { e, slot });
+    // console.log("_handleSlotClick", { e, slot });
     if (store.gesture === "idle") {
       setStore("gesture", "drag:ready");
       setStore("slotId", slot.id);
@@ -151,16 +151,29 @@ const WeeklyAvailability = (props: IProps) => {
   }
 
   function handleDragEnd(e) {
-    console.log("pointerUp", e);
+    const slot = getSlot(store.day, store.slotId);
     setStore("gesture", "idle");
-    // setStore("slotId", null);
+    // setStore("slotId", "");
+
+    console.log("pointerUp", { e, slot });
+
+    if (slot?.start && slot?.end) {
+      const overlapping = findOverlappingSlots(slot.start, slot.end, store[store.day]);
+
+      if (overlapping.length > 1) {
+        setStore("lastPos", { ...store.lastPos, time: slot.start + (slot.end - slot.start) });
+        setStore("slotId", store.slotId);
+        setStore("modal", "drop:merge");
+      }
+    }
+
+    // setStore("modal")
   }
 
   createEffect(() => {
     props.onChange(store);
     console.log(store.gesture);
   });
-
   onMount(() => {
     document.addEventListener("pointermove", handlePointerMove);
     document.addEventListener("pointerdown", handlePointerDown);
@@ -251,7 +264,8 @@ const WeeklyAvailability = (props: IProps) => {
               type={store.modal}
               lastPos={store.lastPos}
               day={store.day}
-              slotId={store.slotId}
+              // slotId={store.slotId}
+              slot={getSlot(store.day, store.slotId)}
               theme={theme}
               headerHeight={props.headerHeight}
               colWidth={props.colMinWidth}
@@ -263,9 +277,10 @@ const WeeklyAvailability = (props: IProps) => {
                 setStore("slotId", newSlot.id);
               }}
               onMergeTimeSlots={(newSlot: ITimeSlot) => {
-                setStore(store.day, getMergedTimeslots(newSlot, store[store.day]));
                 setStore("day", newSlot.day);
-                setStore("slotId", newSlot.id);
+                const merged = getMergedTimeslots(newSlot, store[store.day]);
+                setStore("slotId", merged[0].id);
+                setStore(store.day, merged);
               }}
             />
           </Show>

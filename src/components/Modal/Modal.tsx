@@ -76,13 +76,19 @@ export default function Modal(props) {
         </Show>
 
         {/* MERGE MODAL */}
-        <Show when={props.type === "merge"}>
+        <Show when={props.type === "merge" || props.type === "drop:merge"}>
           <CloseButton onClick={props.onClose} />
           <main>
             {/* Merge */}
             <button
               onclick={(e) => {
-                props.onMergeTimeSlots(createNewTimeSlot(props.day, props.lastPos.time));
+                if (props.type === "merge") {
+                  props.onMergeTimeSlots(createNewTimeSlot(props.day, props.lastPos.time));
+                }
+                if (props.type === "drop:merge") {
+                  props.onMergeTimeSlots(props.slot);
+                }
+
                 props.onClose();
               }}
             >
@@ -92,7 +98,9 @@ export default function Modal(props) {
             {/* Create New */}
             <button
               onclick={(e) => {
-                props.onCreateTimeSlot(createNewTimeSlot(props.day, props.lastPos.time));
+                if (props.type === "merge") {
+                  props.onCreateTimeSlot(createNewTimeSlot(props.day, props.lastPos.time));
+                }
                 props.onClose();
               }}
             >

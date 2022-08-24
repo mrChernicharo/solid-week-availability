@@ -13,7 +13,7 @@ export type IStore = {
   slotId: string;
   day: IWeekday;
   gesture: "idle" | "drag:ready" | "drag:middle" | "drag:top" | "drag:bottom";
-  modal: "closed" | "create" | "merge" | "details";
+  modal: "closed" | "create" | "merge" | "details" | "drop:create" | "drop:merge";
   lastPos: IPos; // for positioning modal?
 };
 
