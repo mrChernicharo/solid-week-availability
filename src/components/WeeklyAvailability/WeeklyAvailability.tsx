@@ -1,7 +1,15 @@
 import { createEffect, createSignal, onCleanup, onMount, Show, splitProps } from "solid-js";
 import { createStore, unwrap } from "solid-js/store";
 import { useTheme } from "solid-styled-components";
-import { findOverlappingSlots, getWeekDays, isMobile, timeToYPos, yPosToTime } from "../../lib/helpers";
+import {
+  findOverlappingSlots,
+  getMergedTimeslots,
+  getWeekDays,
+  isMobile,
+  mergeTimeslots,
+  timeToYPos,
+  yPosToTime,
+} from "../../lib/helpers";
 import { IWeekday, IStore, IPalette, ITimeSlot } from "../../lib/types";
 import TimeGrid from "../TimeGrid/TimeGrid";
 import SideBar from "../SideBar/SideBar";
@@ -28,7 +36,7 @@ interface IProps {
 
 const WeeklyAvailability = (props: IProps) => {
   const initialStore = {
-    slot: null,
+    slotId: "",
     day: "Mon",
     gesture: "idle",
     lastPos: { x: 0, y: 0, time: props.minHour },
@@ -49,9 +57,16 @@ const WeeklyAvailability = (props: IProps) => {
     }
     return copy;
   };
+  const getSlot = (day: IWeekday, id: string) => store[day].find((s) => s.id === id);
+
   const getOverlappingSlots = (clickTime: number) => findOverlappingSlots(clickTime, clickTime, store[store.day]);
   const getNearbySlots = (clickTime: number) =>
     findOverlappingSlots(clickTime - HALF_SLOT, clickTime + HALF_SLOT, store[store.day]);
+
+  ///// *************** *************** *************** *************** /////
+  {
+    // function handlePointerUp(e) {
+  }
 
   function handlePointerDown(e) {
     // console.log(
@@ -87,26 +102,12 @@ const WeeklyAvailability = (props: IProps) => {
   }
 
   function _handleSlotClick(e, slot) {
-    // console.log("_handleSlotClick", { e, slot });
+    console.log("_handleSlotClick", { e, slot });
     if (store.gesture === "idle") {
       setStore("gesture", "drag:ready");
-      setStore("slot", slot);
+      setStore("slotId", slot.id);
+      setStore("day", slot.day);
     }
-  }
-
-  function handlePointerUp(e) {
-    // setTimeout(() => {
-    if (isMobile() && e instanceof TouchEvent) {
-      // console.log("touchEnd", e);
-      // setStore("gesture", "idle");
-      // setStore("slot", null);
-    }
-    if (!isMobile() && e instanceof PointerEvent) {
-      // console.log("pointerUp", e);
-    }
-    setStore("gesture", "idle");
-    setStore("slot", null);
-    // }, 100);
   }
 
   function handlePointerMove(e) {
@@ -124,7 +125,8 @@ const WeeklyAvailability = (props: IProps) => {
 
     let slotStart, slotEnd;
     const timeDiff = yPosToTime(e.movementY, 0, props.maxHour - props.minHour, props.colHeight);
-    const { id, day, start, end } = store.slot!;
+    const [day, id] = [store.day, store.slotId];
+    const { start, end } = getSlot(day, id)!;
 
     if (timeDiff !== 0) {
       if (store.gesture === "drag:top") {
@@ -142,11 +144,16 @@ const WeeklyAvailability = (props: IProps) => {
         start: slotStart,
         end: slotEnd,
       };
-      setStore("slot", newSlot);
-      setStore(day as IWeekday, (prev) => [...prev.filter((s) => s.id !== id), newSlot]);
+      setStore(day, (prev) => [...prev.filter((s) => s.id !== id), newSlot]);
     }
 
     // console.log("drag");
+  }
+
+  function handleDragEnd(e) {
+    console.log("pointerUp", e);
+    setStore("gesture", "idle");
+    // setStore("slotId", null);
   }
 
   createEffect(() => {
@@ -157,8 +164,10 @@ const WeeklyAvailability = (props: IProps) => {
   onMount(() => {
     document.addEventListener("pointermove", handlePointerMove);
     document.addEventListener("pointerdown", handlePointerDown);
-    document.addEventListener("pointerup", handlePointerUp);
-    document.addEventListener("touchend", handlePointerUp);
+    document.addEventListener("pointerup", handleDragEnd);
+    document.addEventListener("touchend", handleDragEnd);
+
+    // document.addEventListener("touchend", handleTouchEnd);
     // document.addEventListener("click", handleClick);
     // document.addEventListener("pointercancel", handlePointerCancel);
     // document.addEventListener("touchstart", handleTouchStart);
@@ -166,8 +175,8 @@ const WeeklyAvailability = (props: IProps) => {
   onCleanup(() => {
     document.removeEventListener("pointermove", handlePointerMove);
     document.removeEventListener("pointerdown", handlePointerDown);
-    document.removeEventListener("pointerup", handlePointerUp);
-    document.removeEventListener("touchend", handlePointerUp);
+    document.removeEventListener("pointerup", handleDragEnd);
+    document.removeEventListener("touchend", handleDragEnd);
 
     // document.removeEventListener("pointercancel", handlePointerCancel);
     // document.removeEventListener("click", handleClick);
@@ -218,16 +227,16 @@ const WeeklyAvailability = (props: IProps) => {
           />
           <TimeGrid
             cols={cols()}
+            firstDay={props.firstDay}
             minHour={props.minHour}
             maxHour={props.maxHour}
-            locale={props.locale}
             colWidth={props.colMinWidth}
             colHeight={props.colHeight}
             headerHeight={props.headerHeight}
             widgetHeight={props.widgetHeight}
-            firstDay={props.firstDay}
             theme={theme}
             palette={props.palette}
+            locale={props.locale}
             timeSlots={allTimeSlots()}
             onColumnClick={_handleColumnClick}
             onSlotClick={_handleSlotClick}
@@ -242,10 +251,20 @@ const WeeklyAvailability = (props: IProps) => {
               type={store.modal}
               lastPos={store.lastPos}
               day={store.day}
+              slotId={store.slotId}
               theme={theme}
               palette={props.palette}
               onClose={() => setStore("modal", "closed")}
-              onCreateTimeSlot={(newSlot) => setStore(newSlot.day, (slots) => [...slots, newSlot])}
+              onCreateTimeSlot={(newSlot) => {
+                setStore(newSlot.day, (slots) => [...slots, newSlot]);
+                setStore("day", newSlot.day);
+                setStore("slotId", newSlot.id);
+              }}
+              onMergeTimeSlots={(newSlot: ITimeSlot) => {
+                setStore(store.day, getMergedTimeslots(newSlot, store[store.day]));
+                setStore("day", newSlot.day);
+                setStore("slotId", newSlot.id);
+              }}
             />
           </Show>
         </div>
