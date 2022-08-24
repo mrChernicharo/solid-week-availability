@@ -53,6 +53,25 @@ const WeeklyAvailability = (props: IProps) => {
   const getNearbySlots = (clickTime: number) =>
     findOverlappingSlots(clickTime - HALF_SLOT, clickTime + HALF_SLOT, store[store.day]);
 
+  ///// *************** *************** *************** *************** /////
+  {
+    // function handlePointerUp(e) {
+    //   console.log("pointerUp", e, { isMobile: isMobile() });
+    //   // setTimeout(() => {
+    //   if (e instanceof TouchEvent) {
+    //     // console.log("touchEnd", e);
+    //     // setStore("gesture", "idle");
+    //     // setStore("slot", null);
+    //   }
+    //   if (!isMobile() && e instanceof PointerEvent) {
+    //     setStore("gesture", "idle");
+    //     setStore("slot", null);
+    //     // console.log("pointerUp", e);
+    //   }
+    //   // }, 0);
+    // }
+  }
+
   function handlePointerDown(e) {
     // console.log(
     //   "handlePointerDown"
@@ -87,26 +106,17 @@ const WeeklyAvailability = (props: IProps) => {
   }
 
   function _handleSlotClick(e, slot) {
-    // console.log("_handleSlotClick", { e, slot });
+    console.log("_handleSlotClick", { e, slot });
     if (store.gesture === "idle") {
       setStore("gesture", "drag:ready");
       setStore("slot", slot);
     }
   }
 
-  function handlePointerUp(e) {
-    // setTimeout(() => {
-    if (isMobile() && e instanceof TouchEvent) {
-      // console.log("touchEnd", e);
-      // setStore("gesture", "idle");
-      // setStore("slot", null);
-    }
-    if (!isMobile() && e instanceof PointerEvent) {
-      // console.log("pointerUp", e);
-    }
+  function handleDragEnd(e) {
+    console.log("pointerUp", e);
     setStore("gesture", "idle");
     setStore("slot", null);
-    // }, 100);
   }
 
   function handlePointerMove(e) {
@@ -143,7 +153,7 @@ const WeeklyAvailability = (props: IProps) => {
         end: slotEnd,
       };
       setStore("slot", newSlot);
-      setStore(day as IWeekday, (prev) => [...prev.filter((s) => s.id !== id), newSlot]);
+      setStore(day, (prev) => [...prev.filter((s) => s.id !== id), newSlot]);
     }
 
     // console.log("drag");
@@ -157,8 +167,9 @@ const WeeklyAvailability = (props: IProps) => {
   onMount(() => {
     document.addEventListener("pointermove", handlePointerMove);
     document.addEventListener("pointerdown", handlePointerDown);
-    document.addEventListener("pointerup", handlePointerUp);
-    document.addEventListener("touchend", handlePointerUp);
+    document.addEventListener("pointerup", handleDragEnd);
+    document.addEventListener("touchend", handleDragEnd);
+    // document.addEventListener("touchend", handleTouchEnd);
     // document.addEventListener("click", handleClick);
     // document.addEventListener("pointercancel", handlePointerCancel);
     // document.addEventListener("touchstart", handleTouchStart);
@@ -166,8 +177,8 @@ const WeeklyAvailability = (props: IProps) => {
   onCleanup(() => {
     document.removeEventListener("pointermove", handlePointerMove);
     document.removeEventListener("pointerdown", handlePointerDown);
-    document.removeEventListener("pointerup", handlePointerUp);
-    document.removeEventListener("touchend", handlePointerUp);
+    document.removeEventListener("pointerup", handleDragEnd);
+    document.removeEventListener("touchend", handleDragEnd);
 
     // document.removeEventListener("pointercancel", handlePointerCancel);
     // document.removeEventListener("click", handleClick);
