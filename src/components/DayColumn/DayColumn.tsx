@@ -55,7 +55,7 @@ const DayColumn = (props) => {
   }
 
   createEffect(() => {
-    console.log(props.timeSlots);
+    // console.log(props.timeSlots);
   });
 
   {
@@ -154,6 +154,7 @@ const DayColumn = (props) => {
             locale={props.locale}
             theme={props.theme}
             palette={props.palette}
+            onSlotClick={props.onSlotClick}
           ></TimeSlot>
         )}
       </For>

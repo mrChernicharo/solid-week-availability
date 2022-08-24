@@ -152,6 +152,7 @@ const TimeGrid = (props) => {
             palette={props.palette}
             timeSlots={props.timeSlots[col]}
             onCancelableClick={handleColumnClick}
+            onSlotClick={props.onSlotClick}
 
             // onPointerDown={handlePointerDown}
             // onColumnClick={handleColumnClick}

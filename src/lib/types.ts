@@ -37,7 +37,7 @@ export type IWeekday = "Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat";
 export interface IPos {
   x: number;
   y: number;
-  time?: number;
+  time: number;
 }
 // export interface IColumnClick {
 //   minutes: number;

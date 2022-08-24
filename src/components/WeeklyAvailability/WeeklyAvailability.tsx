@@ -1,7 +1,7 @@
 import { createEffect, createSignal, onCleanup, onMount, Show, splitProps } from "solid-js";
 import { createStore, unwrap } from "solid-js/store";
 import { useTheme } from "solid-styled-components";
-import { findOverlappingSlots, getWeekDays, isMobile } from "../../lib/helpers";
+import { findOverlappingSlots, getWeekDays, isMobile, timeToYPos, yPosToTime } from "../../lib/helpers";
 import { IWeekday, IStore, IPalette } from "../../lib/types";
 import TimeGrid from "../TimeGrid/TimeGrid";
 import SideBar from "../SideBar/SideBar";
@@ -54,9 +54,19 @@ const WeeklyAvailability = (props: IProps) => {
     findOverlappingSlots(clickTime - HALF_SLOT, clickTime + HALF_SLOT, store[store.day]);
 
   function handlePointerDown(e) {
-    // console.log("handlePointerDown", e);
+    // console.log(
+    //   "handlePointerDown"
+    //   );
+    // e,
+    // e.path,
+    // e.path.map((el) => el.id),
+    // Array.from(e.path).filter((el) => "timeSlot_".includes(el.id))
+    // { el: [...e.path].find((el) => "timeSlot_".match(el.id)) }
     // if overTimeslot
-    setStore("gesture", "drag:ready");
+    // const y = Math.round(e.clientY - rect().top);
+    // if (getOverlappingSlots(clickTime).length) {
+    // setStore("gesture", "drag:ready");
+    // }
   }
 
   function _handleColumnClick(e, day, pos) {
@@ -74,8 +84,16 @@ const WeeklyAvailability = (props: IProps) => {
       }
       setStore("modal", "create");
     }
+  }
 
-    // setStore("gesture", "idle");
+  function _handleSlotClick(e, slot) {
+    console.log("_handleSlotClick", e, slot);
+
+    if (store.gesture === "idle") setStore("gesture", "drag:ready");
+
+    if (store.gesture === "drag:ready") {
+      console.log("drag");
+    }
   }
 
   function handlePointerUp(e) {
@@ -91,11 +109,18 @@ const WeeklyAvailability = (props: IProps) => {
     }, 30);
   }
 
+  function handlePointerMove(e) {
+    if (store.gesture === "idle") return;
+
+    console.log("drag");
+  }
+
   createEffect(() => {
     props.onChange(store);
   });
 
   onMount(() => {
+    document.addEventListener("pointermove", handlePointerMove);
     document.addEventListener("pointerdown", handlePointerDown);
     document.addEventListener("pointerup", handlePointerUp);
     document.addEventListener("touchend", handlePointerUp);
@@ -104,9 +129,11 @@ const WeeklyAvailability = (props: IProps) => {
     // document.addEventListener("touchstart", handleTouchStart);
   });
   onCleanup(() => {
+    document.removeEventListener("pointermove", handlePointerMove);
     document.removeEventListener("pointerdown", handlePointerDown);
     document.removeEventListener("pointerup", handlePointerUp);
-    document.addEventListener("touchend", handlePointerUp);
+    document.removeEventListener("touchend", handlePointerUp);
+
     // document.removeEventListener("pointercancel", handlePointerCancel);
     // document.removeEventListener("click", handleClick);
     // document.addEventListener("touchstart", handleTouchStart);
@@ -165,12 +192,12 @@ const WeeklyAvailability = (props: IProps) => {
             firstDay={props.firstDay}
             theme={theme}
             palette={props.palette}
-            onColumnClick={_handleColumnClick}
             timeSlots={allTimeSlots()}
-            // timeSlots={[store.Mon, store.Tue, store.Wed, store.Thu, store.Fri, store.Sat, store.Sun]}
-            onChange={() => {
-              // props.onChange(store);
-            }}
+            onColumnClick={_handleColumnClick}
+            onSlotClick={_handleSlotClick}
+            // onChange={() => {
+            //   // props.onChange(store);
+            // }}
           />
           <Show when={store.modal !== "closed"}>
             <Modal
