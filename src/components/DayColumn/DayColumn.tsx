@@ -45,6 +45,7 @@ const DayColumn = (props) => {
     if (clickFinish - clickMoment < 500) {
       const y = Math.round(e.clientY - rect().top);
       const pos = {
+        // x: e.offsetX,
         x: props.width * props.colIdx + props.width * 0.5 + e.offsetX,
         y,
         time: yPosToTime(y, props.minHour, props.maxHour, props.height),
@@ -128,9 +129,7 @@ const DayColumn = (props) => {
       style={{ "touch-action": props.isDragging ? "none" : "unset" }}
       // style={{ "touch-action": "none" }}
     >
-      <div style={{ "pointer-events": "none" }}>
-        {localizeWeekday(props.day as IWeekday, props.locale, "long")}
-      </div>
+      <div style={{ "pointer-events": "none" }}>{localizeWeekday(props.day as IWeekday, props.locale, "long")}</div>
       {/* X Marker */}
       {/* <Show when={clickedPos() !== null}>
         {() => {

@@ -25,26 +25,6 @@ const App: Component = () => {
 
   return (
     <main>
-      <WeeklyAvailability
-        locale={locale()}
-        // locale="pt-BR"
-        dayCols={cols()} // omit days if you want, order doesn't matter, repeated items don't matter
-        // dayCols={["Mon", "Tue", "Wed", "Thu", "Fri"]}
-        firstDay={firstDay()} // first dayColumn
-        palette={palette()} // light | dark
-        open={isOpen()}
-        minHour={minHour()}
-        maxHour={endHour()}
-        widgetHeight={widgetHeight()}
-        headerHeight={headerHeight()}
-        colHeight={colHeight()}
-        colMinWidth={colWidth()}
-        minSnap={30}
-        onChange={(val) => setValue(val)}
-      />
-      <div>
-        <pre>{JSON.stringify(value(), null, 2)}</pre>
-      </div>
       <section class="controls" style={{ "text-align": "center" }}>
         <h1>Weekly Availability</h1>
 
@@ -159,6 +139,26 @@ const App: Component = () => {
           />
         </div>
       </section>
+      <WeeklyAvailability
+        locale={locale()}
+        // locale="pt-BR"
+        dayCols={cols()} // omit days if you want, order doesn't matter, repeated items don't matter
+        // dayCols={["Mon", "Tue", "Wed", "Thu", "Fri"]}
+        firstDay={firstDay()} // first dayColumn
+        palette={palette()} // light | dark
+        open={isOpen()}
+        minHour={minHour()}
+        maxHour={endHour()}
+        widgetHeight={widgetHeight()}
+        headerHeight={headerHeight()}
+        colHeight={colHeight()}
+        colMinWidth={colWidth()}
+        minSnap={30}
+        onChange={(val) => setValue(val)}
+      />
+      <div>
+        <pre>{JSON.stringify(value(), null, 2)}</pre>
+      </div>
     </main>
   );
 };

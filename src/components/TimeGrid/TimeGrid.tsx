@@ -52,22 +52,6 @@ const TimeGrid = (props) => {
     props.onColumnClick(e, day, pos, colIdx);
   }
   {
-    // function handleColumnClick(e: IPointerEvent, obj: IColumnClick) {
-    //   // @ts-ignore
-    //   columnClick = structuredClone(obj) || { ...obj };
-    //   if (columnClick.clickedSlots.length) {
-    //     setStore("slot", columnClick.clickedSlots.at(-1)!);
-    //   } else {
-    //     setStore("slot", null);
-    //   }
-    //   setStore("day", columnClick.day);
-    //   updateModalState();
-    //   props.onChange(store); // send state to parent element
-    // }
-    // function mergeSlots(newSlot: ITimeSlot) {
-    //   const merged = getMergedTimeslots(newSlot, store[newSlot.day]);
-    //   setStore(newSlot.day, merged);
-    // }
     // function updateModalState() {
     //   const widgetEl = () => document.querySelector("#widget_root_element");
     //   const wRect = () => getElementRect(widgetEl() as HTMLDivElement);
@@ -87,10 +71,6 @@ const TimeGrid = (props) => {
     // createEffect(() => {});
   }
 
-  // const timeslots = () => {
-  //   console.log(props.timeSlots);
-  //   return ;
-  // };
   return (
     <TimeGridContainer
       ref={gridRef!}
@@ -128,21 +108,6 @@ const TimeGrid = (props) => {
             // showOverlapConfirm={() => {
             //   setCreateModalOpen(false);
             //   setMergeModalOpen(true);
-            // }}
-            // clickedOut={() => {
-            //   setStore("gesture", "idle");
-
-            //   if (store.slot) {
-            //     const overlapping = findOverlappingSlots(store.slot!.start, store.slot!.end, store[col]).filter(
-            //       (s) => s.id !== store.slot!.id
-            //     );
-
-            //     // console.log("call clickedOut", overlapping);
-            //     if (overlapping.length > 0) {
-            //       console.log("we have overlapping timeslots on this drop !");
-            //       setMergeModalOpen(true);
-            //     }
-            //   }
             // }}
           />
         )}

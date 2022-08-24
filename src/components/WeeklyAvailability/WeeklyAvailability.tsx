@@ -253,6 +253,8 @@ const WeeklyAvailability = (props: IProps) => {
               day={store.day}
               slotId={store.slotId}
               theme={theme}
+              headerHeight={props.headerHeight}
+              colWidth={props.colMinWidth}
               palette={props.palette}
               onClose={() => setStore("modal", "closed")}
               onCreateTimeSlot={(newSlot) => {

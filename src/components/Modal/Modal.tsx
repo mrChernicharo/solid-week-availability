@@ -1,10 +1,11 @@
 import { props } from "cypress/types/bluebird";
 import { FaSolidX, FaSolidCalendarPlus, FaSolidLayerGroup } from "solid-icons/fa";
-import { Show } from "solid-js";
+import { createEffect, createSignal, Show } from "solid-js";
 import { MODAL_WIDTH, MODAL_HEIGHT, HALF_SLOT } from "../../lib/constants";
 import { ITimeSlot, IWeekday } from "../../lib/types";
 import { MarkerOverlay, ModalContainer } from "./ModalStyles";
 import idMaker from "@melodev/id-maker";
+import { getElementRect } from "../../lib/helpers";
 
 const CloseButton = (props) => (
   <button data-cy="close_modal_btn" onclick={(e) => props.onClick()}>
@@ -13,6 +14,24 @@ const CloseButton = (props) => (
 );
 
 export default function Modal(props) {
+  const [modalPos, setModalPos] = createSignal({ x: 0, y: 0 });
+
+  function getModalPos() {
+    let modalPos = { x: 0, y: 0 };
+    const widgetEl = () => document.querySelector("#widget_root_element");
+    const wRect = () => getElementRect(widgetEl() as HTMLDivElement);
+    const scrollOffsetY = widgetEl()?.scrollTop || 0;
+    const scrollOffsetX = widgetEl()?.scrollLeft || 0;
+
+    modalPos.x = props.lastPos.x - scrollOffsetX;
+    modalPos.x = modalPos.x < wRect().width / 2 ? modalPos.x : modalPos.x - MODAL_WIDTH;
+
+    modalPos.y = props.lastPos.y + wRect().top + props.headerHeight - scrollOffsetY;
+    modalPos.y = modalPos.y - wRect().top < wRect().height / 2 ? modalPos.y : modalPos.y - MODAL_HEIGHT;
+
+    return setModalPos(modalPos);
+  }
+
   function createNewTimeSlot(day: IWeekday, time: number) {
     const newTimeSlot: ITimeSlot = {
       id: idMaker(),
@@ -22,6 +41,11 @@ export default function Modal(props) {
     };
     return newTimeSlot;
   }
+
+  createEffect(() => {
+    getModalPos();
+  });
+
   return (
     <div>
       {/* MODALS */}
@@ -30,8 +54,8 @@ export default function Modal(props) {
         id="modal"
         width={MODAL_WIDTH}
         height={MODAL_HEIGHT}
-        top={props.lastPos.y}
-        left={props.lastPos.x}
+        top={modalPos().y}
+        left={modalPos().x}
         theme={props.theme}
         palette={props.palette}
       >
