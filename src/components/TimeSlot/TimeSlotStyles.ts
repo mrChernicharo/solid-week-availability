@@ -38,35 +38,22 @@ const TimeSlotContainer = styled.div<IProps>`
     .top_resize_handle,
     .bottom_resize_handle {
       position: absolute;
-      height: min(100%, 24px);
-      /* border: 1px dashed red; */
+      height: min(60%, 24px);
+      border: 1px dashed red;
       width: 50%;
       z-index: 10;
-      transition: transform 0.3s;
-
-      &:hover {
-        background: orange;
-      }
+      background: blue;
+      opacity: 0.5;
     }
 
     .top_resize_handle {
       top: 0;
       z-index: 12;
-      &:hover,
-      &:active {
-        transform: scale(1.5);
-        /* transform: translateY(-50%); */
-      }
     }
     .bottom_resize_handle {
       bottom: 0;
       right: 0;
       z-index: 12;
-      &:hover,
-      &:active {
-        transform: scale(1.5);
-        /* transform: translateY(50%); */
-      }
     }
   }
 `;

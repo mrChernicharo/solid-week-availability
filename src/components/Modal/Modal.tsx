@@ -85,7 +85,6 @@ export default function Modal(props) {
             {/* Merge */}
             <button
               onclick={(e) => {
-                console.log("clickei no confirma merge!");
                 if (props.type === "merge") {
                   props.onMergeTimeSlots(createNewTimeSlot(props.day, props.lastPos.time));
                 }
@@ -102,8 +101,6 @@ export default function Modal(props) {
             {/* Create New */}
             <button
               onclick={(e) => {
-                console.log("clickei no create new!");
-
                 if (props.type === "merge") {
                   props.onCreateTimeSlot(createNewTimeSlot(props.day, props.lastPos.time));
                 }

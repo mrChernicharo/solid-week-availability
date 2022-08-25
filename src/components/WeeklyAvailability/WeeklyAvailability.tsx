@@ -71,8 +71,6 @@ const WeeklyAvailability = (props: IProps) => {
     setStore("lastPos", pos);
     setStore("day", day);
 
-    console.log("heeey");
-
     if (store.modal === "closed") {
       if (getOverlappingSlots(pos.time).length) {
         setStore("modal", "details");
@@ -155,10 +153,15 @@ const WeeklyAvailability = (props: IProps) => {
     );
 
     if (overlapping.length > 0) {
-      console.log("aqui é o lance", { overlapping });
+      if (store.modal === "merge") {
+        handleMergeSlots(getSlot(store.day, store.slotId)!);
+        return;
+      }
+
       setStore("lastPos", { ...store.lastPos, time: slot.start + (slot.end - slot.start) });
       setStore("slotId", store.slotId);
-      setStore("modal", "drop:merge");
+      // setStore("modal", "drop:merge");
+      setStore("modal", "details");
     }
     // setStore("modal")
   }
@@ -175,6 +178,7 @@ const WeeklyAvailability = (props: IProps) => {
   function handleMergeSlots(newSlot: ITimeSlot) {
     const merged = getMergedTimeslots(newSlot, store[store.day]);
     setStore(store.day, merged);
+    setStore("modal", "closed");
   }
 
   function handleTimeSlotChange(newTime: number, slotIdx: number, time: "start" | "end") {
@@ -187,10 +191,8 @@ const WeeklyAvailability = (props: IProps) => {
 
     const overlapping = findOverlappingSlots(slot.start, slot.end, store[store.day]).filter((s) => s.id !== slot.id);
     if (overlapping.length) {
-      console.log("pode mergear");
       setStore("modal", "merge");
     } else {
-      console.log("não precisa mergear");
       setStore("modal", "closed");
       setStore("slotId", "");
     }
