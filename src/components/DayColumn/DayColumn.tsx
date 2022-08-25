@@ -64,9 +64,8 @@ const DayColumn = (props) => {
       data-cy={`day_column_${props.day}`}
       idx={props.colIdx}
       style={{ "touch-action": props.isDragging ? "none" : "manipulate" }}
-      // style={{ "touch-action": "none" }}
     >
-      <div style={{ "pointer-events": "none" }}>{localizeWeekday(props.day as IWeekday, props.locale, "long")}</div>
+      {/* <div style={{ "pointer-events": "none" }}>{localizeWeekday(props.day as IWeekday, props.locale, "long")}</div> */}
       {/* X Marker */}
       {/* <Show when={clickedPos() !== null}>
         {() => {
@@ -95,6 +94,7 @@ const DayColumn = (props) => {
             theme={props.theme}
             palette={props.palette}
             onSlotClick={props.onSlotClick}
+            width={props.width}
           ></TimeSlot>
         )}
       </For>

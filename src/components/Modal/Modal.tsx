@@ -61,8 +61,9 @@ export default function Modal(props) {
         theme={props.theme}
         palette={props.palette}
       >
+        {/* <p>{JSON.stringify(props.openedModals)}</p> */}
+
         {/* CREATE MODAL */}
-        <p>{JSON.stringify(props.openedModals)}</p>
         <Show when={"create".includes(props.openedModals)}>
           <CloseButton onClick={(e) => props.onClose("create")} />
           <main>
@@ -123,109 +124,112 @@ export default function Modal(props) {
 
                   <div class="details_form">
                     <p>from</p>
-                    <label for="details_start_hour">H</label>
-                    <input
-                      id="details_start_hour"
-                      type="number"
-                      value={sh()}
-                      onInput={(e) => {
-                        const hour = +e.currentTarget.value;
-                        let newTime = hour * 60 + sm();
+                    <fieldset>
+                      <input
+                        id="details_start_hour"
+                        type="number"
+                        value={sh()}
+                        onChange={(e) => {
+                          const hour = +e.currentTarget.value;
+                          let newTime = hour * 60 + sm();
 
-                        // handle start > end (crossing)
-                        if (+e.currentTarget.value * 60 > props.slot.end) {
-                          e.currentTarget.value = String(+e.currentTarget.value - 1);
-                          newTime = props.slot.end - MIN_SLOT_DURATION;
-                        }
+                          // handle start > end (crossing)
+                          if (+e.currentTarget.value * 60 > props.slot.end) {
+                            e.currentTarget.value = String(+e.currentTarget.value - 1);
+                            newTime = props.slot.end - MIN_SLOT_DURATION;
+                          }
 
-                        console.log({ v: e.currentTarget.value, min: props.minHour });
+                          console.log({ v: e.currentTarget.value, min: props.minHour });
 
-                        // handle start < minHour (top overflow)
-                        if (newTime < props.minHour * 60) {
-                          newTime = props.minHour * 60;
-                          e.currentTarget.value = String(props.minHour);
-                        }
+                          // handle start < minHour (top overflow)
+                          if (newTime < props.minHour * 60) {
+                            newTime = props.minHour * 60;
+                            e.currentTarget.value = String(props.minHour);
+                          }
 
-                        if (newTime < props.slot.end) {
-                          props.onSlotTimeChange(newTime, props.slotIdx, "start");
-                        }
-                      }}
-                    />
-                    <label for="details_start_minute">m</label>
-                    <input
-                      id="details_start_minute"
-                      type="number"
-                      value={sm()}
-                      onInput={(e) => {
-                        const mins = +e.currentTarget.value;
-                        const newTime = sh() * 60 + mins;
+                          if (newTime < props.slot.end) {
+                            props.onSlotTimeChange(newTime, props.slotIdx, "start");
+                          }
+                        }}
+                      />
+                      <div class="separator">:</div>
+                      <input
+                        id="details_start_minute"
+                        type="number"
+                        value={sm()}
+                        onChange={(e) => {
+                          const mins = +e.currentTarget.value;
+                          const newTime = sh() * 60 + mins;
 
-                        if (newTime < props.minHour * 60) {
-                          e.currentTarget.value = String(mins + 1);
-                          return;
-                        }
+                          if (newTime < props.minHour * 60) {
+                            e.currentTarget.value = String(mins + 1);
+                            return;
+                          }
 
-                        if (newTime < props.slot.end - MIN_SLOT_DURATION) {
-                          props.onSlotTimeChange(newTime, props.slotIdx, "start");
-                        } else {
-                          e.currentTarget.value = String(mins - 1);
-                        }
-                      }}
-                    />
+                          if (newTime < props.slot.end - MIN_SLOT_DURATION) {
+                            props.onSlotTimeChange(newTime, props.slotIdx, "start");
+                          } else {
+                            e.currentTarget.value = String(mins - 1);
+                          }
+                        }}
+                      />
+                    </fieldset>
 
                     <p>to</p>
-                    <label for="details_end_hour">H</label>
-                    <input
-                      id="details_end_hour"
-                      type="number"
-                      value={eh()}
-                      onInput={(e) => {
-                        const hour = +e.currentTarget.value;
-                        let newTime = hour * 60 + em();
+                    <fieldset>
+                      <input
+                        id="details_end_hour"
+                        type="number"
+                        value={eh()}
+                        onChange={(e) => {
+                          const hour = +e.currentTarget.value;
+                          let newTime = hour * 60 + em();
 
-                        // handle start < end (crossing)
-                        if (+e.currentTarget.value * 60 < props.slot.start) {
-                          e.currentTarget.value = String(+e.currentTarget.value + 1);
-                          newTime = props.slot.start + MIN_SLOT_DURATION;
-                        }
+                          // handle start < end (crossing)
+                          if (+e.currentTarget.value * 60 < props.slot.start) {
+                            e.currentTarget.value = String(+e.currentTarget.value + 1);
+                            newTime = props.slot.start + MIN_SLOT_DURATION;
+                          }
 
-                        // handle end > maxHour (bottom overflow)
-                        if (newTime > props.maxHour * 60) {
-                          newTime = props.maxHour * 60;
-                          e.currentTarget.value = String(props.maxHour);
-                        }
+                          // handle end > maxHour (bottom overflow)
+                          if (newTime > props.maxHour * 60) {
+                            newTime = props.maxHour * 60;
+                            e.currentTarget.value = String(props.maxHour);
+                          }
 
-                        if (newTime > props.slot.start) {
-                          props.onSlotTimeChange(newTime, props.slotIdx, "end");
-                        }
-                      }}
-                    />
-                    <label for="details_end_minute">m</label>
-                    <input
-                      id="details_end_minute"
-                      type="number"
-                      value={em()}
-                      onInput={(e) => {
-                        const mins = +e.currentTarget.value;
-                        const newTime = eh() * 60 + mins;
+                          if (newTime > props.slot.start) {
+                            props.onSlotTimeChange(newTime, props.slotIdx, "end");
+                          }
+                        }}
+                      />
+                      <div class="separator">:</div>
+                      <input
+                        id="details_end_minute"
+                        type="number"
+                        value={em()}
+                        onChange={(e) => {
+                          const mins = +e.currentTarget.value;
+                          const newTime = eh() * 60 + mins;
 
-                        if (newTime > props.maxHour * 60) {
-                          e.currentTarget.value = String(mins - 1);
-                          return;
-                        }
+                          if (newTime > props.maxHour * 60) {
+                            e.currentTarget.value = String(mins - 1);
+                            return;
+                          }
 
-                        if (newTime > props.slot.start + MIN_SLOT_DURATION) {
-                          props.onSlotTimeChange(newTime, props.slotIdx, "end");
-                        } else {
-                          e.currentTarget.value = String(mins + 1);
-                        }
-                      }}
-                    />
+                          if (newTime > props.slot.start + MIN_SLOT_DURATION) {
+                            props.onSlotTimeChange(newTime, props.slotIdx, "end");
+                          } else {
+                            e.currentTarget.value = String(mins + 1);
+                          }
+                        }}
+                      />
+                    </fieldset>
                   </div>
 
                   <button
                     onclick={(e) => {
                       props.onDetailsConfirm(e, props.slot);
+                      props.onClose("details");
                     }}
                   >
                     <FaSolidCheck size={24} />

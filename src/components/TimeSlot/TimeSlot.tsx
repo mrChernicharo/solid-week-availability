@@ -13,6 +13,7 @@ interface ITimeSlotProps extends ParentProps {
   theme: DefaultTheme;
   palette: IPalette;
   onSlotClick: any;
+  width: number;
 }
 
 export default function TimeSlot(props: ITimeSlotProps) {
@@ -33,6 +34,7 @@ export default function TimeSlot(props: ITimeSlotProps) {
       theme={props.theme}
       palette={props.palette}
       onPointerDown={handlePointerDown}
+      colWidth={props.width}
     >
       <div class="timeSlot_content">
         <div class="top_resize_handle"></div>

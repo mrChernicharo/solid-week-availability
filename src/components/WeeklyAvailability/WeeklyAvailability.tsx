@@ -191,7 +191,6 @@ const WeeklyAvailability = (props: IProps) => {
 
   function handleDetailsModalConfirm(e, slot) {
     console.log("handleDetailsModalClose", slot);
-    setStore("modal", "details", false);
 
     const overlapping = findOverlappingSlots(slot.start, slot.end, store[store.day]).filter((s) => s.id !== slot.id);
 

@@ -51,8 +51,19 @@ const ModalContainer = styled.div<IModalProps>`
     height: 100%;
 
     .details_form {
-      input {
-        width: 40px;
+      fieldset {
+        border: none;
+        display: flex;
+
+        .separator {
+          width: 6px;
+          text-align: center;
+        }
+        /* background: white; */
+        input {
+          width: 40px;
+          border: none;
+        }
       }
     }
 
