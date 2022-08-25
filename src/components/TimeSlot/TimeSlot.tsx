@@ -17,6 +17,7 @@ interface ITimeSlotProps extends ParentProps {
 
 export default function TimeSlot(props: ITimeSlotProps) {
   function handlePointerDown(e) {
+    if (e.buttons === 2) return; // no right click
     props.onSlotClick(e, props.timeSlot);
   }
 

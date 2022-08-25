@@ -1,11 +1,11 @@
 import { props } from "cypress/types/bluebird";
-import { FaSolidX, FaSolidCalendarPlus, FaSolidLayerGroup } from "solid-icons/fa";
+import { FaSolidX, FaSolidCalendarPlus, FaSolidLayerGroup, FaSolidCheck } from "solid-icons/fa";
 import { createEffect, createSignal, Show } from "solid-js";
-import { MODAL_WIDTH, MODAL_HEIGHT, HALF_SLOT } from "../../lib/constants";
+import { MODAL_WIDTH, MODAL_HEIGHT, HALF_SLOT, MIN_SLOT_DURATION } from "../../lib/constants";
 import { ITimeSlot, IWeekday } from "../../lib/types";
 import { MarkerOverlay, ModalContainer } from "./ModalStyles";
 import idMaker from "@melodev/id-maker";
-import { getElementRect } from "../../lib/helpers";
+import { findOverlappingSlots, getElementRect, localizeWeekday, readableTime } from "../../lib/helpers";
 
 const CloseButton = (props) => (
   <button data-cy="close_modal_btn" onclick={(e) => props.onClick()}>
@@ -62,7 +62,7 @@ export default function Modal(props) {
         theme={props.theme}
         palette={props.palette}
       >
-        {props.type}
+        {/* {props.type} */}
         {/* CREATE MODAL */}
         <Show when={props.type === "create"}>
           <CloseButton onClick={props.onClose} />
@@ -85,6 +85,7 @@ export default function Modal(props) {
             {/* Merge */}
             <button
               onclick={(e) => {
+                console.log("clickei no confirma merge!");
                 if (props.type === "merge") {
                   props.onMergeTimeSlots(createNewTimeSlot(props.day, props.lastPos.time));
                 }
@@ -101,6 +102,8 @@ export default function Modal(props) {
             {/* Create New */}
             <button
               onclick={(e) => {
+                console.log("clickei no create new!");
+
                 if (props.type === "merge") {
                   props.onCreateTimeSlot(createNewTimeSlot(props.day, props.lastPos.time));
                 }
@@ -116,29 +119,20 @@ export default function Modal(props) {
         <Show when={props.type === "details"}>
           <CloseButton onClick={props.onClose} />
           <main>
-            {/* 
-           {() => {
-              const slot = () => store.slot!;
-              const slotIdx = () => store[store.day].findIndex((s) => s.id === slot().id) || 0;
+            {() => {
+              const [sh, sm] = [() => Math.floor(props.slot.start / 60), () => props.slot.start % 60];
+              const [eh, em] = [() => Math.floor(props.slot.end / 60), () => props.slot.end % 60];
 
-              const [sh, sm] = [() => Math.floor(slot().start / 60), () => slot().start % 60];
-              const [eh, em] = [() => Math.floor(slot().end / 60), () => slot().end % 60];
+              // console.log()
 
               return (
                 <>
-                  <button
-                    data-cy="close_modal_btn"
-                    onclick={(e) => {
-                      setDetailsModalOpen(false);
-                    }}
-                  >
-                    <FaSolidX />
-                  </button>
-                  <p>{localizeWeekday(slot().day as IWeekday, props.locale, "long")}</p>
+                  <CloseButton onClick={(e) => props.onClose()} />
+                  <p>{localizeWeekday(props.slot.day, props.locale, "long")}</p>
                   <p>
-                    {readableTime(store[slot().day!][slotIdx()].start, props.locale)} -
-                    {readableTime(store[slot().day!][slotIdx()].end, props.locale)}
+                    {readableTime(props.slot.start, props.locale)} -{readableTime(props.slot.end, props.locale)}
                   </p>
+                  <p>{props.slot.id}</p>
                   <div class="details_form">
                     <p>from</p>
                     <label for="details_start_hour">H</label>
@@ -151,22 +145,21 @@ export default function Modal(props) {
                         let newTime = hour * 60 + sm();
 
                         // handle start > end (crossing)
-                        if (+e.currentTarget.value * 60 > slot().end) {
+                        if (+e.currentTarget.value * 60 > props.slot.end) {
                           e.currentTarget.value = String(+e.currentTarget.value - 1);
-                          newTime = slot().end - MIN_SLOT_DURATION;
+                          newTime = props.slot.end - MIN_SLOT_DURATION;
                         }
 
+                        console.log({ v: e.currentTarget.value, min: props.minHour });
+
                         // handle start < minHour (top overflow)
-                        if (+e.currentTarget.value < props.minHour) {
+                        if (newTime < props.minHour * 60) {
                           newTime = props.minHour * 60;
                           e.currentTarget.value = String(props.minHour);
                         }
 
-                        if (newTime < slot().end) {
-                          setStore(slot().day as IWeekday, slotIdx(), "start", newTime);
-                          setStore("slot", "start", newTime);
-
-                          props.onChange(store);
+                        if (newTime < props.slot.end) {
+                          props.onSlotTimeChange(newTime, props.slotIdx, "start");
                         }
                       }}
                     />
@@ -184,11 +177,8 @@ export default function Modal(props) {
                           return;
                         }
 
-                        if (newTime < slot().end - MIN_SLOT_DURATION) {
-                          setStore(slot().day as IWeekday, slotIdx(), "start", newTime);
-                          setStore("slot", "start", newTime);
-
-                          props.onChange(store);
+                        if (newTime < props.slot.end - MIN_SLOT_DURATION) {
+                          props.onSlotTimeChange(newTime, props.slotIdx, "start");
                         } else {
                           e.currentTarget.value = String(mins - 1);
                         }
@@ -206,9 +196,9 @@ export default function Modal(props) {
                         let newTime = hour * 60 + em();
 
                         // handle start < end (crossing)
-                        if (+e.currentTarget.value * 60 < slot().start) {
+                        if (+e.currentTarget.value * 60 < props.slot.start) {
                           e.currentTarget.value = String(+e.currentTarget.value + 1);
-                          newTime = slot().start + MIN_SLOT_DURATION;
+                          newTime = props.slot.start + MIN_SLOT_DURATION;
                         }
 
                         // handle end > maxHour (bottom overflow)
@@ -217,11 +207,8 @@ export default function Modal(props) {
                           e.currentTarget.value = String(props.maxHour);
                         }
 
-                        if (newTime > slot().start) {
-                          setStore(slot().day as IWeekday, slotIdx(), "end", newTime);
-                          setStore("slot", "end", newTime);
-
-                          props.onChange(store);
+                        if (newTime > props.slot.start) {
+                          props.onSlotTimeChange(newTime, props.slotIdx, "end");
                         }
                       }}
                     />
@@ -239,11 +226,8 @@ export default function Modal(props) {
                           return;
                         }
 
-                        if (newTime > slot().start + MIN_SLOT_DURATION) {
-                          setStore(slot().day as IWeekday, slotIdx(), "end", newTime);
-                          setStore("slot", "end", newTime);
-
-                          props.onChange(store);
+                        if (newTime > props.slot.start + MIN_SLOT_DURATION) {
+                          props.onSlotTimeChange(newTime, props.slotIdx, "end");
                         } else {
                           e.currentTarget.value = String(mins + 1);
                         }
@@ -252,11 +236,16 @@ export default function Modal(props) {
                   </div>
                   <button
                     onclick={(e) => {
-                      setDetailsModalOpen(false);
+                      console.log("clickei no confima do details");
 
-                      if (findOverlappingSlots(slot().start, slot().end, store[store.day])) {
-                        setMergeModalOpen(true);
-                      }
+                      props.onDetailsClose(e);
+                      // const overlapping = findOverlappingSlots(
+                      //   props.slot?.start,
+                      //   props.slot?.end,
+                      //   store[store.day]
+                      // ).filter((s) => s.id !== props.slot.id);
+                      props.onClose();
+                      // props.onMergeTimeSlots(props.slot);
                     }}
                   >
                     <FaSolidCheck size={24} />
@@ -264,7 +253,6 @@ export default function Modal(props) {
                 </>
               );
             }}
-            */}
           </main>
         </Show>
       </ModalContainer>

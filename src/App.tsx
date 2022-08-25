@@ -7,7 +7,7 @@ import { IPalette, IWeekday } from "./lib/types";
 const App: Component = () => {
   const [isOpen, setIsOpen] = createSignal(true);
 
-  const [palette, setPalette] = createSignal<IPalette>("light");
+  const [palette, setPalette] = createSignal<IPalette>("dark");
   const [colHeight, setColHeight] = createSignal(800);
   const [colWidth, setColWidth] = createSignal(120);
   const [widgetHeight, setWidgetHeight] = createSignal(420);
@@ -139,6 +139,7 @@ const App: Component = () => {
           />
         </div>
       </section>
+
       <WeeklyAvailability
         locale={locale()}
         // locale="pt-BR"

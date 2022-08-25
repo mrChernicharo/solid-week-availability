@@ -138,32 +138,32 @@ const WeeklyAvailability = (props: IProps) => {
   }
 
   function handleDragEnd(e) {
-    const slot = getSlot(store.day, store.slotId);
     setStore("gesture", "idle");
     // setStore("slotId", "");
+    // console.log("pointerUp", { e, slot });
+    if (store.modal === "drop:merge" || store.modal === "details") return;
 
-    console.log("pointerUp", { e, slot });
+    const slot = getSlot(store.day, store.slotId);
+    if (!slot || !slot.start) return;
 
-    if (slot?.start && slot?.end && store.modal !== "drop:merge") {
-      const overlapping = findOverlappingSlots(
-        slot.start,
-        slot.end,
-        store[store.day].filter((s) => s.id !== slot.id)
-      );
+    const overlapping = findOverlappingSlots(
+      slot.start,
+      slot.end,
+      store[store.day].filter((s) => s.id !== slot.id)
+    );
 
-      if (overlapping.length > 0) {
-        setStore("lastPos", { ...store.lastPos, time: slot.start + (slot.end - slot.start) });
-        setStore("slotId", store.slotId);
-        setStore("modal", "drop:merge");
-      }
+    if (overlapping.length > 0) {
+      console.log("aqui é o lance", { overlapping });
+      setStore("lastPos", { ...store.lastPos, time: slot.start + (slot.end - slot.start) });
+      setStore("slotId", store.slotId);
+      setStore("modal", "drop:merge");
     }
-
     // setStore("modal")
   }
 
   createEffect(() => {
     props.onChange(store);
-    console.log(store.gesture);
+    // console.log(store.gesture);
   });
   onMount(() => {
     document.addEventListener("pointermove", handlePointerMove);
@@ -251,28 +251,52 @@ const WeeklyAvailability = (props: IProps) => {
             // }}
           />
           <Show when={store.modal !== "closed"}>
-            <Modal
-              type={store.modal}
-              lastPos={store.lastPos}
-              day={store.day}
-              // slotId={store.slotId}
-              slot={getSlot(store.day, store.slotId)}
-              theme={theme}
-              headerHeight={props.headerHeight}
-              colWidth={props.colMinWidth}
-              palette={props.palette}
-              onClose={() => {
-                setStore("modal", "closed");
-                setStore("slotId", "");
-              }}
-              onCreateTimeSlot={(newSlot) => {
-                setStore(newSlot.day, (slots) => [...slots, newSlot]);
-              }}
-              onMergeTimeSlots={(newSlot: ITimeSlot) => {
-                const merged = getMergedTimeslots(newSlot, store[store.day]);
-                setStore(store.day, merged);
-              }}
-            />
+            {() => {
+              const slot = () => getSlot(store.day, store.slotId)!;
+              return (
+                <Modal
+                  type={store.modal}
+                  lastPos={store.lastPos}
+                  day={store.day}
+                  maxHour={props.maxHour}
+                  minHour={props.minHour}
+                  // slotId={store.slotId}
+                  slot={slot()}
+                  slotIdx={store[store.day].findIndex((s) => s.id === slot()!.id) || 0}
+                  theme={theme}
+                  headerHeight={props.headerHeight}
+                  colWidth={props.colMinWidth}
+                  palette={props.palette}
+                  onClose={() => {
+                    setStore("modal", "closed");
+                    setStore("slotId", "");
+
+                    const overlapping = findOverlappingSlots(slot()?.start, slot()?.end, store[store.day]).filter(
+                      (s) => s.id !== slot().id
+                    );
+                    if (overlapping.length) {
+                      console.log(overlapping);
+                      console.log("quero mergear?");
+                      // setStore("modal", "drop:merge");
+                    }
+                  }}
+                  onCreateTimeSlot={(newSlot) => {
+                    setStore(newSlot.day, (slots) => [...slots, newSlot]);
+                  }}
+                  onMergeTimeSlots={(newSlot: ITimeSlot) => {
+                    const merged = getMergedTimeslots(newSlot, store[store.day]);
+                    setStore(store.day, merged);
+                  }}
+                  onSlotTimeChange={(newTime: number, slotIdx: number, time: "start" | "end") => {
+                    console.log("onSlotTimeChange", { newTime, slotIdx, time });
+                    setStore(store.day, slotIdx, time, newTime);
+                  }}
+                  onDetailsClose={(e) => {
+                    console.log("on details close", e);
+                  }}
+                />
+              );
+            }}
           </Show>
         </div>
       </Container>

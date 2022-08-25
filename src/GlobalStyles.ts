@@ -24,3 +24,8 @@ const GlobalStyles = () => {
 };
 
 export default GlobalStyles;
+
+/* 
+TOUCH-ACTION: NONE ON THE BODY LOOKS LIKE A PLAUSIBLE SOLUTION...
+BUT OUR MOUSEMOVE FUNCTIONS DIFFERENT IN THAT CASE
+*/
