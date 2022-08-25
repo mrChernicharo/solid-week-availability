@@ -40,7 +40,7 @@ const WeeklyAvailability = (props: IProps) => {
     day: "Mon",
     gesture: "idle",
     lastPos: { x: 0, y: 0, time: props.minHour },
-    modal: "closed",
+    modal: { create: false, merge: false, details: false, confirm: false, drop: false },
   };
 
   const theme = useTheme();
@@ -63,6 +63,8 @@ const WeeklyAvailability = (props: IProps) => {
   const getNearbySlots = (clickTime: number) =>
     findOverlappingSlots(clickTime - HALF_SLOT, clickTime + HALF_SLOT, store[store.day]);
 
+  const isModalOpen = () =>
+    store.modal.create || store.modal.merge || store.modal.details || store.modal.confirm || store.modal.drop;
   ///// *************** *************** *************** *************** /////
 
   function handlePointerDown(e) {}
@@ -71,16 +73,16 @@ const WeeklyAvailability = (props: IProps) => {
     setStore("lastPos", pos);
     setStore("day", day);
 
-    if (store.modal === "closed") {
+    if (!isModalOpen()) {
       if (getOverlappingSlots(pos.time).length) {
-        setStore("modal", "details");
+        setStore("modal", "details", true);
         return;
       }
       if (getNearbySlots(pos.time).length) {
-        setStore("modal", "merge");
+        setStore("modal", "merge", true);
         return;
       }
-      setStore("modal", "create");
+      setStore("modal", "create", true);
     }
   }
 
@@ -138,11 +140,6 @@ const WeeklyAvailability = (props: IProps) => {
   }
 
   function handleDragEnd() {
-    setStore("gesture", "idle");
-    // setStore("slotId", "");
-    // console.log("pointerUp", { e, slot });
-    if (store.modal === "drop:merge" || store.modal === "details") return;
-
     const slot = getSlot(store.day, store.slotId);
     if (!slot || !slot.start) return;
 
@@ -153,48 +150,53 @@ const WeeklyAvailability = (props: IProps) => {
     );
 
     if (overlapping.length > 0) {
-      if (store.modal === "merge") {
-        handleMergeSlots(getSlot(store.day, store.slotId)!);
-        return;
-      }
-
       setStore("lastPos", { ...store.lastPos, time: slot.start + (slot.end - slot.start) });
       setStore("slotId", store.slotId);
-      // setStore("modal", "drop:merge");
-      setStore("modal", "details");
+
+      // if (store.modal.details) return;
+      console.log(store.gesture);
+      if (store.gesture !== "idle" && store.gesture !== "drag:ready") {
+        // setStore("modal", "details", true);
+        setStore("modal", "drop", true);
+      }
     }
-    // setStore("modal")
+
+    setStore("gesture", "idle");
   }
 
-  function handleModalClose() {
-    setStore("modal", "closed");
-    setStore("slotId", "");
+  function handleModalClose(closeAction: "create" | "merge" | "details" | "confirm" | "drop" | "overlay") {
+    console.log(closeAction);
+    if (closeAction === "overlay") {
+      // @ts-ignore
+      ["drop", "confirm", "create", "merge", "details"].forEach((action) => setStore("modal", action, false));
+    } else {
+      setStore("modal", closeAction, false);
+    }
   }
 
   function handleCreateNewTimeSlot(newSlot) {
     setStore(newSlot.day, (slots) => [...slots, newSlot]);
+    setStore("modal", "create", false);
   }
 
   function handleMergeSlots(newSlot: ITimeSlot) {
+    console.log("handleMergeSlots", newSlot);
     const merged = getMergedTimeslots(newSlot, store[store.day]);
     setStore(store.day, merged);
-    setStore("modal", "closed");
   }
 
   function handleTimeSlotChange(newTime: number, slotIdx: number, time: "start" | "end") {
-    console.log("onSlotTimeChange", { newTime, slotIdx, time });
     setStore(store.day, slotIdx, time, newTime);
   }
 
-  function handleDetailsModalClose(e, slot) {
-    console.log("on details close", e);
+  function handleDetailsModalConfirm(e, slot) {
+    console.log("handleDetailsModalClose", slot);
+    setStore("modal", "details", false);
 
     const overlapping = findOverlappingSlots(slot.start, slot.end, store[store.day]).filter((s) => s.id !== slot.id);
+
     if (overlapping.length) {
-      setStore("modal", "merge");
-    } else {
-      setStore("modal", "closed");
-      setStore("slotId", "");
+      setStore("modal", "confirm", true);
     }
   }
 
@@ -287,13 +289,13 @@ const WeeklyAvailability = (props: IProps) => {
             //   // props.onChange(store);
             // }}
           />
-          <Show when={store.modal !== "closed"}>
+          <Show when={isModalOpen()}>
             {() => {
               const slot = () => getSlot(store.day, store.slotId)!;
               return (
                 <Modal
                   // slotId={store.slotId}
-                  type={store.modal}
+                  openedModals={Object.keys(store.modal).filter((t) => store.modal[t])}
                   lastPos={store.lastPos}
                   day={store.day}
                   maxHour={props.maxHour}
@@ -308,7 +310,7 @@ const WeeklyAvailability = (props: IProps) => {
                   onCreateTimeSlot={handleCreateNewTimeSlot}
                   onMergeTimeSlots={handleMergeSlots}
                   onSlotTimeChange={handleTimeSlotChange}
-                  onDetailsClose={handleDetailsModalClose}
+                  onDetailsConfirm={handleDetailsModalConfirm}
                 />
               );
             }}

@@ -8,7 +8,7 @@ import idMaker from "@melodev/id-maker";
 import { findOverlappingSlots, getElementRect, localizeWeekday, readableTime } from "../../lib/helpers";
 
 const CloseButton = (props) => (
-  <button data-cy="close_modal_btn" onclick={(e) => props.onClick()}>
+  <button data-cy="close_modal_btn" onclick={(e) => props.onClick(e)}>
     <FaSolidX />
   </button>
 );
@@ -52,7 +52,6 @@ export default function Modal(props) {
   return (
     <div>
       {/* MODALS */}
-      {/* <Show when={props.status !== "closed"}> */}
       <ModalContainer
         id="modal"
         width={MODAL_WIDTH}
@@ -62,15 +61,15 @@ export default function Modal(props) {
         theme={props.theme}
         palette={props.palette}
       >
-        {/* {props.type} */}
         {/* CREATE MODAL */}
-        <Show when={props.type === "create"}>
-          <CloseButton onClick={props.onClose} />
+        <p>{JSON.stringify(props.openedModals)}</p>
+        <Show when={"create".includes(props.openedModals)}>
+          <CloseButton onClick={(e) => props.onClose("create")} />
           <main>
             <button
               onclick={(e) => {
                 props.onCreateTimeSlot(createNewTimeSlot(props.day, props.lastPos.time));
-                props.onClose();
+                props.onClose("create");
               }}
             >
               <FaSolidCalendarPlus size={24} />
@@ -79,20 +78,14 @@ export default function Modal(props) {
         </Show>
 
         {/* MERGE MODAL */}
-        <Show when={props.type === "merge" || props.type === "drop:merge"}>
-          <CloseButton onClick={props.onClose} />
+        <Show when={"merge".includes(props.openedModals)}>
+          <CloseButton onClick={(e) => props.onClose("merge")} />
           <main>
             {/* Merge */}
             <button
               onclick={(e) => {
-                if (props.type === "merge") {
-                  props.onMergeTimeSlots(createNewTimeSlot(props.day, props.lastPos.time));
-                }
-                if (props.type === "drop:merge") {
-                  props.onMergeTimeSlots(props.slot);
-                }
-
-                props.onClose();
+                props.onMergeTimeSlots(createNewTimeSlot(props.day, props.lastPos.time));
+                props.onClose("merge");
               }}
             >
               <FaSolidLayerGroup size={24} />
@@ -101,10 +94,8 @@ export default function Modal(props) {
             {/* Create New */}
             <button
               onclick={(e) => {
-                if (props.type === "merge") {
-                  props.onCreateTimeSlot(createNewTimeSlot(props.day, props.lastPos.time));
-                }
-                props.onClose();
+                props.onCreateTimeSlot(createNewTimeSlot(props.day, props.lastPos.time));
+                props.onClose("merge");
               }}
             >
               <FaSolidCalendarPlus size={24} />
@@ -113,8 +104,8 @@ export default function Modal(props) {
         </Show>
 
         {/* DETAILS MODAL */}
-        <Show when={props.type === "details"}>
-          <CloseButton onClick={props.onClose} />
+        <Show when={"details".includes(props.openedModals)}>
+          <CloseButton onClick={(e) => props.onClose("details")} />
           <main>
             {() => {
               const [sh, sm] = [() => Math.floor(props.slot.start / 60), () => props.slot.start % 60];
@@ -124,12 +115,12 @@ export default function Modal(props) {
 
               return (
                 <>
-                  <CloseButton onClick={(e) => props.onClose()} />
                   <p>{localizeWeekday(props.slot.day, props.locale, "long")}</p>
                   <p>
                     {readableTime(props.slot.start, props.locale)} -{readableTime(props.slot.end, props.locale)}
                   </p>
                   <p>{props.slot.id}</p>
+
                   <div class="details_form">
                     <p>from</p>
                     <label for="details_start_hour">H</label>
@@ -231,10 +222,10 @@ export default function Modal(props) {
                       }}
                     />
                   </div>
+
                   <button
                     onclick={(e) => {
-                      console.log("clickei no confima do details");
-                      props.onDetailsClose(e, props.slot);
+                      props.onDetailsConfirm(e, props.slot);
                     }}
                   >
                     <FaSolidCheck size={24} />
@@ -244,31 +235,42 @@ export default function Modal(props) {
             }}
           </main>
         </Show>
+
+        {/* CONFIRM MODAL */}
+        <Show when={"confirm".includes(props.openedModals)}>
+          <CloseButton onClick={(e) => props.onClose("confirm")} />
+          <main>
+            {/* confirm */}
+            <button
+              onclick={(e) => {
+                props.onMergeTimeSlots(createNewTimeSlot(props.day, props.lastPos.time));
+                props.onClose("confirm");
+              }}
+            >
+              <FaSolidLayerGroup size={24} />
+            </button>
+          </main>
+        </Show>
+
+        {/* CONFIRM MODAL */}
+        <Show when={"drop".includes(props.openedModals)}>
+          <CloseButton onClick={(e) => props.onClose("drop")} />
+          <main>
+            {/* drop */}
+            <button
+              onclick={(e) => {
+                props.onMergeTimeSlots(props.slot);
+                props.onClose("drop");
+              }}
+            >
+              <FaSolidLayerGroup size={24} />
+            </button>
+          </main>
+        </Show>
       </ModalContainer>
 
       {/* OVERLAY */}
-      <MarkerOverlay onPointerDown={(e) => props.onClose()} />
+      <MarkerOverlay onPointerDown={(e) => props.onClose("overlay")} />
     </div>
   );
-
-  //     <div>
-
-  //       <Show when={mergeModalOpen() && !detailsModalOpen()}>
-  //         <button
-  //           data-cy="close_modal_btn"
-  //           onclick={(e) => {
-  //             setMergeModalOpen(false);
-  //           }}
-  //         >
-  //           <FaSolidX />
-  //         </button>
-  //         <main>
-  //
-  //         </main>
-  //       </Show>
-
-  //       {/* DETAILS MODAL */}
-  //
-  //     </div>
-  //   </ModalContainer>
 }
