@@ -106,6 +106,8 @@ const WeeklyAvailability = (props: IProps) => {
 
   function handlePointerMove(e) {
     if (store.gesture === "idle") return;
+    // e.preventDefault();
+    // e.cancelable = false;
 
     if (store.gesture === "drag:ready") {
       const actions = {
@@ -213,7 +215,9 @@ const WeeklyAvailability = (props: IProps) => {
     // console.log(store.gesture);
   });
   onMount(() => {
-    document.addEventListener("pointermove", handlePointerMove);
+    document.addEventListener("mousemove", handlePointerMove);
+    document.removeEventListener("touchmove", handlePointerMove);
+
     document.addEventListener("pointerdown", handlePointerDown);
     document.addEventListener("pointerup", handleDragEnd);
     document.addEventListener("touchend", handleDragEnd);
@@ -223,7 +227,9 @@ const WeeklyAvailability = (props: IProps) => {
     document.addEventListener("pointercancel", handlePointerCancel);
   });
   onCleanup(() => {
-    document.removeEventListener("pointermove", handlePointerMove);
+    document.removeEventListener("mousemove", handlePointerMove);
+    document.removeEventListener("touchmove", handlePointerMove);
+
     document.removeEventListener("pointerdown", handlePointerDown);
     document.removeEventListener("pointerup", handleDragEnd);
     document.removeEventListener("touchend", handleDragEnd);
