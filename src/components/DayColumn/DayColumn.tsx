@@ -63,7 +63,7 @@ const DayColumn = (props) => {
       onPointerDown={handlePointerDown}
       data-cy={`day_column_${props.day}`}
       idx={props.colIdx}
-      style={{ "touch-action": props.isDragging ? "none" : "manipulate" }}
+      style={{ "touch-action": props.isDragging ? "none" : "manipulation" }}
     >
       {/* <div style={{ "pointer-events": "none" }}>{localizeWeekday(props.day as IWeekday, props.locale, "long")}</div> */}
       {/* X Marker */}

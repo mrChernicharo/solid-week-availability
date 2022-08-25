@@ -69,6 +69,15 @@ const WeeklyAvailability = (props: IProps) => {
 
   function handlePointerDown(e) {}
 
+  function handleTouchStart(e) {
+    // console.log("handleTouchStart", { e });
+  }
+
+  function handlePointerCancel(e) {
+    // setTimeout(() => e.preventDefault(), 100);
+    // console.log("handlePointerCancel", { e });
+  }
+
   function _handleColumnClick(e, day, pos, colIdx) {
     setStore("lastPos", pos);
     setStore("day", day);
@@ -209,10 +218,9 @@ const WeeklyAvailability = (props: IProps) => {
     document.addEventListener("pointerup", handleDragEnd);
     document.addEventListener("touchend", handleDragEnd);
 
-    // document.addEventListener("touchend", handleTouchEnd);
     // document.addEventListener("click", handleClick);
-    // document.addEventListener("pointercancel", handlePointerCancel);
-    // document.addEventListener("touchstart", handleTouchStart);
+    document.addEventListener("touchstart", handleTouchStart);
+    document.addEventListener("pointercancel", handlePointerCancel);
   });
   onCleanup(() => {
     document.removeEventListener("pointermove", handlePointerMove);
@@ -220,9 +228,9 @@ const WeeklyAvailability = (props: IProps) => {
     document.removeEventListener("pointerup", handleDragEnd);
     document.removeEventListener("touchend", handleDragEnd);
 
-    // document.removeEventListener("pointercancel", handlePointerCancel);
     // document.removeEventListener("click", handleClick);
-    // document.addEventListener("touchstart", handleTouchStart);
+    document.removeEventListener("touchstart", handleTouchStart);
+    document.removeEventListener("pointercancel", handlePointerCancel);
   });
 
   const cols = () =>
@@ -255,7 +263,7 @@ const WeeklyAvailability = (props: IProps) => {
           style={{
             display: "inline-flex",
             width: props.colMinWidth * (cols().length + 0.5) + "px",
-            "touch-action": store.gesture !== "idle" ? "none" : "unset",
+            "touch-action": store.gesture !== "idle" ? "none" : "manipulation",
           }}
         >
           <SideBar
