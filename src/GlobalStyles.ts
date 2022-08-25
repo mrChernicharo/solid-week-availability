@@ -6,7 +6,7 @@ const GlobalStyles = () => {
     body {
       margin: 0;
       height: 200vh;
-      background: #345;
+      background: #555;
       color: #fff;
       
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

@@ -105,7 +105,14 @@ const WeeklyAvailability = (props: IProps) => {
   }
 
   function handlePointerMove(e) {
+    if (e instanceof MouseEvent) {
+      console.log(e);
+    } else if (e instanceof TouchEvent) {
+      console.log(e.touches.item(0));
+    }
     if (store.gesture === "idle") return;
+    // e.preventDefault();
+    // e.cancelable = false;
 
     if (store.gesture === "drag:ready") {
       const actions = {
@@ -118,7 +125,13 @@ const WeeklyAvailability = (props: IProps) => {
     }
 
     let slotStart, slotEnd;
-    const timeDiff = yPosToTime(e.movementY, 0, props.maxHour - props.minHour, props.colHeight);
+    let timeDiff;
+    if (e instanceof MouseEvent) {
+      timeDiff = yPosToTime(e.movementY, 0, props.maxHour - props.minHour, props.colHeight);
+    } else if (e instanceof TouchEvent) {
+      timeDiff = yPosToTime(e.touches.item(0)?.pageY!, 0, props.maxHour - props.minHour, props.colHeight);
+    }
+
     const [day, id] = [store.day, store.slotId];
     const { start, end } = getSlot(day, id)!;
     const [topLimit, bottomLimit] = [props.minHour * 60, props.maxHour * 60];
@@ -213,7 +226,9 @@ const WeeklyAvailability = (props: IProps) => {
     // console.log(store.gesture);
   });
   onMount(() => {
-    document.addEventListener("pointermove", handlePointerMove);
+    document.addEventListener("mousemove", handlePointerMove);
+    document.addEventListener("touchmove", handlePointerMove);
+
     document.addEventListener("pointerdown", handlePointerDown);
     document.addEventListener("pointerup", handleDragEnd);
     document.addEventListener("touchend", handleDragEnd);
@@ -223,7 +238,9 @@ const WeeklyAvailability = (props: IProps) => {
     document.addEventListener("pointercancel", handlePointerCancel);
   });
   onCleanup(() => {
-    document.removeEventListener("pointermove", handlePointerMove);
+    document.removeEventListener("mousemove", handlePointerMove);
+    document.removeEventListener("touchmove", handlePointerMove);
+
     document.removeEventListener("pointerdown", handlePointerDown);
     document.removeEventListener("pointerup", handleDragEnd);
     document.removeEventListener("touchend", handleDragEnd);
