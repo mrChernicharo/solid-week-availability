@@ -19,7 +19,7 @@ const TimeSlotContainer = styled.div<IProps>`
   height: ${(props) => props.bottom - props.top + "px"};
   width: 100%;
   background: dodgerblue;
-  opacity: 0.8;
+  /* opacity: 0.8; */
   font-size: small;
   user-select: none;
 
@@ -38,19 +38,35 @@ const TimeSlotContainer = styled.div<IProps>`
     .top_resize_handle,
     .bottom_resize_handle {
       position: absolute;
-      height: min(33%, 16px);
-      border: 1px dashed red;
-      width: 100%;
+      height: min(100%, 24px);
+      /* border: 1px dashed red; */
+      width: 50%;
       z-index: 10;
+      transition: transform 0.3s;
+
+      &:hover {
+        background: orange;
+      }
     }
 
     .top_resize_handle {
       top: 0;
       z-index: 12;
+      &:hover,
+      &:active {
+        transform: scale(1.5);
+        /* transform: translateY(-50%); */
+      }
     }
     .bottom_resize_handle {
       bottom: 0;
+      right: 0;
       z-index: 12;
+      &:hover,
+      &:active {
+        transform: scale(1.5);
+        /* transform: translateY(50%); */
+      }
     }
   }
 `;
