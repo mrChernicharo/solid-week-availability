@@ -71,6 +71,8 @@ const WeeklyAvailability = (props: IProps) => {
     setStore("lastPos", pos);
     setStore("day", day);
 
+    console.log("heeey");
+
     if (store.modal === "closed") {
       if (getOverlappingSlots(pos.time).length) {
         setStore("modal", "details");
@@ -137,7 +139,7 @@ const WeeklyAvailability = (props: IProps) => {
     // console.log("drag");
   }
 
-  function handleDragEnd(e) {
+  function handleDragEnd() {
     setStore("gesture", "idle");
     // setStore("slotId", "");
     // console.log("pointerUp", { e, slot });
@@ -159,6 +161,39 @@ const WeeklyAvailability = (props: IProps) => {
       setStore("modal", "drop:merge");
     }
     // setStore("modal")
+  }
+
+  function handleModalClose() {
+    setStore("modal", "closed");
+    setStore("slotId", "");
+  }
+
+  function handleCreateNewTimeSlot(newSlot) {
+    setStore(newSlot.day, (slots) => [...slots, newSlot]);
+  }
+
+  function handleMergeSlots(newSlot: ITimeSlot) {
+    const merged = getMergedTimeslots(newSlot, store[store.day]);
+    setStore(store.day, merged);
+  }
+
+  function handleTimeSlotChange(newTime: number, slotIdx: number, time: "start" | "end") {
+    console.log("onSlotTimeChange", { newTime, slotIdx, time });
+    setStore(store.day, slotIdx, time, newTime);
+  }
+
+  function handleDetailsModalClose(e, slot) {
+    console.log("on details close", e);
+
+    const overlapping = findOverlappingSlots(slot.start, slot.end, store[store.day]).filter((s) => s.id !== slot.id);
+    if (overlapping.length) {
+      console.log("pode mergear");
+      setStore("modal", "merge");
+    } else {
+      console.log("não precisa mergear");
+      setStore("modal", "closed");
+      setStore("slotId", "");
+    }
   }
 
   createEffect(() => {
@@ -255,45 +290,23 @@ const WeeklyAvailability = (props: IProps) => {
               const slot = () => getSlot(store.day, store.slotId)!;
               return (
                 <Modal
+                  // slotId={store.slotId}
                   type={store.modal}
                   lastPos={store.lastPos}
                   day={store.day}
                   maxHour={props.maxHour}
                   minHour={props.minHour}
-                  // slotId={store.slotId}
                   slot={slot()}
                   slotIdx={store[store.day].findIndex((s) => s.id === slot()!.id) || 0}
                   theme={theme}
                   headerHeight={props.headerHeight}
                   colWidth={props.colMinWidth}
                   palette={props.palette}
-                  onClose={() => {
-                    setStore("modal", "closed");
-                    setStore("slotId", "");
-
-                    const overlapping = findOverlappingSlots(slot()?.start, slot()?.end, store[store.day]).filter(
-                      (s) => s.id !== slot().id
-                    );
-                    if (overlapping.length) {
-                      console.log(overlapping);
-                      console.log("quero mergear?");
-                      // setStore("modal", "drop:merge");
-                    }
-                  }}
-                  onCreateTimeSlot={(newSlot) => {
-                    setStore(newSlot.day, (slots) => [...slots, newSlot]);
-                  }}
-                  onMergeTimeSlots={(newSlot: ITimeSlot) => {
-                    const merged = getMergedTimeslots(newSlot, store[store.day]);
-                    setStore(store.day, merged);
-                  }}
-                  onSlotTimeChange={(newTime: number, slotIdx: number, time: "start" | "end") => {
-                    console.log("onSlotTimeChange", { newTime, slotIdx, time });
-                    setStore(store.day, slotIdx, time, newTime);
-                  }}
-                  onDetailsClose={(e) => {
-                    console.log("on details close", e);
-                  }}
+                  onClose={handleModalClose}
+                  onCreateTimeSlot={handleCreateNewTimeSlot}
+                  onMergeTimeSlots={handleMergeSlots}
+                  onSlotTimeChange={handleTimeSlotChange}
+                  onDetailsClose={handleDetailsModalClose}
                 />
               );
             }}

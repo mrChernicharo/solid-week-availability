@@ -237,15 +237,7 @@ export default function Modal(props) {
                   <button
                     onclick={(e) => {
                       console.log("clickei no confima do details");
-
-                      props.onDetailsClose(e);
-                      // const overlapping = findOverlappingSlots(
-                      //   props.slot?.start,
-                      //   props.slot?.end,
-                      //   store[store.day]
-                      // ).filter((s) => s.id !== props.slot.id);
-                      props.onClose();
-                      // props.onMergeTimeSlots(props.slot);
+                      props.onDetailsClose(e, props.slot);
                     }}
                   >
                     <FaSolidCheck size={24} />
