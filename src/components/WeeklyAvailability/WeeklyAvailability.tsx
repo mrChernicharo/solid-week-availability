@@ -270,6 +270,7 @@ const WeeklyAvailability = (props: IProps) => {
             display: "inline-flex",
             width: props.colMinWidth * (cols().length + 0.5) + "px",
             "touch-action": store.gesture !== "idle" ? "none" : "manipulation",
+            // "touch-action": "none",
           }}
         >
           <SideBar

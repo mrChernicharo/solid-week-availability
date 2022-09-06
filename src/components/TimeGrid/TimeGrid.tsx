@@ -24,7 +24,6 @@ import DayColumn from "../DayColumn/DayColumn";
 import { TimeGridContainer } from "./TimeGridStyles";
 import idMaker from "@melodev/id-maker";
 import { DefaultTheme } from "solid-styled-components";
-import { HALF_SLOT, MIN_SLOT_DURATION, MODAL_HEIGHT, MODAL_WIDTH } from "../../lib/constants";
 
 // interface IProps {
 //   cols: IWeekday[];

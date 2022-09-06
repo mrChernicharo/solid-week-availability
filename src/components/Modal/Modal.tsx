@@ -55,7 +55,7 @@ export default function Modal(props) {
       <ModalContainer
         id="modal"
         width={MODAL_WIDTH}
-        height={MODAL_HEIGHT}
+        // height={MODAL_HEIGHT}
         top={modalPos().y}
         left={modalPos().x}
         theme={props.theme}
