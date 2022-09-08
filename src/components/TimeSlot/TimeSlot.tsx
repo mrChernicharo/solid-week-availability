@@ -39,11 +39,8 @@ export default function TimeSlot(props: ITimeSlotProps) {
       <div class="timeSlot_content">
         <div class="top_resize_handle"></div>
         <div class="middle" style={{ "user-select": "none" }}>
-          {/* <div style={{ "pointer-events": "none" }}> */}
-          <div>
-            <span>
-              {readableTime(props.timeSlot.start, props.locale)} - {readableTime(props.timeSlot.end, props.locale)}
-            </span>
+          <div class="hour-text">
+            {readableTime(props.timeSlot.start, props.locale)} - {readableTime(props.timeSlot.end, props.locale)}
           </div>
         </div>
         <div class="bottom_resize_handle"></div>

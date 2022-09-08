@@ -52,15 +52,7 @@ export default function Modal(props) {
   return (
     <div>
       {/* MODALS */}
-      <ModalContainer
-        id="modal"
-        width={MODAL_WIDTH}
-        // height={MODAL_HEIGHT}
-        top={modalPos().y}
-        left={modalPos().x}
-        theme={props.theme}
-        palette={props.palette}
-      >
+      <ModalContainer id="modal" top={modalPos().y} left={modalPos().x} theme={props.theme} palette={props.palette}>
         {/* <p>{JSON.stringify(props.openedModals)}</p> */}
 
         {/* CREATE MODAL */}
@@ -111,8 +103,6 @@ export default function Modal(props) {
             {() => {
               const [sh, sm] = [() => Math.floor(props.slot.start / 60), () => props.slot.start % 60];
               const [eh, em] = [() => Math.floor(props.slot.end / 60), () => props.slot.end % 60];
-
-              // console.log()
 
               return (
                 <>
@@ -223,7 +213,6 @@ export default function Modal(props) {
                   </div>
 
                   <div>
-                    {" "}
                     <button
                       onclick={(e) => {
                         props.onDetailsConfirm(e, props.slot);
@@ -263,7 +252,7 @@ export default function Modal(props) {
           </main>
         </Show>
 
-        {/* CONFIRM MODAL */}
+        {/* DROP MODAL */}
         <Show when={"drop".includes(props.openedModals)}>
           <CloseButton onClick={(e) => props.onClose("drop")} />
           <main>

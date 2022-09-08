@@ -76,7 +76,7 @@ const WeeklyAvailability = (props: IProps) => {
     // setTimeout(() => e.preventDefault(), 100);
     setStore("gesture", "idle");
     e.preventDefault();
-    console.log("handlePointerCancel", { e });
+    // console.log("handlePointerCancel", { e });
   }
 
   ///// *************** *************** *************** *************** /////
@@ -167,7 +167,7 @@ const WeeklyAvailability = (props: IProps) => {
   }
 
   function handleDragEnd(e) {
-    console.log("handleDragEnd", e);
+    // console.log("handleDragEnd", e);
 
     const slot = getSlot(store.day, store.slotId);
     if (!slot || !slot.start) return;
@@ -193,7 +193,7 @@ const WeeklyAvailability = (props: IProps) => {
   }
 
   function handleModalClose(closeAction: "create" | "merge" | "details" | "confirm" | "drop" | "overlay") {
-    console.log(closeAction);
+    // console.log(closeAction);
     if (closeAction === "overlay") {
       // @ts-ignore
       ["drop", "confirm", "create", "merge", "details"].forEach((action) => setStore("modal", action, false));
@@ -208,7 +208,7 @@ const WeeklyAvailability = (props: IProps) => {
   }
 
   function handleMergeSlots(newSlot: ITimeSlot) {
-    console.log("handleMergeSlots", newSlot);
+    // console.log("handleMergeSlots", newSlot);
     const merged = getMergedTimeslots(newSlot, store[store.day]);
     setStore(store.day, merged);
   }
@@ -218,7 +218,7 @@ const WeeklyAvailability = (props: IProps) => {
   }
 
   function handleDetailsModalConfirm(e, slot) {
-    console.log("handleDetailsModalClose", slot);
+    // console.log("handleDetailsModalClose", slot);
 
     const overlapping = findOverlappingSlots(slot.start, slot.end, store[store.day]).filter((s) => s.id !== slot.id);
 
@@ -228,7 +228,7 @@ const WeeklyAvailability = (props: IProps) => {
   }
 
   function handleSlotDelete(slot) {
-    console.log(slot);
+    // console.log(slot);
     setStore(store.day, (slots) => slots.filter((s) => s.id !== slot.id));
   }
 
@@ -323,16 +323,12 @@ const WeeklyAvailability = (props: IProps) => {
             onSlotClick={_handleSlotClick}
             currentGesture={store.gesture}
             currentDay={store.day}
-            // onChange={() => {
-            //   // props.onChange(store);
-            // }}
           />
           <Show when={isModalOpen()}>
             {() => {
               const slot = () => getSlot(store.day, store.slotId)!;
               return (
                 <Modal
-                  // slotId={store.slotId}
                   openedModals={Object.keys(store.modal).filter((t) => store.modal[t])}
                   lastPos={store.lastPos}
                   day={store.day}

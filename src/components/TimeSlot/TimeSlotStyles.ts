@@ -20,9 +20,9 @@ const TimeSlotContainer = styled.div<IProps>`
   height: ${(props) => props.bottom - props.top + "px"};
   width: 100%;
   background: dodgerblue;
-  /* opacity: 0.8; */
   font-size: small;
   user-select: none;
+  opacity: 0.8;
 
   .timeSlot_content {
     position: relative;
@@ -35,20 +35,26 @@ const TimeSlotContainer = styled.div<IProps>`
       align-items: center;
       height: 100%;
       width: 100%;
+
+      .hour-text {
+        text-align: center;
+        border: 1px solid red;
+        width: 100%;
+        white-space: normal;
+      }
     }
     .top_resize_handle,
     .bottom_resize_handle {
       position: absolute;
       border-radius: 50%;
+      border: 4px solid royalblue;
       height: min(${(props) => props.colWidth / 3 + "px"}, 32px);
       width: min(${(props) => props.colWidth / 3 + "px"}, 32px);
-      background: blue;
     }
 
     .top_resize_handle {
       top: 0;
       left: 10%;
-      /* transform: translateY(-16px); */
       transform: translateY(max(${(props) => -props.colWidth / 6 + "px"}, -16px));
 
       z-index: 12;
