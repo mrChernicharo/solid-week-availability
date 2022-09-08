@@ -7,6 +7,7 @@ import { TimeSlotContainer } from "./TimeSlotStyles";
 interface ITimeSlotProps extends ParentProps {
   id: string;
   top: number;
+  left: number;
   bottom: number;
   timeSlot: ITimeSlot;
   locale: string;
@@ -30,6 +31,8 @@ export default function TimeSlot(props: ITimeSlotProps) {
     <TimeSlotContainer
       id={`timeSlot_${props.id}`}
       top={props.top}
+      left={props.left}
+      width={props.width}
       bottom={props.bottom}
       theme={props.theme}
       palette={props.palette}
@@ -38,7 +41,7 @@ export default function TimeSlot(props: ITimeSlotProps) {
     >
       <div class="timeSlot_content">
         <div class="top_resize_handle"></div>
-        <div class="middle" style={{ "user-select": "none" }}>
+        <div class="middle">
           <div class="hour-text">
             {readableTime(props.timeSlot.start, props.locale)} - {readableTime(props.timeSlot.end, props.locale)}
           </div>

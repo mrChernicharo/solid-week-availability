@@ -117,7 +117,7 @@ const WeeklyAvailability = (props: IProps) => {
 
     if (store.gesture === "drag:ready") {
       const elClass = e.srcElement.classList[0] || "middle";
-      // console.log(elClass);
+      console.log(elClass);
       const actions = {
         top_resize_handle: "drag:top",
         bottom_resize_handle: "drag:bottom",

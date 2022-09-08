@@ -84,13 +84,14 @@ const DayColumn = (props) => {
           <TimeSlot
             top={timeToYPos(slot.start, props.minHour, props.maxHour, props.height)}
             bottom={timeToYPos(slot.end, props.minHour, props.maxHour, props.height)}
+            width={props.width * 0.9}
+            left={props.width * 0.05}
             id={slot.id}
             timeSlot={slot}
             locale={props.locale}
             theme={props.theme}
             palette={props.palette}
             onSlotClick={props.onSlotClick}
-            width={props.width}
           ></TimeSlot>
         )}
       </For>

@@ -36,6 +36,8 @@ const TopBarContainer = styled.div<IProps>`
     display: inline-flex;
     justify-content: center;
     align-items: center;
+    white-space: normal;
+    overflow: clip;
   }
 `;
 
