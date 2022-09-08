@@ -158,7 +158,8 @@ const App: Component = () => {
         onChange={(val) => setValue(val)}
       />
       <div>
-        <pre>{JSON.stringify(value(), null, 2)}</pre>
+        {/* @ts-ignore */}
+        <pre>{JSON.stringify({ lastPos: value().lastPos, lastWindowPos: value().lastWindowPos }, null, 2)}</pre>
       </div>
     </main>
   );

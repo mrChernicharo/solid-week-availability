@@ -10,7 +10,7 @@ import {
   timeToYPos,
   yPosToTime,
 } from "../../lib/helpers";
-import { IWeekday, IStore, IPalette, ITimeSlot } from "../../lib/types";
+import { IWeekday, IStore, IPalette, ITimeSlot, IPointerEvent } from "../../lib/types";
 import TimeGrid from "../TimeGrid/TimeGrid";
 import SideBar from "../SideBar/SideBar";
 import TopBar from "../TopBar/TopBar";
@@ -81,8 +81,10 @@ const WeeklyAvailability = (props: IProps) => {
 
   ///// *************** *************** *************** *************** /////
 
-  function _handleColumnClick(e, day, pos, colIdx) {
+  function _handleColumnClick(e: IPointerEvent, day, pos, colIdx) {
+    console.log(e);
     setStore("lastPos", pos);
+    setStore("lastWindowPos", { x: e.pageX, y: e.pageY });
     setStore("day", day);
 
     if (!isModalOpen()) {
@@ -331,6 +333,7 @@ const WeeklyAvailability = (props: IProps) => {
                 <Modal
                   openedModals={Object.keys(store.modal).filter((t) => store.modal[t])}
                   lastPos={store.lastPos}
+                  lastWindowPos={store.lastWindowPos}
                   day={store.day}
                   maxHour={props.maxHour}
                   minHour={props.minHour}

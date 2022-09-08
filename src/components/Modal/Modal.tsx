@@ -1,11 +1,10 @@
-import { props } from "cypress/types/bluebird";
 import { FaSolidX, FaSolidCalendarPlus, FaSolidLayerGroup, FaSolidCheck, FaSolidTrash } from "solid-icons/fa";
 import { createEffect, createSignal, Show } from "solid-js";
-import { MODAL_WIDTH, MODAL_HEIGHT, HALF_SLOT, MIN_SLOT_DURATION } from "../../lib/constants";
+import { HALF_SLOT, MIN_SLOT_DURATION } from "../../lib/constants";
 import { ITimeSlot, IWeekday } from "../../lib/types";
 import { MarkerOverlay, ModalContainer } from "./ModalStyles";
 import idMaker from "@melodev/id-maker";
-import { findOverlappingSlots, getElementRect, localizeWeekday, readableTime } from "../../lib/helpers";
+import { localizeWeekday, readableTime } from "../../lib/helpers";
 
 const CloseButton = (props) => (
   <button data-cy="close_modal_btn" onclick={(e) => props.onClick(e)}>
@@ -18,19 +17,15 @@ export default function Modal(props) {
 
   function getModalPos() {
     let modalPos = { x: 0, y: 0 };
-    const widgetEl = () => document.querySelector("#widget_root_element");
-    const wRect = () => getElementRect(widgetEl() as HTMLDivElement);
+    // const widgetEl = () => document.querySelector("#widget_root_element");
+    // const wRect = () => getElementRect(widgetEl() as HTMLDivElement);
 
-    const scrollOffsetY = widgetEl()?.scrollTop || 0;
-    const scrollOffsetX = widgetEl()?.scrollLeft || 0;
+    // const scrollOffsetY = widgetEl()?.scrollTop || 0;
+    // const scrollOffsetX = widgetEl()?.scrollLeft || 0;
 
     // TODO: gotta review this
-    modalPos.x = props.lastPos.x - scrollOffsetX;
-    modalPos.x = modalPos.x < wRect().width / 2 ? modalPos.x : modalPos.x - MODAL_WIDTH;
-
-    modalPos.y = props.lastPos.y + wRect().top + props.headerHeight + window.scrollY - scrollOffsetY;
-    modalPos.y =
-      modalPos.y - wRect().top < (wRect().height + window.scrollY) / 2 ? modalPos.y : modalPos.y - MODAL_HEIGHT;
+    modalPos.x = props.lastWindowPos.x;
+    modalPos.y = props.lastWindowPos.y;
 
     return setModalPos(modalPos);
   }

@@ -14,6 +14,7 @@ export type IStore = {
   day: IWeekday;
   gesture: "idle" | "drag:ready" | "drag:middle" | "drag:top" | "drag:bottom";
   lastPos: IPos; // for positioning modal?
+  lastWindowPos: { x: number; y: number };
   modal: { create: boolean; merge: boolean; details: boolean; confirm: boolean; drop: boolean };
 };
 
