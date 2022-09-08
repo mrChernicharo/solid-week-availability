@@ -4,7 +4,7 @@ import { IPalette } from "../../lib/types";
 interface IModalProps {
   //   id: string;
   width: number;
-  height: number;
+  // height: number;
   top: number;
   left: number;
   theme: DefaultTheme;
@@ -13,16 +13,16 @@ interface IModalProps {
 
 const color = (props: IModalProps, color: string) => props.theme[props.palette][color];
 
+// height: ${(props) => props.height + "px"};
+// height: ${(props) => props.height + "px"};
 const ModalContainer = styled.div<IModalProps>`
   position: absolute;
   width: ${(props) => props.width + "px"};
-  height: ${(props) => props.height + "px"};
   z-index: 50;
   top: ${(props) => props.top + "px"};
   left: ${(props) => props.left + "px"};
 
   background: ${(props) => color(props, "bg2")};
-  height: ${(props) => props.height + "px"};
 
   button {
     background: none;

@@ -105,22 +105,22 @@ const WeeklyAvailability = (props: IProps) => {
   }
 
   function handlePointerMove(e) {
-    if (e instanceof MouseEvent) {
-      console.log(e);
-    } else if (e instanceof TouchEvent) {
-      console.log(e.touches.item(0));
-    }
+    // e.preventDefault();
+    console.log(e);
+
     if (store.gesture === "idle") return;
     // e.preventDefault();
     // e.cancelable = false;
 
     if (store.gesture === "drag:ready") {
+      const elClass = e.srcElement.classList[0] || "middle";
+      console.log(elClass);
       const actions = {
         top_resize_handle: "drag:top",
         bottom_resize_handle: "drag:bottom",
         middle: "drag:middle",
       };
-      setStore("gesture", actions[e.srcElement.classList[0]]);
+      setStore("gesture", actions[elClass]);
       return;
     }
 
@@ -226,8 +226,10 @@ const WeeklyAvailability = (props: IProps) => {
     // console.log(store.gesture);
   });
   onMount(() => {
-    document.addEventListener("mousemove", handlePointerMove);
-    document.addEventListener("touchmove", handlePointerMove);
+    // document.addEventListener("mousemove", handlePointerMove);
+    // document.removeEventListener("touchmove", handlePointerMove);
+    document.addEventListener("pointermove", handlePointerMove);
+    // document.addEventListener("contextmenu", (e) => e.preventDefault());
 
     document.addEventListener("pointerdown", handlePointerDown);
     document.addEventListener("pointerup", handleDragEnd);
@@ -238,8 +240,10 @@ const WeeklyAvailability = (props: IProps) => {
     document.addEventListener("pointercancel", handlePointerCancel);
   });
   onCleanup(() => {
-    document.removeEventListener("mousemove", handlePointerMove);
-    document.removeEventListener("touchmove", handlePointerMove);
+    // document.removeEventListener("mousemove", handlePointerMove);
+    // document.removeEventListener("touchmove", handlePointerMove);
+    document.removeEventListener("pointermove", handlePointerMove);
+    // document.removeEventListener("contextmenu", (e) => e.preventDefault());
 
     document.removeEventListener("pointerdown", handlePointerDown);
     document.removeEventListener("pointerup", handleDragEnd);
@@ -280,7 +284,8 @@ const WeeklyAvailability = (props: IProps) => {
           style={{
             display: "inline-flex",
             width: props.colMinWidth * (cols().length + 0.5) + "px",
-            "touch-action": store.gesture !== "idle" ? "none" : "manipulation",
+            // "touch-action": store.gesture !== "idle" ? "none" : "manipulation",
+            "touch-action": "none",
           }}
         >
           <SideBar
