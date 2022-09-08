@@ -1,4 +1,4 @@
-import { WEEKDAYS, HALF_SLOT } from "./constants";
+import { WEEKDAYS } from "./constants";
 import { IWeekday, ITimeSlot } from "./types";
 import idMaker from "@melodev/id-maker";
 
@@ -71,7 +71,7 @@ export const getWeekDays = (
   return reindexedDays.map((d) => d.localized);
 };
 
-export const getHours = (minHour: number, maxHour: number, locale = "en") => {
+export const getLocaleHours = (minHour: number, maxHour: number, locale = "en") => {
   const hours: string[] = [];
   let curr = minHour;
 

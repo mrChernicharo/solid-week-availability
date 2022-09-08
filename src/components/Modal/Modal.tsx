@@ -1,6 +1,5 @@
 import { FaSolidX, FaSolidCalendarPlus, FaSolidLayerGroup, FaSolidCheck, FaSolidTrash } from "solid-icons/fa";
 import { createEffect, createSignal, Show } from "solid-js";
-import { HALF_SLOT, MIN_SLOT_DURATION } from "../../lib/constants";
 import { ITimeSlot, IWeekday } from "../../lib/types";
 import { MarkerOverlay, ModalContainer } from "./ModalStyles";
 import idMaker from "@melodev/id-maker";
@@ -16,14 +15,12 @@ export default function Modal(props) {
   const [modalPos, setModalPos] = createSignal({ x: 0, y: 0 });
 
   function getModalPos() {
-    let modalPos = { x: 0, y: 0 };
     // const widgetEl = () => document.querySelector("#widget_root_element");
     // const wRect = () => getElementRect(widgetEl() as HTMLDivElement);
-
     // const scrollOffsetY = widgetEl()?.scrollTop || 0;
     // const scrollOffsetX = widgetEl()?.scrollLeft || 0;
+    let modalPos = { x: 0, y: 0 };
 
-    // TODO: gotta review this
     modalPos.x = props.lastWindowPos.x;
     modalPos.y = props.lastWindowPos.y;
 
@@ -31,10 +28,23 @@ export default function Modal(props) {
   }
 
   function createNewTimeSlot(day: IWeekday, time: number) {
+    let [start, end] = [Math.round(time - props.snapTo / 2), Math.round(time + props.snapTo / 2)];
+
+    // prevent top overflow on creation
+    if (start < props.minHour * 60) {
+      start = props.minHour * 60;
+      end = props.minHour * 60 + props.snapTo;
+    }
+    // prevent bottom overflow on creation
+    if (end > props.maxHour * 60) {
+      end = props.maxHour * 60;
+      start = props.maxHour * 60 - props.snapTo;
+    }
+
     const newTimeSlot: ITimeSlot = {
       id: idMaker(),
-      start: time - HALF_SLOT,
-      end: time + HALF_SLOT,
+      start,
+      end,
       day,
     };
     return newTimeSlot;
@@ -120,7 +130,7 @@ export default function Modal(props) {
                           // handle start > end (crossing)
                           if (+e.currentTarget.value * 60 > props.slot.end) {
                             e.currentTarget.value = String(+e.currentTarget.value - 1);
-                            newTime = props.slot.end - MIN_SLOT_DURATION;
+                            newTime = props.slot.end - props.snapTo;
                           }
 
                           // handle start < minHour (top overflow)
@@ -148,7 +158,7 @@ export default function Modal(props) {
                             return;
                           }
 
-                          if (newTime < props.slot.end - MIN_SLOT_DURATION) {
+                          if (newTime < props.slot.end - props.snapTo) {
                             props.onSlotTimeChange(newTime, props.slotIdx, "start");
                           } else {
                             e.currentTarget.value = String(mins - 1);
@@ -169,7 +179,7 @@ export default function Modal(props) {
                           // handle start < end (crossing)
                           if (+e.currentTarget.value * 60 < props.slot.start) {
                             e.currentTarget.value = String(+e.currentTarget.value + 1);
-                            newTime = props.slot.start + MIN_SLOT_DURATION;
+                            newTime = props.slot.start + props.snapTo;
                           }
 
                           // handle end > maxHour (bottom overflow)
@@ -197,7 +207,7 @@ export default function Modal(props) {
                             return;
                           }
 
-                          if (newTime > props.slot.start + MIN_SLOT_DURATION) {
+                          if (newTime > props.slot.start + props.snapTo) {
                             props.onSlotTimeChange(newTime, props.slotIdx, "end");
                           } else {
                             e.currentTarget.value = String(mins + 1);

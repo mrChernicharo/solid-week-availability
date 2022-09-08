@@ -1,11 +1,11 @@
 import { For } from "solid-js";
-import { getHours } from "../../lib/helpers";
+import { getLocaleHours } from "../../lib/helpers";
 import { SideBarContainer } from "./SideBarStyles";
 
 const SideBar = (props) => {
   // console.log("SideBarProps", { ...props });
 
-  const HOURS = () => getHours(props.minHour, props.maxHour, props.locale);
+  const HOURS = () => getLocaleHours(props.minHour, props.maxHour, props.locale);
 
   return (
     <SideBarContainer

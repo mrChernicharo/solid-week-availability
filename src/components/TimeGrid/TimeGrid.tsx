@@ -12,7 +12,7 @@ import { createStore, SetStoreFunction, unwrap } from "solid-js/store";
 import {
   findOverlappingSlots,
   getElementRect,
-  getHours,
+  getLocaleHours,
   getMergedTimeslots,
   getWeekDays,
   localizeWeekday,
@@ -45,7 +45,7 @@ const TimeGrid = (props) => {
 
   // const rect = () => getElementRect(gridRef);
 
-  const HOURS = () => getHours(props.minHour, props.maxHour, props.locale);
+  const HOURS = () => getLocaleHours(props.minHour, props.maxHour, props.locale);
 
   function handleColumnClick(e, day, pos, colIdx) {
     props.onColumnClick(e, day, pos, colIdx);

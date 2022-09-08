@@ -17,8 +17,6 @@ import TimeSlot from "../TimeSlot/TimeSlot";
 //   headerHeight: number;
 //   theme: DefaultTheme;
 
-const ICON_SIZE = 16;
-
 const DayColumn = (props) => {
   let columnRef: HTMLDivElement;
   let clickMoment = 0;

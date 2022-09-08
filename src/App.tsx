@@ -154,12 +154,30 @@ const App: Component = () => {
         headerHeight={headerHeight()}
         colHeight={colHeight()}
         colMinWidth={colWidth()}
-        minSnap={30}
+        snapTo={30}
         onChange={(val) => setValue(val)}
       />
       <div>
-        {/* @ts-ignore */}
-        <pre>{JSON.stringify({ lastPos: value().lastPos, lastWindowPos: value().lastWindowPos }, null, 2)}</pre>
+        <pre>
+          {JSON.stringify(
+            {
+              // @ts-ignore
+              gesture: value().gesture,
+              // @ts-ignore
+              modal: value().modal,
+              // @ts-ignore
+              lastPos: value().lastPos,
+              // @ts-ignore
+              lastWindowPos: value().lastWindowPos,
+            },
+            null,
+            2
+          )}
+        </pre>
+
+        <hr />
+
+        {/* <pre>{JSON.stringify(value(), null, 2)}</pre> */}
       </div>
     </main>
   );

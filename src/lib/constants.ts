@@ -30,8 +30,8 @@ export const WEEKDAYS: IWeekday[] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "
 export const SCROLL_BAR = 17;
 
 export const MARKER_TIME = 400;
-export const HALF_SLOT = 15;
 export const MODAL_WIDTH = 120;
 export const MODAL_HEIGHT = 140;
 
-export const MIN_SLOT_DURATION = 15;
+// export const HALF_SLOT = 15;
+// export const MIN_SLOT_DURATION = 15;
