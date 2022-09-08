@@ -19,6 +19,7 @@ const SideBarContainer = styled.div<IProps>`
   z-index: 5;
   background: ${(props) => color(props, "accent2")};
   opacity: 0.8;
+  user-select: none;
 
   .hour {
     font-size: small;

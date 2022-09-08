@@ -1,11 +1,7 @@
-import { createEffect, createSignal, For, Show } from "solid-js";
-import { HALF_SLOT, MARKER_TIME } from "../../lib/constants";
-import { findOverlappingSlots, getElementRect, localizeWeekday, timeToYPos, yPosToTime } from "../../lib/helpers";
-import { IWeekday, IPalette, IPointerEvent, IPos, ITimeSlot, ITouchEvent } from "../../lib/types";
-import { DayColumnContainer, Marker } from "./DayColumnStyles";
-import { FaSolidPlus } from "solid-icons/fa";
-import { unwrap } from "solid-js/store";
-import { DefaultTheme } from "solid-styled-components";
+import { createEffect, For } from "solid-js";
+import { getElementRect, timeToYPos, yPosToTime } from "../../lib/helpers";
+import { ITimeSlot } from "../../lib/types";
+import { DayColumnContainer } from "./DayColumnStyles";
 import TimeSlot from "../TimeSlot/TimeSlot";
 
 // interface IProps {

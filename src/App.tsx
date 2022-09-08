@@ -158,7 +158,7 @@ const App: Component = () => {
         onChange={(val) => setValue(val)}
       />
       <div>
-        <pre>{JSON.stringify(value(), null, 2)}</pre>
+        <pre>{JSON.stringify((value() as any)?.gesture, null, 2)}</pre>
       </div>
     </main>
   );

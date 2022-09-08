@@ -21,6 +21,7 @@ const TopBarContainer = styled.div<IProps>`
   z-index: 10;
   background: ${(props) => color(props, "primary2")};
   opacity: 0.8;
+  user-select: none;
 
   .shim {
     width: ${(props) => props.colWidth / 2 + "px"};
