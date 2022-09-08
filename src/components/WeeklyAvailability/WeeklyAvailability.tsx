@@ -65,7 +65,6 @@ const WeeklyAvailability = (props: IProps) => {
 
   const isModalOpen = () =>
     store.modal.create || store.modal.merge || store.modal.details || store.modal.confirm || store.modal.drop;
-  ///// *************** *************** *************** *************** /////
 
   function handlePointerDown(e) {}
 
@@ -75,8 +74,12 @@ const WeeklyAvailability = (props: IProps) => {
 
   function handlePointerCancel(e) {
     // setTimeout(() => e.preventDefault(), 100);
-    // console.log("handlePointerCancel", { e });
+    setStore("gesture", "idle");
+    e.preventDefault();
+    console.log("handlePointerCancel", { e });
   }
+
+  ///// *************** *************** *************** *************** /////
 
   function _handleColumnClick(e, day, pos, colIdx) {
     setStore("lastPos", pos);
@@ -114,7 +117,7 @@ const WeeklyAvailability = (props: IProps) => {
 
     if (store.gesture === "drag:ready") {
       const elClass = e.srcElement.classList[0] || "middle";
-      console.log(elClass);
+      // console.log(elClass);
       const actions = {
         top_resize_handle: "drag:top",
         bottom_resize_handle: "drag:bottom",
@@ -161,7 +164,9 @@ const WeeklyAvailability = (props: IProps) => {
     // console.log("drag");
   }
 
-  function handleDragEnd() {
+  function handleDragEnd(e) {
+    console.log("handleDragEnd", e);
+
     const slot = getSlot(store.day, store.slotId);
     if (!slot || !slot.start) return;
 
@@ -182,7 +187,6 @@ const WeeklyAvailability = (props: IProps) => {
         setStore("modal", "drop", true);
       }
     }
-
     setStore("gesture", "idle");
   }
 
@@ -231,12 +235,12 @@ const WeeklyAvailability = (props: IProps) => {
     document.addEventListener("pointermove", handlePointerMove);
     // document.addEventListener("contextmenu", (e) => e.preventDefault());
 
-    document.addEventListener("pointerdown", handlePointerDown);
     document.addEventListener("pointerup", handleDragEnd);
     document.addEventListener("touchend", handleDragEnd);
 
     // document.addEventListener("click", handleClick);
-    document.addEventListener("touchstart", handleTouchStart);
+    // document.addEventListener("pointerdown", handlePointerDown);
+    // document.addEventListener("touchstart", handleTouchStart);
     document.addEventListener("pointercancel", handlePointerCancel);
   });
   onCleanup(() => {
@@ -245,12 +249,12 @@ const WeeklyAvailability = (props: IProps) => {
     document.removeEventListener("pointermove", handlePointerMove);
     // document.removeEventListener("contextmenu", (e) => e.preventDefault());
 
-    document.removeEventListener("pointerdown", handlePointerDown);
     document.removeEventListener("pointerup", handleDragEnd);
     document.removeEventListener("touchend", handleDragEnd);
 
     // document.removeEventListener("click", handleClick);
-    document.removeEventListener("touchstart", handleTouchStart);
+    // document.removeEventListener("pointerdown", handlePointerDown);
+    // document.removeEventListener("touchstart", handleTouchStart);
     document.removeEventListener("pointercancel", handlePointerCancel);
   });
 
@@ -285,7 +289,8 @@ const WeeklyAvailability = (props: IProps) => {
             display: "inline-flex",
             width: props.colMinWidth * (cols().length + 0.5) + "px",
             // "touch-action": store.gesture !== "idle" ? "none" : "manipulation",
-            "touch-action": "none",
+            "touch-action": store.gesture !== "idle" ? "none" : "",
+            // "touch-action": "none",
           }}
         >
           <SideBar

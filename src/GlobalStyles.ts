@@ -15,7 +15,7 @@ const GlobalStyles = () => {
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
 
-      touch-action: none;  
+      /* touch-action: none;   */
     }
 
     * {
