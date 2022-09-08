@@ -227,6 +227,11 @@ const WeeklyAvailability = (props: IProps) => {
     }
   }
 
+  function handleSlotDelete(slot) {
+    console.log(slot);
+    setStore(store.day, (slots) => slots.filter((s) => s.id !== slot.id));
+  }
+
   createEffect(() => {
     props.onChange(store);
     // console.log(store.gesture);
@@ -290,9 +295,6 @@ const WeeklyAvailability = (props: IProps) => {
           style={{
             display: "inline-flex",
             width: props.colMinWidth * (cols().length + 0.5) + "px",
-            // "touch-action": store.gesture !== "idle" ? "none" : "manipulation",
-            "touch-action": store.gesture !== "idle" ? "none" : "",
-            // "touch-action": "none",
           }}
         >
           <SideBar
@@ -347,6 +349,7 @@ const WeeklyAvailability = (props: IProps) => {
                   onMergeTimeSlots={handleMergeSlots}
                   onSlotTimeChange={handleTimeSlotChange}
                   onDetailsConfirm={handleDetailsModalConfirm}
+                  onDeleteSlot={handleSlotDelete}
                 />
               );
             }}

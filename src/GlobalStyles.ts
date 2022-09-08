@@ -14,8 +14,6 @@ const GlobalStyles = () => {
         sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-
-      /* touch-action: none;   */
     }
 
     * {

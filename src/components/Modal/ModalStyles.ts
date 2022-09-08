@@ -71,7 +71,8 @@ const ModalContainer = styled.div<IModalProps>`
       margin: 0;
       font-size: small;
     }
-    p {
+    p,
+    span {
       margin: 0;
       font-size: 12px;
     }

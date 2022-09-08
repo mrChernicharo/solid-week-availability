@@ -1,5 +1,5 @@
 import { props } from "cypress/types/bluebird";
-import { FaSolidX, FaSolidCalendarPlus, FaSolidLayerGroup, FaSolidCheck } from "solid-icons/fa";
+import { FaSolidX, FaSolidCalendarPlus, FaSolidLayerGroup, FaSolidCheck, FaSolidTrash } from "solid-icons/fa";
 import { createEffect, createSignal, Show } from "solid-js";
 import { MODAL_WIDTH, MODAL_HEIGHT, HALF_SLOT, MIN_SLOT_DURATION } from "../../lib/constants";
 import { ITimeSlot, IWeekday } from "../../lib/types";
@@ -123,7 +123,6 @@ export default function Modal(props) {
                   <p>{props.slot.id}</p>
 
                   <div class="details_form">
-                    <p>from</p>
                     <fieldset>
                       <input
                         id="details_start_hour"
@@ -138,8 +137,6 @@ export default function Modal(props) {
                             e.currentTarget.value = String(+e.currentTarget.value - 1);
                             newTime = props.slot.end - MIN_SLOT_DURATION;
                           }
-
-                          console.log({ v: e.currentTarget.value, min: props.minHour });
 
                           // handle start < minHour (top overflow)
                           if (newTime < props.minHour * 60) {
@@ -175,7 +172,6 @@ export default function Modal(props) {
                       />
                     </fieldset>
 
-                    <p>to</p>
                     <fieldset>
                       <input
                         id="details_end_hour"
@@ -226,14 +222,25 @@ export default function Modal(props) {
                     </fieldset>
                   </div>
 
-                  <button
-                    onclick={(e) => {
-                      props.onDetailsConfirm(e, props.slot);
-                      props.onClose("details");
-                    }}
-                  >
-                    <FaSolidCheck size={24} />
-                  </button>
+                  <div>
+                    {" "}
+                    <button
+                      onclick={(e) => {
+                        props.onDetailsConfirm(e, props.slot);
+                        props.onClose("details");
+                      }}
+                    >
+                      <FaSolidCheck size={24} />
+                    </button>
+                    <button
+                      onclick={(e) => {
+                        props.onClose("details");
+                        props.onDeleteSlot(props.slot);
+                      }}
+                    >
+                      <FaSolidTrash size={24} />
+                    </button>
+                  </div>
                 </>
               );
             }}
