@@ -109,7 +109,7 @@ const WeeklyAvailability = (props: IProps) => {
 
   function handlePointerMove(e) {
     // e.preventDefault();
-    console.log(e);
+    // console.log(e);
 
     if (store.gesture === "idle") return;
     // e.preventDefault();
@@ -129,11 +129,13 @@ const WeeklyAvailability = (props: IProps) => {
 
     let slotStart, slotEnd;
     let timeDiff;
-    if (e instanceof MouseEvent) {
-      timeDiff = yPosToTime(e.movementY, 0, props.maxHour - props.minHour, props.colHeight);
-    } else if (e instanceof TouchEvent) {
-      timeDiff = yPosToTime(e.touches.item(0)?.pageY!, 0, props.maxHour - props.minHour, props.colHeight);
-    }
+
+    // if (e instanceof MouseEvent) {
+    timeDiff = yPosToTime(e.movementY, 0, props.maxHour - props.minHour, props.colHeight);
+    // }
+    // if (e instanceof TouchEvent) {
+    //   timeDiff = yPosToTime(e.touches.item(0)?.pageY!, 0, props.maxHour - props.minHour, props.colHeight);
+    // }
 
     const [day, id] = [store.day, store.slotId];
     const { start, end } = getSlot(day, id)!;
