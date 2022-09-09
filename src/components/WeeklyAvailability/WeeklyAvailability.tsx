@@ -170,18 +170,17 @@ const WeeklyAvailability = (props: IProps) => {
 
   function handlePointerUp(e) {
     // console.log("handlePointerUp", e);
-
     const slot = getSlot(store.day, store.slotId);
     if (!slot || !slot.start) return;
 
     if (["drag:middle", "drag:top", "drag:bottom"].includes(store.gesture)) {
       handleDragEnd(e, slot);
     }
+
     setStore("gesture", "idle");
   }
 
   function handleDragEnd(e, slot) {
-    if (store.modal.details) return;
     console.log("handleDragEnd", e);
 
     const overlapping = findOverlappingSlots(

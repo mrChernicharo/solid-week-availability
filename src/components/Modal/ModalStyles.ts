@@ -30,7 +30,8 @@ const ModalContainer = styled.div<IModalProps>`
       position: absolute;
       top: 0;
       right: 0;
-      padding: 6px 6px 0 0;
+      /* padding: 6px 6px 0 0; */
+      padding: 6px;
     }
 
     &:hover {
@@ -49,13 +50,15 @@ const ModalContainer = styled.div<IModalProps>`
       fieldset {
         border: none;
         display: flex;
+        padding: 0;
+        margin: 8px 0 8px 0;
 
         .separator {
           width: 6px;
           text-align: center;
         }
         input {
-          width: 40px;
+          width: 34px;
           border: none;
         }
       }

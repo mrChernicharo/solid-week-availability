@@ -8,13 +8,13 @@ const App: Component = () => {
   const [isOpen, setIsOpen] = createSignal(true);
 
   const [palette, setPalette] = createSignal<IPalette>("dark");
-  const [colHeight, setColHeight] = createSignal(800);
+  const [colHeight, setColHeight] = createSignal(600);
   const [colWidth, setColWidth] = createSignal(120);
-  const [widgetHeight, setWidgetHeight] = createSignal(420);
+  const [widgetHeight, setWidgetHeight] = createSignal(620);
   const [headerHeight, setHeaderHeight] = createSignal(50);
   const [firstDay, setFirstDay] = createSignal<IWeekday>("Mon");
-  const [minHour, setMinHour] = createSignal(6);
-  const [endHour, setEndHour] = createSignal(16);
+  const [minHour, setMinHour] = createSignal(7);
+  const [endHour, setEndHour] = createSignal(21);
   const [cols, setCols] = createSignal(WEEKDAYS);
   const [locale, setLocale] = createSignal("pt-BR");
 
@@ -177,7 +177,7 @@ const App: Component = () => {
 
         <hr />
 
-        {/* <pre>{JSON.stringify(value(), null, 2)}</pre> */}
+        <pre>{JSON.stringify(value(), null, 2)}</pre>
       </div>
     </main>
   );
