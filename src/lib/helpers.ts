@@ -192,9 +192,9 @@ export function getMergedTimeslots(newTimeSlot, timeslots) {
     const mergedSlots = [mergedSlot, ...filteredSlots];
     console.log({ mergedSlot, mergedSlots });
 
-    return mergedSlots;
+    return { mergedSlots, newSlot: mergedSlot };
   } else {
-    return [...timeslots, newTimeSlot];
+    return { mergedSlots: [...timeslots, newTimeSlot], newSlot: newTimeSlot };
   }
 }
 
@@ -232,7 +232,7 @@ export function snapTime(time: number, snapFactor: number) {
     newTime = time - remainder;
   }
 
-  console.log({ time, remainder, newTime, snapFactor });
+  // console.log({ time, remainder, newTime, snapFactor });
 
   return newTime;
 }

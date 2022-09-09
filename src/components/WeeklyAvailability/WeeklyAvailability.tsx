@@ -95,15 +95,17 @@ const WeeklyAvailability = (props: IProps) => {
         setStore("modal", "merge", true);
         return;
       }
+      setStore("slotId", "");
       setStore("modal", "create", true);
     }
   }
 
   function _handleSlotClick(e, slot) {
     // console.log("_handleSlotClick", { e, slot });
+    setStore("slotId", slot.id);
+
     if (store.gesture === "idle") {
       setStore("gesture", "drag:ready");
-      setStore("slotId", slot.id);
       setStore("day", slot.day);
     }
   }
@@ -192,7 +194,7 @@ const WeeklyAvailability = (props: IProps) => {
 
     if (overlapping.length > 0) {
       setStore("lastPos", { ...store.lastPos, time: slot.start + (slot.end - slot.start) });
-      setStore("slotId", store.slotId);
+      // setStore("slotId", store.slotId);
 
       if (store.gesture !== "idle" && store.gesture !== "drag:ready") {
         setStore("modal", "drop", true);
@@ -215,12 +217,15 @@ const WeeklyAvailability = (props: IProps) => {
     console.log("handle_createNewTimeSlot", newSlot);
     setStore(newSlot.day, (slots) => [...slots, newSlot]);
     setStore("modal", "create", false);
+    setStore("slotId", newSlot.id);
   }
 
-  function handleMergeSlots(newSlot: ITimeSlot) {
-    // console.log("handleMergeSlots", newSlot);
-    const merged = getMergedTimeslots(newSlot, store[store.day]);
-    setStore(store.day, merged);
+  function handleMergeSlots(slot: ITimeSlot) {
+    console.log("handleMergeSlots", slot);
+    const { mergedSlots, newSlot } = getMergedTimeslots(slot, store[store.day]);
+
+    setStore(store.day, mergedSlots);
+    setStore("slotId", newSlot.id);
   }
 
   function handleTimeSlotDetailsChange(newTime: number, slotIdx: number, time: "start" | "end") {
@@ -246,6 +251,12 @@ const WeeklyAvailability = (props: IProps) => {
     props.onChange(store);
     // console.log(store.gesture);
   });
+
+  createEffect(() => {
+    console.log(store.slotId);
+    // console.log(store.gesture);
+  });
+
   onMount(() => {
     document.addEventListener("pointermove", handlePointerMove);
     document.addEventListener("pointerup", handlePointerUp);

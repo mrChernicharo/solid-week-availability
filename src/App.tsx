@@ -168,9 +168,11 @@ const App: Component = () => {
           {JSON.stringify(
             {
               // @ts-ignore
-              gesture: value().gesture,
+              // gesture: value().gesture,
               // @ts-ignore
-              modal: value().modal,
+              slotId: value().slotId,
+              // @ts-ignore
+              // modal: value().modal,
               // @ts-ignore
               lastPos: value().lastPos,
               // @ts-ignore
