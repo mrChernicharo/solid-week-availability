@@ -35,3 +35,22 @@ export const MODAL_HEIGHT = 140;
 
 // export const HALF_SLOT = 15;
 // export const MIN_SLOT_DURATION = 15;
+
+export const t = {
+  "pt-BR": {
+    start: "início",
+    end: "fim",
+  },
+  es: {
+    start: "inicio",
+    end: "fin",
+  },
+  fr: {
+    start: "debout",
+    end: "fin",
+  },
+  en: {
+    start: "start",
+    end: "end",
+  },
+};

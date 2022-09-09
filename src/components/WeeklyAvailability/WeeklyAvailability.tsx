@@ -108,12 +108,7 @@ const WeeklyAvailability = (props: IProps) => {
   }
 
   function handlePointerMove(e) {
-    // e.preventDefault();
-    // console.log(e);
-
     if (store.gesture === "idle") return;
-    // e.preventDefault();
-    // e.cancelable = false;
 
     if (store.gesture === "drag:ready") {
       const elClass = e.srcElement.classList[0] || "middle";
@@ -124,20 +119,13 @@ const WeeklyAvailability = (props: IProps) => {
         middle: "drag:middle",
       };
 
-      // console.log(elClass);
       setStore("gesture", actions[elClass]);
       return;
     }
 
-    let slotStart, slotEnd;
-    let timeDiff;
+    let slotStart, slotEnd, timeDiff;
 
-    // if (e instanceof MouseEvent) {
     timeDiff = yPosToTime(e.movementY, 0, props.maxHour - props.minHour, props.colHeight);
-    // }
-    // if (e instanceof TouchEvent) {
-    //   timeDiff = yPosToTime(e.touches.item(0)?.pageY!, 0, props.maxHour - props.minHour, props.colHeight);
-    // }
 
     const [day, id] = [store.day, store.slotId];
     const { start, end } = getSlot(day, id)!;
@@ -156,6 +144,7 @@ const WeeklyAvailability = (props: IProps) => {
         [slotStart, slotEnd] = [start + timeDiff, end + timeDiff];
         if (slotStart < topLimit || slotEnd > bottomLimit) return;
       }
+
       const newSlot: ITimeSlot = {
         id,
         day,
@@ -164,8 +153,6 @@ const WeeklyAvailability = (props: IProps) => {
       };
       setStore(day, (prev) => [...prev.filter((s) => s.id !== id), newSlot]);
     }
-
-    // console.log("drag");
   }
 
   function handlePointerUp(e) {
@@ -210,8 +197,8 @@ const WeeklyAvailability = (props: IProps) => {
     }
   }
 
-  function handleCreateNewTimeSlot(newSlot: ITimeSlot) {
-    console.log("handleCreateNewTimeSlot", newSlot);
+  function handle_createNewTimeSlot(newSlot: ITimeSlot) {
+    console.log("handle_createNewTimeSlot", newSlot);
     setStore(newSlot.day, (slots) => [...slots, newSlot]);
     setStore("modal", "create", false);
   }
@@ -348,7 +335,7 @@ const WeeklyAvailability = (props: IProps) => {
                   colWidth={props.colMinWidth}
                   palette={props.palette}
                   onClose={handleModalClose}
-                  onCreateTimeSlot={handleCreateNewTimeSlot}
+                  onCreateTimeSlot={handle_createNewTimeSlot}
                   onMergeTimeSlots={handleMergeSlots}
                   onSlotTimeChange={handleTimeSlotDetailsChange}
                   onDetailsConfirm={handleDetailsModalConfirm}

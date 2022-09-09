@@ -217,12 +217,14 @@ export function mergeTimeslots(timeSlots, overlappingIds) {
     }
   );
 
-  // const snappedSlot: ITimeSlot = {
-  //   id: mergedSlot.id,
-  //   start: mergedSlot.start,
-  //   end: mergedSlot.end,
-  //   day: mergedSlot.day,
-  // };
-
   return mergedSlot;
+}
+
+export function snapTime(time: number, snapFactor: number) {
+  let newTime;
+  let remainder = time % snapFactor;
+  newTime = time - remainder;
+  // console.log({ time, remainder, newTime, snapFactor });
+
+  return newTime;
 }

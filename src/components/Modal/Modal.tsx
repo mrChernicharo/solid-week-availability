@@ -3,7 +3,7 @@ import { createEffect, createSignal, Show } from "solid-js";
 import { ITimeSlot, IWeekday } from "../../lib/types";
 import { MarkerOverlay, ModalContainer } from "./ModalStyles";
 import idMaker from "@melodev/id-maker";
-import { localizeWeekday, readableTime } from "../../lib/helpers";
+import { localizeWeekday, readableTime, snapTime } from "../../lib/helpers";
 
 const CloseButton = (props) => (
   <button data-cy="close_modal_btn" onclick={(e) => props.onClick(e)}>
@@ -27,7 +27,7 @@ export default function Modal(props) {
     return setModalPos(modalPos);
   }
 
-  function createNewTimeSlot(day: IWeekday, time: number) {
+  function _createNewTimeSlot(day: IWeekday, time: number) {
     let [start, end] = [Math.round(time - props.snapTo / 2), Math.round(time + props.snapTo / 2)];
 
     // prevent top overflow on creation
@@ -39,6 +39,8 @@ export default function Modal(props) {
     if (end > props.maxHour * 60) {
       end = props.maxHour * 60;
       start = props.maxHour * 60 - props.snapTo;
+    } else {
+      [start, end] = [snapTime(start, props.snapTo), snapTime(end, props.snapTo)];
     }
 
     const newTimeSlot: ITimeSlot = {
@@ -66,7 +68,7 @@ export default function Modal(props) {
           <main>
             <button
               onclick={(e) => {
-                props.onCreateTimeSlot(createNewTimeSlot(props.day, props.lastPos.time));
+                props.onCreateTimeSlot(_createNewTimeSlot(props.day, props.lastPos.time));
                 props.onClose("create");
               }}
             >
@@ -82,7 +84,7 @@ export default function Modal(props) {
             {/* Merge */}
             <button
               onclick={(e) => {
-                props.onMergeTimeSlots(createNewTimeSlot(props.day, props.lastPos.time));
+                props.onMergeTimeSlots(_createNewTimeSlot(props.day, props.lastPos.time));
                 props.onClose("merge");
               }}
             >
@@ -92,7 +94,7 @@ export default function Modal(props) {
             {/* Create New */}
             <button
               onclick={(e) => {
-                props.onCreateTimeSlot(createNewTimeSlot(props.day, props.lastPos.time));
+                props.onCreateTimeSlot(_createNewTimeSlot(props.day, props.lastPos.time));
                 props.onClose("merge");
               }}
             >
@@ -248,7 +250,7 @@ export default function Modal(props) {
             {/* confirm */}
             <button
               onclick={(e) => {
-                props.onMergeTimeSlots(createNewTimeSlot(props.day, props.lastPos.time));
+                props.onMergeTimeSlots(_createNewTimeSlot(props.day, props.lastPos.time));
                 props.onClose("confirm");
               }}
             >
