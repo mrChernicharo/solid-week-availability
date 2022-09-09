@@ -7,6 +7,7 @@ import {
   getWeekDays,
   isMobile,
   mergeTimeslots,
+  snapTime,
   timeToYPos,
   yPosToTime,
 } from "../../lib/helpers";
@@ -169,6 +170,15 @@ const WeeklyAvailability = (props: IProps) => {
 
   function handleDragEnd(e, slot) {
     console.log("handleDragEnd", e);
+
+    const snappedSlot: ITimeSlot = {
+      id: slot.id,
+      day: slot.day,
+      start: snapTime(slot.start, props.snapTo),
+      end: snapTime(slot.end, props.snapTo),
+    };
+
+    setStore(slot.day, (slots) => [...slots.filter((s) => s.id !== slot.id), snappedSlot]);
 
     const overlapping = findOverlappingSlots(
       slot.start,

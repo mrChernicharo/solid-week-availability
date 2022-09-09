@@ -223,8 +223,16 @@ export function mergeTimeslots(timeSlots, overlappingIds) {
 export function snapTime(time: number, snapFactor: number) {
   let newTime;
   let remainder = time % snapFactor;
-  newTime = time - remainder;
-  // console.log({ time, remainder, newTime, snapFactor });
+
+  if (remainder > snapFactor / 2) {
+    // console.log("maior");
+    newTime = time + snapFactor - remainder;
+  } else {
+    // console.log("menor");
+    newTime = time - remainder;
+  }
+
+  console.log({ time, remainder, newTime, snapFactor });
 
   return newTime;
 }
