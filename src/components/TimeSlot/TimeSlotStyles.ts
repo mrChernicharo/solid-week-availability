@@ -26,6 +26,7 @@ const TimeSlotContainer = styled.div<IProps>`
   font-size: small;
   user-select: none;
   opacity: 0.8;
+  border-radius: 4px;
 
   .timeSlot_content {
     position: relative;

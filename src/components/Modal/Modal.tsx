@@ -4,6 +4,7 @@ import { ITimeSlot, IWeekday } from "../../lib/types";
 import { MarkerOverlay, ModalContainer } from "./ModalStyles";
 import idMaker from "@melodev/id-maker";
 import { localizeWeekday, readableTime, snapTime } from "../../lib/helpers";
+import { DEFAULT_SLOT_DURATION, MIN_SLOT_DURATION } from "../../lib/constants";
 
 const CloseButton = (props) => (
   <button data-cy="close_modal_btn" onclick={(e) => props.onClick(e)}>
@@ -28,7 +29,7 @@ export default function Modal(props) {
   }
 
   function _createNewTimeSlot(day: IWeekday, time: number) {
-    let [start, end] = [Math.round(time - props.snapTo / 2), Math.round(time + props.snapTo / 2)];
+    let [start, end] = [Math.round(time - DEFAULT_SLOT_DURATION / 2), Math.round(time + DEFAULT_SLOT_DURATION / 2)];
 
     // prevent top overflow on creation
     if (start < props.minHour * 60) {

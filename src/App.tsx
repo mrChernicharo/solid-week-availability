@@ -1,7 +1,7 @@
 import { Component, createEffect, createSignal, For } from "solid-js";
 
 import WeeklyAvailability from "./components/WeeklyAvailability/WeeklyAvailability";
-import { WEEKDAYS } from "./lib/constants";
+import { SNAP_OPTIONS, WEEKDAYS } from "./lib/constants";
 import { IPalette, IWeekday } from "./lib/types";
 
 const App: Component = () => {
@@ -15,6 +15,7 @@ const App: Component = () => {
   const [firstDay, setFirstDay] = createSignal<IWeekday>("Mon");
   const [minHour, setMinHour] = createSignal(7);
   const [endHour, setEndHour] = createSignal(21);
+  const [snap, setSnap] = createSignal(15);
   const [cols, setCols] = createSignal(WEEKDAYS);
   const [locale, setLocale] = createSignal("pt-BR");
 
@@ -52,6 +53,11 @@ const App: Component = () => {
           <label for="first_day">first_day</label>
           <select id="first_day" value={firstDay()} onChange={(e) => setFirstDay(e.currentTarget.value as IWeekday)}>
             <For each={WEEKDAYS}>{(day) => <option>{day}</option>}</For>
+          </select>
+
+          <label for="snap">snap</label>
+          <select id="snap" value={snap()} onChange={(e) => setSnap(+e.currentTarget.value)}>
+            <For each={SNAP_OPTIONS}>{(snap) => <option>{snap}</option>}</For>
           </select>
         </div>
 
@@ -154,7 +160,7 @@ const App: Component = () => {
         headerHeight={headerHeight()}
         colHeight={colHeight()}
         colMinWidth={colWidth()}
-        snapTo={30}
+        snapTo={snap()}
         onChange={(val) => setValue(val)}
       />
       <div>

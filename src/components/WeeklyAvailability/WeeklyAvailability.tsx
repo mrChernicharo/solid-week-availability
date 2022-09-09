@@ -16,7 +16,7 @@ import TimeGrid from "../TimeGrid/TimeGrid";
 import SideBar from "../SideBar/SideBar";
 import TopBar from "../TopBar/TopBar";
 import { Container } from "./ContainerStyles";
-import { WEEKDAYS } from "../../lib/constants";
+import { MIN_SLOT_DURATION, WEEKDAYS } from "../../lib/constants";
 import Modal from "../Modal/Modal";
 
 interface IProps {
@@ -124,6 +124,10 @@ const WeeklyAvailability = (props: IProps) => {
       return;
     }
 
+    handleSlotDrag(e);
+  }
+
+  function handleSlotDrag(e) {
     let slotStart, slotEnd, timeDiff;
 
     timeDiff = yPosToTime(e.movementY, 0, props.maxHour - props.minHour, props.colHeight);
@@ -135,11 +139,11 @@ const WeeklyAvailability = (props: IProps) => {
     if (timeDiff !== 0) {
       if (store.gesture === "drag:top") {
         [slotStart, slotEnd] = [start + timeDiff, end];
-        if (slotStart < topLimit || slotStart > slotEnd - props.snapTo) return;
+        if (slotStart < topLimit || slotStart > slotEnd - MIN_SLOT_DURATION) return;
       }
       if (store.gesture === "drag:bottom") {
         [slotStart, slotEnd] = [start, end + timeDiff];
-        if (slotEnd > bottomLimit || slotEnd < slotStart + props.snapTo) return;
+        if (slotEnd > bottomLimit || slotEnd < slotStart + MIN_SLOT_DURATION) return;
       }
       if (store.gesture === "drag:middle") {
         [slotStart, slotEnd] = [start + timeDiff, end + timeDiff];
