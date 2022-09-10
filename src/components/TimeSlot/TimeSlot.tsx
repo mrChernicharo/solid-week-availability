@@ -16,6 +16,7 @@ interface ITimeSlotProps extends ParentProps {
   onSlotClick: any;
   width: number;
   onSlotHover;
+  onSlotHoverEnd;
 }
 
 export default function TimeSlot(props: ITimeSlotProps) {
@@ -27,6 +28,9 @@ export default function TimeSlot(props: ITimeSlotProps) {
   onMount(() => {
     document.getElementById(`timeSlot_${props.id}`)?.addEventListener("pointermove", (e) => {
       props.onSlotHover(props.timeSlot);
+    });
+    document.getElementById(`timeSlot_${props.id}`)?.addEventListener("pointerleave", (e) => {
+      props.onSlotHoverEnd(props.timeSlot);
     });
   });
 

@@ -43,6 +43,7 @@ interface IProps {
   onColumnClick: (e, day, pos, colIdx) => void;
   onSlotClick: (e: any, slot: ITimeSlot) => void;
   onSlotHover: (slot: ITimeSlot, day: IWeekday) => void;
+  onSlotHoverEnd: (slot: ITimeSlot, day: IWeekday) => void;
 }
 
 const TimeGrid = (props: IProps) => {
@@ -104,6 +105,7 @@ const TimeGrid = (props: IProps) => {
             onCancelableClick={handleColumnClick}
             onSlotClick={props.onSlotClick}
             onSlotHover={props.onSlotHover}
+            onSlotHoverEnd={props.onSlotHoverEnd}
             isDragging={props.currentDay === col && props.currentGesture !== "idle"}
             // currentGesture={props.currentGesture}
 

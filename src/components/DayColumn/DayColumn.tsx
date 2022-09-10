@@ -17,6 +17,7 @@ import TimeSlot from "../TimeSlot/TimeSlot";
 //   headerHeight: number;
 //   theme: DefaultTheme;
 // onSlotHover
+// onSlotHoverEnd
 // }
 
 const DayColumn = (props) => {
@@ -93,6 +94,7 @@ const DayColumn = (props) => {
             palette={props.palette}
             onSlotClick={props.onSlotClick}
             onSlotHover={(slot) => props.onSlotHover(slot, props.day)}
+            onSlotHoverEnd={(slot) => props.onSlotHoverEnd(slot, props.day)}
           ></TimeSlot>
         )}
       </For>
