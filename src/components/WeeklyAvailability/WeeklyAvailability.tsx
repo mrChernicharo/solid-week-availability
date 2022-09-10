@@ -110,8 +110,9 @@ const WeeklyAvailability = (props: IProps) => {
     }
   }
 
-  function _handleSlotHover(slot: ITimeSlot) {
-    console.log("_handleSlotHover", { slot });
+  function _handleSlotHover(slot: ITimeSlot, day: IWeekday) {
+    // console.log("_handleSlotHover", { day, slot });
+    setStore(day, (slots) => [...slots.filter((s) => s.id !== slot.id), { ...slot, isActive: true }]);
   }
 
   function handlePointerMove(e) {
@@ -259,14 +260,6 @@ const WeeklyAvailability = (props: IProps) => {
 
   createEffect(() => {
     console.log(store.slotId);
-    const slotEl = document.getElementById(`timeSlot_${store.slotId}`);
-
-    if (slotEl) {
-      // slotEl?.classList.add("active-slot");
-    } else {
-      // const slotEl = document.querySelector(".active-slot");
-      // slotEl?.classList.remove("active-slot");
-    }
   });
 
   onMount(() => {

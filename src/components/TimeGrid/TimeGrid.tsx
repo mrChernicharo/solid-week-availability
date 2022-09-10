@@ -42,7 +42,7 @@ interface IProps {
   currentGesture: "idle" | "drag:ready" | "drag:middle" | "drag:top" | "drag:bottom";
   onColumnClick: (e, day, pos, colIdx) => void;
   onSlotClick: (e: any, slot: ITimeSlot) => void;
-  onSlotHover: (slot: ITimeSlot) => void;
+  onSlotHover: (slot: ITimeSlot, day: IWeekday) => void;
 }
 
 const TimeGrid = (props: IProps) => {

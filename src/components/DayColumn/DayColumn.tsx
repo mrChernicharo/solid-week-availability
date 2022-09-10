@@ -92,7 +92,7 @@ const DayColumn = (props) => {
             theme={props.theme}
             palette={props.palette}
             onSlotClick={props.onSlotClick}
-            onSlotHover={props.onSlotHover}
+            onSlotHover={(slot) => props.onSlotHover(slot, props.day)}
           ></TimeSlot>
         )}
       </For>

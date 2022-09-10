@@ -11,6 +11,7 @@ interface IProps {
   theme: DefaultTheme;
   palette: IPalette;
   colWidth: number;
+  isActive: boolean;
 }
 
 const color = (props: IProps, color: string) => props.theme[props.palette][color];
@@ -22,15 +23,11 @@ const TimeSlotContainer = styled.div<IProps>`
   height: ${(props) => props.bottom - props.top + "px"};
   width: ${(props) => props.width + "px"};
   left: ${(props) => props.left + "px"};
-  background: dodgerblue;
+  background: ${(props) => (props.isActive ? "coral" : "dodgerblue")};
   font-size: small;
   /* user-select: none; */
   opacity: 0.8;
   border-radius: 4px;
-
-  &.active-slot {
-    background: coral;
-  }
 
   .timeSlot_content {
     position: relative;

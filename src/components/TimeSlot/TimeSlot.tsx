@@ -41,6 +41,7 @@ export default function TimeSlot(props: ITimeSlotProps) {
       palette={props.palette}
       onPointerDown={handlePointerDown}
       colWidth={props.width}
+      isActive={props.timeSlot.isActive || false}
     >
       <div class="timeSlot_content">
         <div class="top_resize_handle"></div>
