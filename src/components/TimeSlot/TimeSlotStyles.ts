@@ -53,41 +53,39 @@ const TimeSlotContainer = styled.div<IProps>`
         pointer-events: none;
       }
     }
-    &.isActive {
-      background: coral;
 
-      .top_resize_handle,
-      .bottom_resize_handle {
-        transition: 0.5s;
-        opacity: 0.8;
-      }
-    }
     .top_resize_handle,
     .bottom_resize_handle {
       position: absolute;
-      border-radius: 50%;
+      border-radius: 4px;
       background: royalblue;
-      /* border: 4px solid royalblue; */
       height: min(${(props) => props.colWidth / 3 + "px"}, 24px);
       width: min(${(props) => props.colWidth / 3 + "px"}, 24px);
+      transition: 0.5s;
       opacity: 0;
+      /* clip-path: polygon(0 0, 0 100%, 100% 100%); */
     }
 
     .top_resize_handle {
       top: 0;
       left: 10%;
-      transform: translateY(max(${(props) => -props.colWidth / 6 + "px"}, -12px));
+      transform: translateY(max(${(props) => -props.colWidth / 6 + "px"}, -12px)) rotate(135deg);
       cursor: n-resize;
-
       z-index: 12;
     }
     .bottom_resize_handle {
       bottom: 0;
       right: 10%;
-      transform: translateY(min(${(props) => props.colWidth / 6 + "px"}, 12px));
+      transform: translateY(min(${(props) => props.colWidth / 6 + "px"}, 12px)) rotate(-45deg);
       cursor: s-resize;
-
       z-index: 12;
+    }
+    &.isActive {
+      transition: 0.5s;
+      .top_resize_handle,
+      .bottom_resize_handle {
+        opacity: 1;
+      }
     }
   }
 `;

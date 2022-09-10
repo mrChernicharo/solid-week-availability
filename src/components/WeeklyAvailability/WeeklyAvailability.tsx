@@ -110,24 +110,6 @@ const WeeklyAvailability = (props: IProps) => {
     }
   }
 
-  function _handleSlotHover(slot: ITimeSlot, day: IWeekday) {
-    if (!slot.isActive) {
-      // console.log("_handleSlotHover", { day, slot });
-      setStore(day, (slots) => [...slots.filter((s) => s.id !== slot.id), { ...slot, isActive: true }]);
-    }
-  }
-  function _handleSlotHoverEnd(slot: ITimeSlot, day: IWeekday) {
-    if (slot.isActive) {
-      console.log("_handleSlotHoverEnd", { day, slot });
-
-      const inactiveSlot = { ...slot };
-      delete inactiveSlot.isActive;
-
-      // Reflect.deleteProperty(slot, "isActive");
-      setStore(day, (slots) => [...slots.filter((s) => s.id !== slot.id), { ...inactiveSlot }]);
-    }
-  }
-
   function handlePointerMove(e) {
     if (store.gesture === "idle") return;
 
@@ -175,7 +157,6 @@ const WeeklyAvailability = (props: IProps) => {
         day,
         start: slotStart,
         end: slotEnd,
-        isActive: true,
       };
       setStore(day, (prev) => [...prev.filter((s) => s.id !== id), newSlot]);
     }
@@ -356,8 +337,8 @@ const WeeklyAvailability = (props: IProps) => {
             timeSlots={allTimeSlots()}
             onColumnClick={_handleColumnClick}
             onSlotClick={_handleSlotClick}
-            onSlotHover={_handleSlotHover}
-            onSlotHoverEnd={_handleSlotHoverEnd}
+            // onSlotHover={_handleSlotHover}
+            // onSlotHoverEnd={_handleSlotHoverEnd}
             currentGesture={store.gesture}
             currentDay={store.day}
           />

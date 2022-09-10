@@ -1,4 +1,4 @@
-import { createEffect, createSignal, onMount, ParentProps } from "solid-js";
+import { createEffect, createSignal, onCleanup, onMount, ParentProps } from "solid-js";
 import { DefaultTheme } from "solid-styled-components";
 import { readableTime } from "../../lib/helpers";
 import { IPalette, ITimeSlot } from "../../lib/types";
@@ -20,22 +20,41 @@ interface ITimeSlotProps extends ParentProps {
 }
 
 export default function TimeSlot(props: ITimeSlotProps) {
+  let mounted = false;
+  let ref;
+
+  const [isActive, setIsActive] = createSignal(mounted ? true : false);
+
   function handlePointerDown(e) {
     if (e.buttons === 2) return; // no right click
     props.onSlotClick(e, props.timeSlot);
   }
 
+  function handleHover(e) {
+    if (!isActive()) setIsActive(true);
+  }
+
+  function handleHoverEnd(e) {
+    setIsActive(false);
+  }
+
   onMount(() => {
-    document.getElementById(`timeSlot_${props.id}`)?.addEventListener("pointermove", (e) => {
-      props.onSlotHover(props.timeSlot);
-    });
-    document.getElementById(`timeSlot_${props.id}`)?.addEventListener("pointerleave", (e) => {
-      props.onSlotHoverEnd(props.timeSlot);
-    });
+    mounted = true;
+  });
+
+  createEffect(() => {
+    ref.addEventListener("pointermove", handleHover);
+    ref.addEventListener("pointerleave", handleHoverEnd);
+  });
+
+  onCleanup(() => {
+    ref.removeEventListener("pointermove", handleHover);
+    ref.removeEventListener("pointerleave", handleHoverEnd);
   });
 
   return (
     <TimeSlotContainer
+      ref={ref}
       id={`timeSlot_${props.id}`}
       top={props.top}
       left={props.left}
@@ -46,7 +65,7 @@ export default function TimeSlot(props: ITimeSlotProps) {
       onPointerDown={handlePointerDown}
       colWidth={props.width}
     >
-      <div classList={{ timeSlot_content: true, isActive: props.timeSlot.isActive }}>
+      <div classList={{ timeSlot_content: true, isActive: isActive() }}>
         <div class="top_resize_handle"></div>
         <div class="middle">
           <div class="hour-text">
