@@ -24,9 +24,13 @@ const TimeSlotContainer = styled.div<IProps>`
   left: ${(props) => props.left + "px"};
   background: dodgerblue;
   font-size: small;
-  user-select: none;
+  /* user-select: none; */
   opacity: 0.8;
   border-radius: 4px;
+
+  &.active-slot {
+    background: coral;
+  }
 
   .timeSlot_content {
     position: relative;

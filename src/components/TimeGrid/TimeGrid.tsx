@@ -25,22 +25,27 @@ import { TimeGridContainer } from "./TimeGridStyles";
 import idMaker from "@melodev/id-maker";
 import { DefaultTheme } from "solid-styled-components";
 
-// interface IProps {
-//   cols: IWeekday[];
-//   minHour: number;
-//   maxHour: number;
-//   locale: string;
-//   colWidth: number;
-//   colHeight: number;
-//   headerHeight: number;
-//   widgetHeight: number;
-//   firstDay: IWeekday;
-//   theme: DefaultTheme;
-//   palette: IPalette;
-//   onChange: (store: IStore) => void;
-// }
+interface IProps {
+  cols: IWeekday[];
+  minHour: number;
+  maxHour: number;
+  locale: string;
+  colWidth: number;
+  colHeight: number;
+  headerHeight: number;
+  widgetHeight: number;
+  firstDay: IWeekday;
+  theme: DefaultTheme;
+  palette: IPalette;
+  timeSlots: { [k: string]: ITimeSlot[] };
+  currentDay: IWeekday;
+  currentGesture: "idle" | "drag:ready" | "drag:middle" | "drag:top" | "drag:bottom";
+  onColumnClick: (e, day, pos, colIdx) => void;
+  onSlotClick: (e: any, slot: ITimeSlot) => void;
+  onSlotHover: (slot: ITimeSlot) => void;
+}
 
-const TimeGrid = (props) => {
+const TimeGrid = (props: IProps) => {
   let gridRef: HTMLDivElement;
 
   // const rect = () => getElementRect(gridRef);
@@ -98,6 +103,7 @@ const TimeGrid = (props) => {
             timeSlots={props.timeSlots[col]}
             onCancelableClick={handleColumnClick}
             onSlotClick={props.onSlotClick}
+            onSlotHover={props.onSlotHover}
             isDragging={props.currentDay === col && props.currentGesture !== "idle"}
             // currentGesture={props.currentGesture}
 

@@ -31,7 +31,8 @@ export type ITimeSlot = {
   start: number;
   end: number;
   day: IWeekday;
-  color?: string;
+  isActive?: boolean;
+  // color?: string;
 };
 export type IWeekday = "Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat";
 

@@ -1,4 +1,4 @@
-import { createEffect, createSignal, ParentProps } from "solid-js";
+import { createEffect, createSignal, onMount, ParentProps } from "solid-js";
 import { DefaultTheme } from "solid-styled-components";
 import { readableTime } from "../../lib/helpers";
 import { IPalette, ITimeSlot } from "../../lib/types";
@@ -15,6 +15,7 @@ interface ITimeSlotProps extends ParentProps {
   palette: IPalette;
   onSlotClick: any;
   width: number;
+  onSlotHover;
 }
 
 export default function TimeSlot(props: ITimeSlotProps) {
@@ -23,8 +24,10 @@ export default function TimeSlot(props: ITimeSlotProps) {
     props.onSlotClick(e, props.timeSlot);
   }
 
-  createEffect(() => {
-    // console.log(hover());
+  onMount(() => {
+    document.getElementById(`timeSlot_${props.id}`)?.addEventListener("pointermove", (e) => {
+      props.onSlotHover(props.timeSlot);
+    });
   });
 
   return (

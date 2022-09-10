@@ -16,6 +16,8 @@ import TimeSlot from "../TimeSlot/TimeSlot";
 //   height: number;
 //   headerHeight: number;
 //   theme: DefaultTheme;
+// onSlotHover
+// }
 
 const DayColumn = (props) => {
   let columnRef: HTMLDivElement;
@@ -90,6 +92,7 @@ const DayColumn = (props) => {
             theme={props.theme}
             palette={props.palette}
             onSlotClick={props.onSlotClick}
+            onSlotHover={props.onSlotHover}
           ></TimeSlot>
         )}
       </For>

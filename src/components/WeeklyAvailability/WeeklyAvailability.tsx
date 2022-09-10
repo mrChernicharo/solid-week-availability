@@ -110,6 +110,10 @@ const WeeklyAvailability = (props: IProps) => {
     }
   }
 
+  function _handleSlotHover(slot: ITimeSlot) {
+    console.log("_handleSlotHover", { slot });
+  }
+
   function handlePointerMove(e) {
     if (store.gesture === "idle") return;
 
@@ -157,6 +161,7 @@ const WeeklyAvailability = (props: IProps) => {
         day,
         start: slotStart,
         end: slotEnd,
+        isActive: true,
       };
       setStore(day, (prev) => [...prev.filter((s) => s.id !== id), newSlot]);
     }
@@ -254,7 +259,14 @@ const WeeklyAvailability = (props: IProps) => {
 
   createEffect(() => {
     console.log(store.slotId);
-    // console.log(store.gesture);
+    const slotEl = document.getElementById(`timeSlot_${store.slotId}`);
+
+    if (slotEl) {
+      // slotEl?.classList.add("active-slot");
+    } else {
+      // const slotEl = document.querySelector(".active-slot");
+      // slotEl?.classList.remove("active-slot");
+    }
   });
 
   onMount(() => {
@@ -338,6 +350,7 @@ const WeeklyAvailability = (props: IProps) => {
             timeSlots={allTimeSlots()}
             onColumnClick={_handleColumnClick}
             onSlotClick={_handleSlotClick}
+            onSlotHover={_handleSlotHover}
             currentGesture={store.gesture}
             currentDay={store.day}
           />

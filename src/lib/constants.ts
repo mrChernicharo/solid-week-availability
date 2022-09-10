@@ -33,7 +33,7 @@ export const MARKER_TIME = 400;
 export const MODAL_WIDTH = 120;
 export const MODAL_HEIGHT = 140;
 
-export const SNAP_OPTIONS = [60, 30, 20, 15, 10, 5];
+export const SNAP_OPTIONS = [30, 20, 15, 10, 5];
 
 export const DEFAULT_SLOT_DURATION = 30;
 export const MIN_SLOT_DURATION = 15;
