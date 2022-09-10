@@ -11,7 +11,7 @@ interface IProps {
   theme: DefaultTheme;
   palette: IPalette;
   colWidth: number;
-  isActive: boolean;
+  // isActive: boolean;
 }
 
 const color = (props: IProps, color: string) => props.theme[props.palette][color];
@@ -23,15 +23,16 @@ const TimeSlotContainer = styled.div<IProps>`
   height: ${(props) => props.bottom - props.top + "px"};
   width: ${(props) => props.width + "px"};
   left: ${(props) => props.left + "px"};
-  background: ${(props) => (props.isActive ? "coral" : "dodgerblue")};
   font-size: small;
-  /* user-select: none; */
+  user-select: none;
   opacity: 0.8;
-  border-radius: 4px;
+  transition: all 0.5s;
 
   .timeSlot_content {
     position: relative;
     height: 100%;
+    background: dodgerblue;
+    border-radius: 4px;
 
     .middle {
       position: absolute;
@@ -52,14 +53,24 @@ const TimeSlotContainer = styled.div<IProps>`
         pointer-events: none;
       }
     }
+    &.isActive {
+      background: coral;
+
+      .top_resize_handle,
+      .bottom_resize_handle {
+        transition: 0.5s;
+        opacity: 0.8;
+      }
+    }
     .top_resize_handle,
     .bottom_resize_handle {
       position: absolute;
       border-radius: 50%;
-      border: 4px solid royalblue;
+      background: royalblue;
+      /* border: 4px solid royalblue; */
       height: min(${(props) => props.colWidth / 3 + "px"}, 24px);
       width: min(${(props) => props.colWidth / 3 + "px"}, 24px);
-      opacity: 0.5;
+      opacity: 0;
     }
 
     .top_resize_handle {
@@ -82,3 +93,5 @@ const TimeSlotContainer = styled.div<IProps>`
 `;
 
 export { TimeSlotContainer };
+/* opacity: ${(props) => (props.isActive ? 0.8 : 0)}; */
+/* background: ${(props) => (props.isActive ? "coral" : "dodgerblue")}; */

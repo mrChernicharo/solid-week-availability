@@ -45,9 +45,8 @@ export default function TimeSlot(props: ITimeSlotProps) {
       palette={props.palette}
       onPointerDown={handlePointerDown}
       colWidth={props.width}
-      isActive={props.timeSlot.isActive || false}
     >
-      <div class="timeSlot_content">
+      <div classList={{ timeSlot_content: true, isActive: props.timeSlot.isActive }}>
         <div class="top_resize_handle"></div>
         <div class="middle">
           <div class="hour-text">
