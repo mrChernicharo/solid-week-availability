@@ -27,7 +27,7 @@ export const THEME: DefaultTheme = {
 };
 
 export const WEEKDAYS: IWeekday[] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-export const SCROLL_BAR = 17;
+export const SCROLL_BAR = 15;
 
 export const MARKER_TIME = 400;
 export const MODAL_WIDTH = 120;

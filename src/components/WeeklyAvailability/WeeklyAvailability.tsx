@@ -261,24 +261,28 @@ const WeeklyAvailability = (props: IProps) => {
     document.addEventListener("pointerup", handlePointerUp);
     document.addEventListener("touchend", handlePointerUp);
     document.addEventListener("pointercancel", handlePointerCancel);
-    // document.addEventListener("mousemove", handlePointerMove);
-    // document.removeEventListener("touchmove", handlePointerMove);
-    // document.addEventListener("contextmenu", (e) => e.preventDefault());
-    // document.addEventListener("click", handleClick);
-    // document.addEventListener("pointerdown", handlePointerDown);
-    // document.addEventListener("touchstart", handleTouchStart);
+    {
+      // document.addEventListener("mousemove", handlePointerMove);
+      // document.removeEventListener("touchmove", handlePointerMove);
+      // document.addEventListener("contextmenu", (e) => e.preventDefault());
+      // document.addEventListener("click", handleClick);
+      // document.addEventListener("pointerdown", handlePointerDown);
+      // document.addEventListener("touchstart", handleTouchStart);
+    }
   });
   onCleanup(() => {
     document.removeEventListener("pointermove", handlePointerMove);
     document.removeEventListener("pointerup", handlePointerUp);
     document.removeEventListener("touchend", handlePointerUp);
     document.removeEventListener("pointercancel", handlePointerCancel);
-    // document.removeEventListener("mousemove", handlePointerMove);
-    // document.removeEventListener("touchmove", handlePointerMove);
-    // document.removeEventListener("contextmenu", (e) => e.preventDefault());
-    // document.removeEventListener("click", handleClick);
-    // document.removeEventListener("pointerdown", handlePointerDown);
-    // document.removeEventListener("touchstart", handleTouchStart);
+    {
+      // document.removeEventListener("mousemove", handlePointerMove);
+      // document.removeEventListener("touchmove", handlePointerMove);
+      // document.removeEventListener("contextmenu", (e) => e.preventDefault());
+      // document.removeEventListener("click", handleClick);
+      // document.removeEventListener("pointerdown", handlePointerDown);
+      // document.removeEventListener("touchstart", handleTouchStart);
+    }
   });
 
   const cols = () =>
@@ -294,8 +298,11 @@ const WeeklyAvailability = (props: IProps) => {
         palette={props.palette}
         cols={cols()}
         colWidth={props.colMinWidth}
-        height={props.headerHeight + props.colHeight}
         widgetHeight={props.widgetHeight}
+        headerHeight={props.headerHeight}
+        colHeight={props.colHeight}
+        // height={props.headerHeight + props.colHeight}
+        colMinWidth={props.colMinWidth}
       >
         <TopBar
           cols={cols()}
@@ -306,13 +313,7 @@ const WeeklyAvailability = (props: IProps) => {
           theme={theme}
           palette={props.palette}
         />
-        <div
-          data-cy="columns_wrapper"
-          style={{
-            display: "inline-flex",
-            width: props.colMinWidth * (cols().length + 0.5) + "px",
-          }}
-        >
+        <div data-cy="columns_wrapper" class="columns-wrapper">
           <SideBar
             locale={props.locale}
             colHeight={props.colHeight}
